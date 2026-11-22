@@ -1,0 +1,23 @@
+{
+  "name": "ShopPulse Retail (Demo)",
+  "short_name": "ShopPulse",
+  "start_url": "retail-store.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#120d1f",
+  "theme_color": "#120d1f",
+  "description": "Demo app by Kishore Nandhaluru (fictional data)",
+  "icons": [
+    {
+      "sizes": "192x192",
+      "src": "icons/retail-192.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any maskable",
+      "sizes": "512x512",
+      "src": "icons/retail-512.png",
+      "type": "image/png"
+    }
+  ]
+}

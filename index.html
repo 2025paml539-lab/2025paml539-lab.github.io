@@ -196,6 +196,51 @@ footer{text-align:center;color:var(--muted);padding:40px 24px 60px;font-size:.9r
 .rv.in{opacity:1;transform:none}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
 
+/* Chat assistant */
+#chatFab{position:fixed;left:22px;bottom:22px;width:62px;height:62px;border-radius:50%;border:0;background:var(--grad);color:#fff;display:grid;place-items:center;cursor:pointer;z-index:130;box-shadow:0 10px 30px rgba(79,124,255,.55);transition:transform .25s}
+#chatFab:hover{transform:scale(1.08)}
+#chatFab svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+#chatFab.open svg{transform:rotate(90deg)}
+#chatFab::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--accent2);opacity:0;pointer-events:none}
+#chatFab.attn{animation:fabShake 5s ease-in-out infinite}
+#chatFab.attn::before{animation:fabRing 2.5s ease-out infinite}
+@keyframes fabShake{0%,70%,100%{transform:rotate(0) scale(1)}74%{transform:rotate(-16deg) scale(1.1)}78%{transform:rotate(14deg) scale(1.1)}82%{transform:rotate(-12deg) scale(1.1)}86%{transform:rotate(10deg)}90%{transform:rotate(-6deg)}94%{transform:rotate(3deg)}}
+@keyframes fabRing{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.7);opacity:0}}
+#chatBadge{position:absolute;top:-2px;right:-2px;min-width:22px;height:22px;border-radius:99px;background:#ff4d6d;color:#fff;font-size:.72rem;font-weight:800;display:grid;place-items:center;border:2px solid var(--bg);padding:0 5px}
+#chatTip{position:fixed;left:96px;bottom:34px;z-index:130;background:var(--solid);color:var(--text);border:1px solid var(--card-b);padding:10px 16px;border-radius:14px 14px 14px 4px;font-weight:700;font-size:.92rem;box-shadow:var(--shadow);opacity:0;transform:translateX(-10px);pointer-events:none;transition:.35s;white-space:nowrap}
+#chatTip.show{opacity:1;transform:none}
+#chatPanel{position:fixed;left:22px;bottom:98px;width:min(390px,calc(100vw - 32px));height:min(580px,calc(100vh - 130px));height:min(580px,calc(100dvh - 130px));background:var(--solid);border:1px solid var(--card-b);border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.5);z-index:130;display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(20px) scale(.96);transform-origin:bottom left;pointer-events:none;visibility:hidden;transition:opacity .3s,transform .3s,visibility 0s linear .3s}
+#chatPanel.open{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition-delay:0s}
+.ch-h{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--grad);color:#fff}
+.ch-h .av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-weight:800}
+.ch-h b{display:block;line-height:1.2}.ch-h small{opacity:.9;font-size:.76rem}.ch-h small::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#3ddc84;margin-right:6px}
+.ch-h button{margin-left:auto;background:rgba(255,255,255,.2);border:0;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem}
+#chatBody{flex:1;min-height:140px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.cm{max-width:88%;padding:10px 14px;border-radius:16px;font-size:.92rem;line-height:1.5;animation:cmIn .3s}
+.cm.bot{background:var(--chip);border:1px solid var(--card-b);border-bottom-left-radius:4px;align-self:flex-start}
+.cm.user{background:var(--grad);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.cm a.lnk{color:var(--accent2);font-weight:700;text-decoration:underline}
+.cm.typing{display:flex;gap:5px;align-items:center;padding:14px}
+.cm.typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:dotB 1s infinite}
+.cm.typing span:nth-child(2){animation-delay:.15s}.cm.typing span:nth-child(3){animation-delay:.3s}
+@keyframes dotB{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+@keyframes cmIn{from{opacity:0;transform:translateY(8px)}}
+.dcards{display:grid;gap:8px;margin-top:10px}
+.dc{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--solid);border:1px solid var(--card-b);transition:border-color .2s,transform .2s}
+.dc:hover{border-color:var(--accent);transform:translateX(3px)}
+.dc .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.4rem;flex:none}
+.dc b{display:block;font-size:.9rem;line-height:1.2}.dc small{color:var(--muted);font-size:.76rem;line-height:1.3;display:block}
+.dc .go{margin-left:auto;color:var(--accent2);font-weight:800}
+#chatQr{display:flex;flex-wrap:nowrap;gap:8px;padding:2px 16px 10px;overflow-x:auto;flex:none;scrollbar-width:none}#chatQr::-webkit-scrollbar{display:none}
+#chatQr button{flex:none;white-space:nowrap;padding:7px 13px;border-radius:99px;border:1px solid var(--accent);background:transparent;color:var(--text);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s,color .2s}
+#chatQr button:hover{background:var(--accent);color:#fff}
+#chatForm{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--card-b)}
+#chatForm input{flex:1;min-width:0;background:var(--chip);border:1px solid var(--card-b);border-radius:12px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:.9rem;outline:none}
+#chatForm input:focus{border-color:var(--accent)}
+#chatForm button{width:44px;border-radius:12px;border:0;background:var(--grad);color:#fff;cursor:pointer;font-size:1.1rem}
+.ch-f{text-align:center;font-size:.68rem;color:var(--muted);padding:0 12px 10px}
+@media(max-width:640px){#chatFab{left:14px;bottom:14px;width:56px;height:56px}#chatPanel{left:10px;right:10px;width:auto;bottom:80px;height:min(600px,calc(100dvh - 100px))}#chatTip{left:80px;bottom:24px;font-size:.84rem}}
+@media(prefers-reduced-motion:reduce){#chatFab.attn,#chatFab.attn::before{animation:none!important}}
 /* Responsive */
 @media(max-width:1280px){.links a.l{padding:9px 11px;font-size:.92rem}.btn.sm{margin-left:6px}}
 /* Collapse nav into burger menu before links get cramped */
@@ -510,7 +555,7 @@ footer{text-align:center;color:var(--muted);padding:40px 24px 60px;font-size:.9r
   <div class="card contact rv">
     <div class="eyebrow">Contact</div>
     <h2 class="title">Let's build something<br><span class="grad">worth shipping</span>.</h2>
-    <p class="sub">Open to lead engineer, technical lead and architect conversations &mdash; modernization, .NET platforms and AI-assisted delivery.</p>
+    <p class="sub">Happy to talk about web, mobile and AI projects &mdash; modernization, enterprise platforms and AI-assisted delivery. Freelance and consulting enquiries welcome.</p>
     <div class="cta">
       <a class="btn primary" href="mailto:nandhaluruk@gmail.com"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Email me</a>
       <a class="btn" href="https://www.linkedin.com/in/kishore-nandhaluru-b716a2170" target="_blank" rel="noopener">Connect on LinkedIn</a>
@@ -529,6 +574,19 @@ footer{text-align:center;color:var(--muted);padding:40px 24px 60px;font-size:.9r
 
 <footer>&copy; <span id="yr"></span> Kishore Nandhaluru &middot; Built with care in Bangalore.</footer>
 <button id="top" aria-label="Back to top"><svg class="i" viewBox="0 0 24 24"><path d="M12 19V5m0 0l-6 6m6-6l6 6"/></svg></button>
+<!-- Chat assistant -->
+<div id="chatTip" role="status">See my work &#128075;</div>
+<button id="chatFab" class="attn" aria-label="Open chat: see my work" aria-expanded="false" aria-controls="chatPanel">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1.1-4.6A8 8 0 1121 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg>
+  <span id="chatBadge">1</span>
+</button>
+<div id="chatPanel" role="dialog" aria-label="Chat with Kishore's assistant" aria-modal="false">
+  <div class="ch-h"><div class="av">KN</div><div><b>Kishore's assistant</b><small>Online, replies instantly</small></div><button id="chatClose" aria-label="Close chat">&#10005;</button></div>
+  <div id="chatBody" aria-live="polite"></div>
+  <div id="chatQr"></div>
+  <form id="chatForm" autocomplete="off"><input id="chatIn" type="text" maxlength="120" placeholder="Ask about my work, apps, AI..." aria-label="Type a message"><button type="submit" aria-label="Send">&#10148;</button></form>
+  <div class="ch-f">Automated assistant. For a real conversation, WhatsApp me.</div>
+</div>
 
 <script>
 (function(){
@@ -595,6 +653,72 @@ footer{text-align:center;color:var(--muted);padding:40px 24px 60px;font-size:.9r
     var x=(e.clientX/innerWidth-.5),y=(e.clientY/innerHeight-.5);
     orbs.forEach(function(o,i){o.style.translate=(x*(30+i*20))+'px '+(y*(30+i*20))+'px'});
   },{passive:true});
+})();
+</script>
+<script>
+(function(){
+  var fab=document.getElementById('chatFab'),panel=document.getElementById('chatPanel'),body=document.getElementById('chatBody'),qr=document.getElementById('chatQr'),tip=document.getElementById('chatTip'),badge=document.getElementById('chatBadge'),form=document.getElementById('chatForm'),inp=document.getElementById('chatIn');
+  var opened=false,started=false,tipT=null,WA='https://wa.me/917358332692?text=Hi%20Kishore%2C%20I%20saw%20your%20portfolio%20and%20want%20to%20discuss%20a%20project.';
+  var D={
+    aero:{i:'&#9992;&#65039;',c:'rgba(61,165,255,.2)',t:'SkyOps MRO',d:'Aerospace MRO, fleet management and AOG command center',u:'aerospace-mro.html'},
+    retail:{i:'&#128717;&#65039;',c:'rgba(224,82,168,.2)',t:'ShopPulse Retail',d:'POS billing, multi-store inventory and online storefront',u:'retail-store.html'},
+    health:{i:'&#127973;',c:'rgba(20,184,166,.2)',t:'CareSync Clinic',d:'Appointments, patient records, pharmacy and telemedicine',u:'healthcare-clinic.html'}
+  };
+  function card(k){var d=D[k];return '<a class="dc" href="'+d.u+'" target="_blank" rel="noopener"><span class="ic" style="background:'+d.c+'">'+d.i+'</span><span><b>'+d.t+'</b><small>'+d.d+'</small></span><span class="go">&rarr;</span></a>'}
+  function cards(list){return '<div class="dcards">'+list.map(card).join('')+'</div>'}
+  var R={
+    work:['Here are three live demos. Each is a working app with fictional data, so you can click around:'+cards(['aero','retail','health'])],
+    aero:['Aerospace is my main domain. This demo covers fleet status, an AOG command center with live downtime clocks, maintenance planning, work orders, parts and compliance:'+cards(['aero'])],
+    retail:['A retail operations console: POS billing with GST and coupons, stock across stores, orders, loyalty and an online storefront:'+cards(['retail'])],
+    health:['A clinic management system: appointment booking, patient records with vitals trends, pharmacy and labs, billing and a telemedicine screen:'+cards(['health'])],
+    build:['I build <b>web apps and dashboards</b>, <b>mobile apps</b> (installable PWAs and cross-platform), <b>AI/ML and automation</b>, enterprise <b>MRO and fleet systems</b>, and legacy modernization from .NET Framework to .NET 8 and Angular.','Want to see examples?'],
+    mobile:['Yes, I build mobile apps. The three demos are installable as phone apps (look for the Install option in your browser menu), and I can also build native-style apps for Android and iOS.'+cards(['aero','retail','health'])],
+    ai:['I do applied AI/ML and AI-assisted development: ML pipelines, generative and agentic AI, and automating manual work. I am also studying AI &amp; ML at BITS Pilani. Tell me your use case on WhatsApp and I will suggest an approach.'],
+    contact:['Great, let us talk about your project. Share what you need and I will reply with a plan and quote.<br><br><a class="lnk" href="'+WA+'" target="_blank" rel="noopener">Chat on WhatsApp</a><br><a class="lnk" href="mailto:nandhaluruk@gmail.com?subject=Project%20enquiry">Email nandhaluruk@gmail.com</a><br>Based in Bangalore, available for meetings in person.'],
+    resume:['Downloading my resume now.',function(){var a=document.querySelector('a[data-resume]');if(a)a.click()}],
+    hi:['Hello! I can show you my work, tell you what I can build, or connect you with Kishore. What would you like?'],
+    fallback:['I am a simple assistant, so I may have missed that. Try one of the options below, or message Kishore directly on <a class="lnk" href="'+WA+'" target="_blank" rel="noopener">WhatsApp</a>.']
+  };
+  var CHIPS=[['Show me your work','work'],['What can you build?','build'],['Mobile apps','mobile'],['AI &amp; ML','ai'],['Contact / hire','contact'],['Download resume','resume']];
+  function add(type,html,text){var d=document.createElement('div');d.className='cm '+type;if(text!=null)d.textContent=text;else d.innerHTML=html;body.appendChild(d);body.scrollTop=body.scrollHeight;return d}
+  function bot(parts,i){
+    i=i||0;if(i>=parts.length)return;var p=parts[i];
+    if(typeof p==='function'){p();bot(parts,i+1);return}
+    var t=add('bot typing','<span></span><span></span><span></span>');
+    setTimeout(function(){t.className='cm bot';t.innerHTML=p;body.scrollTop=body.scrollHeight;bot(parts,i+1)},i?500:650);
+  }
+  function qrs(){qr.innerHTML='';CHIPS.forEach(function(c){var b=document.createElement('button');b.type='button';b.innerHTML=c[0];b.addEventListener('click',function(){ask(c[0].replace(/&amp;/g,'&'),c[1])});qr.appendChild(b)})}
+  function ask(text,key){add('user',null,text);bot(R[key].slice())}
+  function match(s){
+    s=s.toLowerCase();
+    if(/resume|\bcv\b/.test(s))return'resume';
+    if(/aero|mro|aircraft|aog|fleet|airline|aviation|boeing/.test(s))return'aero';
+    if(/retail|shop|store|\bpos\b|ecommerce|e-commerce|billing|inventory/.test(s))return'retail';
+    if(/health|hospital|clinic|patient|doctor|medical|pharma/.test(s))return'health';
+    if(/contact|hire|price|cost|quote|whatsapp|call|email|phone|rate|budget|meet/.test(s))return'contact';
+    if(/mobile|android|ios|\bapp\b|apps|pwa/.test(s))return'mobile';
+    if(/\bai\b|\bml\b|machine|gpt|agent|llm|data science|automation/.test(s))return'ai';
+    if(/work|demo|portfolio|project|sample|show/.test(s))return'work';
+    if(/build|service|offer|do you|skill|what can/.test(s))return'build';
+    if(/^(hi|hello|hey|hii|namaste)\b/.test(s))return'hi';
+    return'fallback';
+  }
+  function start(){
+    if(started)return;started=true;qrs();
+    bot(['Hi &#128075; I am Kishore\'s assistant.','Kishore builds <b>web, mobile and AI solutions</b> for aerospace, retail and healthcare. Want to see his work?'+cards(['aero','retail','health'])]);
+  }
+  function stopAttn(){fab.classList.remove('attn');badge.style.display='none';tip.classList.remove('show');clearTimeout(tipT);tipT=null}
+  function open(){opened=true;panel.classList.add('open');fab.classList.add('open');fab.setAttribute('aria-expanded','true');fab.setAttribute('aria-label','Close chat');stopAttn();try{sessionStorage.setItem('chatSeen','1')}catch(e){}start();setTimeout(function(){inp.focus({preventScroll:true})},350)}
+  function close(){opened=false;panel.classList.remove('open');fab.classList.remove('open');fab.setAttribute('aria-expanded','false');fab.setAttribute('aria-label','Open chat: see my work')}
+  fab.addEventListener('click',function(){opened?close():open()});
+  document.getElementById('chatClose').addEventListener('click',function(){close();fab.focus()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&opened){close();fab.focus()}});
+  form.addEventListener('submit',function(e){e.preventDefault();var v=inp.value.trim();if(!v)return;inp.value='';ask(v,match(v))});
+  var seen=false;try{seen=sessionStorage.getItem('chatSeen')==='1'}catch(e){}
+  if(seen){stopAttn()}else{
+    var cycle=function(){if(opened||!tipT&&false)return;tip.classList.add('show');setTimeout(function(){tip.classList.remove('show')},6500);tipT=setTimeout(cycle,24000)};
+    tipT=setTimeout(cycle,2500);
+  }
 })();
 </script>
 </body>

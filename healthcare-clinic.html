@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CareSync Clinic | Hospital Management (Demo)</title>
+<meta name="description" content="Demo: hospital and clinic management with appointments, patient records, pharmacy, labs, billing and telemedicine. Built by Kishore Nandhaluru. Fictional patients, not for clinical use.">
+<meta name="theme-color" content="#08161c">
+<link rel="manifest" href="manifest-healthcare.json">
+<link rel="icon" href="icons/health-192.png">
+<link rel="apple-touch-icon" href="icons/health-192.png">
+<style>
+:root{--bg:#08161c;--panel:#0f2229;--panel2:#15303a;--line:rgba(255,255,255,.1);--text:#e6f4f6;--muted:#8fb0b8;--accent:#14b8a6;--accent2:#38bdf8;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;--info:#60a5fa;--shadow:0 10px 30px rgba(0,0,0,.35)}
+[data-theme=light]{--bg:#eef7f8;--panel:#fff;--panel2:#f0f8f9;--line:rgba(10,70,80,.14);--text:#0b2a30;--muted:#4d6f77;--accent:#0f766e;--accent2:#0284c7;--ok:#047857;--warn:#a16207;--bad:#e11d48;--info:#2563eb;--shadow:0 8px 24px rgba(10,70,80,.1)}
+*{box-sizing:border-box;margin:0;padding:0}[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:15px;overflow-x:hidden}
+a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:244px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;z-index:60}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 18px}
+.brand i{font-style:normal;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:1.3rem;color:#fff;font-weight:800}
+.brand b{display:block;font-size:1.05rem;line-height:1.1}.brand small{color:var(--muted);font-size:.74rem}
+#nav{display:flex;flex-direction:column;gap:3px}
+#nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:11px;color:var(--muted);font-weight:600;transition:.2s}
+#nav a i{font-style:normal;width:22px;text-align:center}
+#nav a:hover{background:var(--panel2);color:var(--text)}
+#nav a.on{background:linear-gradient(135deg,rgba(20,184,166,.22),rgba(56,189,248,.14));color:var(--text);box-shadow:inset 0 0 0 1px rgba(20,184,166,.4)}
+.side-foot{margin-top:auto;display:grid;gap:10px;font-size:.8rem;color:var(--muted)}
+.main{min-width:0}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 24px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top h1{font-size:1.2rem;white-space:nowrap}.grow{flex:1}
+.badge-demo{font-size:.68rem;font-weight:800;letter-spacing:.08em;padding:5px 10px;border-radius:99px;background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.4);white-space:nowrap}
+.icon{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:grid;place-items:center;font-size:1.05rem;flex:none}
+#menu{display:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 16px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-weight:600;font-size:.88rem;transition:.2s;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}.btn.pri{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.btn.bad{background:linear-gradient(135deg,#e11d48,#f97316);color:#fff;border-color:transparent}.btn.sm{padding:6px 11px;font-size:.8rem;border-radius:9px}.btn:disabled{opacity:.45;cursor:not-allowed}
+#view{padding:24px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-content:start}
+.note{font-size:.8rem;color:var(--muted);padding:9px 14px;border-radius:12px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.card h3{font-size:1rem;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card h3 small{font-weight:500;color:var(--muted);font-size:.78rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.kpi small{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
+.kpi b{display:block;font-size:1.8rem;line-height:1.2;margin-top:4px}.kpi span{font-size:.78rem;color:var(--muted)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.74rem;font-weight:700;white-space:nowrap;border:1px solid transparent}
+.pill.ok{background:rgba(52,211,153,.15);color:var(--ok);border-color:rgba(52,211,153,.35)}.pill.warn{background:rgba(251,191,36,.15);color:var(--warn);border-color:rgba(251,191,36,.35)}
+.pill.bad{background:rgba(251,113,133,.15);color:var(--bad);border-color:rgba(251,113,133,.4)}.pill.info{background:rgba(96,165,250,.16);color:var(--info);border-color:rgba(96,165,250,.4)}
+.pill.mute{background:var(--panel2);color:var(--muted);border-color:var(--line)}.pill.org{background:rgba(251,146,60,.16);color:#fb923c;border-color:rgba(251,146,60,.4)}
+.muted{color:var(--muted)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:540px}
+th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--panel2)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tools input,.tools select,.form input,.form select,.form textarea,.side-note textarea{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0;outline:none}
+.tools input:focus,.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--accent)}
+.chip{padding:6px 13px;border-radius:99px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted);text-align:center}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}.chips{display:flex;flex-wrap:wrap;gap:8px}
+.days .chip{min-width:62px;line-height:1.2;padding:8px 10px}.days .chip small{display:block;font-size:.68rem;font-weight:500;opacity:.8}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px}
+.slot{padding:9px 6px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-weight:600;font-size:.84rem;text-align:center}
+.slot:hover:not(:disabled){border-color:var(--accent);background:rgba(20,184,166,.15)}.slot:disabled{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.hbar{display:grid;gap:12px}.hbar>div{display:grid;gap:4px;font-size:.86rem}.hbar .t{height:9px;border-radius:99px;background:var(--panel2);overflow:hidden}.hbar .t i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.hbar .l{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.list{list-style:none;display:grid;gap:8px}.list li{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--panel2);font-size:.88rem;flex-wrap:wrap}
+.list .g{flex:1;min-width:140px}.list .g small{display:block;color:var(--muted)}
+.tri{width:12px;height:12px;border-radius:50%;flex:none}
+.split{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:20px;align-items:start}
+.plist{display:grid;gap:8px;max-height:640px;overflow-y:auto}
+.pt{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;text-align:left;width:100%}
+.pt:hover,.pt.on{border-color:var(--accent)}.pt.on{background:rgba(20,184,166,.14)}
+.av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;color:#fff;flex:none}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:14px 0}.kv div{background:var(--panel2);border-radius:10px;padding:10px}.kv small{display:block;color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em}
+.sub{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:18px 0 8px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tabs button{padding:10px 16px;border:0;background:none;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;white-space:nowrap}.tabs button.on{color:var(--text);border-color:var(--accent)}
+.call{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+.video{position:relative;aspect-ratio:16/10;border-radius:18px;background:radial-gradient(circle at 30% 20%,#0e7490,#082f3a 70%);overflow:hidden;display:grid;place-items:center;border:1px solid var(--line)}
+.video .big{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:2.6rem;font-weight:800;color:#fff;box-shadow:0 0 0 12px rgba(255,255,255,.08)}
+.video .me{position:absolute;right:14px;bottom:14px;width:110px;height:76px;border-radius:12px;background:#1e293b;border:2px solid rgba(255,255,255,.3);display:grid;place-items:center;font-size:.76rem;color:#cbd5e1}
+.video .tm{position:absolute;left:14px;top:14px;background:rgba(0,0,0,.5);color:#fff;border-radius:99px;padding:4px 12px;font-family:Consolas,monospace;font-size:.85rem}
+.video .nm{position:absolute;left:14px;bottom:14px;color:#fff;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.ctrls{display:flex;gap:12px;justify-content:center;margin-top:14px}.ctrls button{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-size:1.2rem}.ctrls .end{background:#e11d48;border:0;color:#fff;width:66px}.ctrls .off{background:var(--bad);color:#fff}
+.side-note textarea{width:100%;min-height:110px;resize:vertical}
+.cta{margin:0 24px 28px;padding:22px;border-radius:18px;background:linear-gradient(135deg,rgba(20,184,166,.16),rgba(56,189,248,.14));border:1px solid var(--line);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cta h3{font-size:1.1rem;margin-bottom:4px}.cta p{color:var(--muted);font-size:.9rem;max-width:620px}.cta-b{display:flex;gap:10px;flex-wrap:wrap}
+.scrim{position:fixed;inset:0;background:rgba(2,10,14,.6);z-index:70;opacity:0;pointer-events:none;transition:.25s}.scrim.on{opacity:1;pointer-events:auto}
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:rgba(2,10,14,.68)}
+.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;width:min(100%,540px);max-height:92vh;overflow-y:auto}
+.form{display:grid;gap:12px;margin-top:14px}.form label{display:grid;gap:5px;font-size:.82rem;color:var(--muted);font-weight:600}.form textarea{min-height:70px;resize:vertical}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.err{color:var(--bad);font-size:.82rem;min-height:1em}
+#toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:200;width:min(92%,420px)}
+.toast{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok);padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);font-size:.88rem;animation:in .3s}.toast.bad{border-left-color:var(--bad)}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+@media(max-width:1000px){.split,.call{grid-template-columns:minmax(0,1fr)}.plist{max-height:300px}}
+@media(max-width:900px){.app{grid-template-columns:minmax(0,1fr)}.side{position:fixed;left:0;top:0;bottom:0;width:260px;transform:translateX(-105%);transition:transform .3s}.side.open{transform:none}#menu{display:grid}.top{padding:10px 14px}.top h1{font-size:1.02rem;overflow:hidden;text-overflow:ellipsis}#view{padding:14px}.cta{margin:0 14px 24px}}
+@media(max-width:520px){.badge-demo{display:none}.kpi b{font-size:1.5rem}.card{padding:14px}.row2{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="side" id="side">
+  <div class="brand"><i>+</i><div><b>CareSync</b><small>Clinic management</small></div></div>
+  <nav id="nav" aria-label="Main">
+   <a href="#dashboard" data-v="dashboard"><i>&#128202;</i>Dashboard</a>
+   <a href="#appointments" data-v="appointments"><i>&#128197;</i>Appointments</a>
+   <a href="#patients" data-v="patients"><i>&#128100;</i>Patients</a>
+   <a href="#pharmacy" data-v="pharmacy"><i>&#128138;</i>Pharmacy &amp; labs</a>
+   <a href="#billing" data-v="billing"><i>&#129534;</i>Billing</a>
+   <a href="#tele" data-v="tele"><i>&#127909;</i>Telemedicine</a>
+  </nav>
+  <div class="side-foot"><div>Fictional clinic and patients. Built as a sample by Kishore Nandhaluru.</div><a class="btn" href="index.html">&larr; Back to portfolio</a><button class="btn" data-act="reset">&#8635; Reset demo data</button></div>
+ </aside>
+ <div class="scrim" id="scrim"></div>
+ <div class="main">
+  <header class="top">
+   <button class="icon" id="menu" aria-label="Menu">&#9776;</button>
+   <h1 id="pageTitle">Dashboard</h1><div class="grow"></div>
+   <span class="badge-demo">DEMO DATA</span>
+   <button class="btn sm" id="install" hidden>Install app</button>
+   <button class="icon" id="theme" aria-label="Toggle theme">&#9790;</button>
+  </header>
+  <main id="view"></main>
+  <section class="cta">
+   <div><h3>Need a hospital, clinic or telemedicine system like this?</h3><p>I build appointment, records, pharmacy, billing and telehealth platforms, and mobile apps for healthcare providers. This demo uses fictional data only.</p></div>
+   <div class="cta-b">
+    <a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/917358332692?text=Hi%20Kishore%2C%20I%20saw%20your%20CareSync%20healthcare%20demo%20and%20want%20to%20discuss%20a%20project.">WhatsApp me</a>
+    <a class="btn" href="mailto:nandhaluruk@gmail.com?subject=Project%20enquiry%20-%20Healthcare%20demo">Email</a>
+    <a class="btn" href="index.html">Portfolio</a>
+   </div>
+  </section>
+ </div>
+</div>
+<div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
+<div id="toasts" aria-live="polite"></div>
+<noscript><p style="padding:20px">Please enable JavaScript to use this demo.</p></noscript>
+<script>
+(function(){
+'use strict';
+const $=(s,c)=>(c||document).querySelector(s),$$=(s,c)=>Array.prototype.slice.call((c||document).querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>'\u20B9'+Math.round(n).toLocaleString('en-IN'),pad=n=>String(n).padStart(2,'0');
+const T0=(()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()})(),DAY=864e5,NOW=Date.now();
+const fD=t=>new Date(t).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}),fDY=t=>new Date(t).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),dow=t=>new Date(t).toLocaleDateString('en-GB',{weekday:'short'});
+let seed=4242;const rnd=()=>(seed=(seed*1664525+1013904223)%4294967296)/4294967296,rr=(a,b)=>a+Math.floor(rnd()*(b-a+1));
+const init=n=>n.replace(/^(Dr\.?\s*)/,'').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();
+
+/* ---------- Data (fictional) ---------- */
+const DOCS=[['Dr. Priya Raman','Cardiology',800,'Room 204'],['Dr. Arvind Kulkarni','General Medicine',500,'Room 101'],['Dr. Neha Bhatt','Paediatrics',600,'Room 112'],['Dr. Sameer Qureshi','Orthopaedics',900,'Room 305'],['Dr. Lakshmi Narayanan','Dermatology',700,'Room 118'],['Dr. Rahul Verma','ENT',600,'Room 121'],['Dr. Anjali Menon','Gynaecology',800,'Room 210'],['Dr. Vikas Shetty','Neurology',1000,'Room 312']].map((d,i)=>({id:i,name:d[0],dept:d[1],fee:d[2],room:d[3],on:i!==5}));
+const SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+const PT=[['Rajesh Kumar',58,'M','B+',['Hypertension','Type 2 diabetes'],'Penicillin',[['Metformin 500 mg','1-0-1, 30 days'],['Amlodipine 5 mg','0-0-1, 30 days']],[['HbA1c','7.9 %','High'],['Fasting glucose','142 mg/dL','High'],['Creatinine','0.9 mg/dL','Normal']],[148,92,78]],
+['Sunita Devi',45,'F','O+',['Hypothyroidism'],'None known',[['Levothyroxine 50 mcg','1-0-0, 90 days']],[['TSH','6.2 mIU/L','High'],['Hemoglobin','12.8 g/dL','Normal']],[122,80,72]],
+['Aditya Rao',8,'M','A+',['Asthma'],'Dust, pollen',[['Salbutamol inhaler','2 puffs SOS'],['Montelukast 5 mg','0-0-1, 30 days']],[['Peak flow','210 L/min','Low'],['Eosinophils','6 %','Normal']],[104,66,92]],
+['Fatima Sheikh',34,'F','AB+',['Pregnancy, 28 weeks'],'None known',[['Folic acid 5 mg','1-0-0, 30 days'],['Iron + calcium','0-1-0, 30 days']],[['Hemoglobin','10.9 g/dL','Low'],['OGTT 2h','128 mg/dL','Normal']],[116,74,84]],
+['Mohan Lal',67,'M','B-',['Coronary artery disease','Hypertension'],'Sulfa drugs',[['Atorvastatin 20 mg','0-0-1, 30 days'],['Aspirin 75 mg','0-1-0, 30 days']],[['LDL cholesterol','118 mg/dL','High'],['Troponin I','0.02 ng/mL','Normal']],[138,86,68]],
+['Kavya Nair',27,'F','O+',['Migraine'],'None known',[['Sumatriptan 50 mg','SOS, max 2/day']],[['Hemoglobin','13.4 g/dL','Normal']],[112,72,76]],
+['Imran Pasha',41,'M','A+',['Lower back pain'],'NSAIDs (gastric upset)',[['Pantoprazole 40 mg','1-0-0, 14 days'],['Physiotherapy','3 sessions/week']],[['Vitamin D','18 ng/mL','Low']],[128,84,80]],
+['Lalitha Gowda',72,'F','B+',['Knee osteoarthritis','Hypertension'],'None known',[['Telmisartan 40 mg','1-0-0, 30 days'],['Paracetamol 650 mg','SOS']],[['Calcium','8.9 mg/dL','Normal'],['Vitamin D','22 ng/mL','Low']],[144,88,74]],
+['Neel Kapoor',5,'M','O+',['Recurrent tonsillitis'],'None known',[['Amoxicillin syrup','5 ml TDS, 5 days']],[['WBC count','12,400 /uL','High']],[98,62,98]],
+['Ritu Singh',38,'F','A-',['PCOS'],'None known',[['Metformin 500 mg','0-0-1, 30 days']],[['Fasting insulin','16 uIU/mL','High']],[118,76,78]],
+['Suresh Babu',53,'M','AB+',['COPD'],'None known',[['Tiotropium inhaler','1 cap OD'],['Salbutamol inhaler','SOS']],[['SpO2 (resting)','93 %','Low'],['FEV1','62 % pred','Low']],[134,84,88]],
+['Tanvi Joshi',19,'F','B+',['Acne vulgaris'],'None known',[['Adapalene gel 0.1%','Night, 8 weeks']],[['Hemoglobin','13.0 g/dL','Normal']],[110,70,72]]]
+ .map((p,i)=>({id:i,name:p[0],age:p[1],sex:p[2],blood:p[3],cond:p[4],allergy:p[5],rx:p[6].map(r=>({drug:r[0],dose:r[1],by:DOCS[i%8].name,date:T0-rr(3,60)*DAY})),labs:p[7].map(l=>({test:l[0],res:l[1],flag:l[2],date:T0-rr(2,40)*DAY})),
+  phone:'9'+rr(1000,9999)+' '+rr(10000,99999),vit:Array.from({length:6},(_,k)=>({d:T0-(5-k)*30*DAY,sys:p[8][0]+rr(-8,10),dia:p[8][1]+rr(-5,6),hr:p[8][2]+rr(-6,8),spo2:rr(94,99),temp:(97.6+rnd()*1.2).toFixed(1)})),
+  visits:Array.from({length:3},(_,k)=>({d:T0-(k+1)*rr(20,45)*DAY,doc:DOCS[(i+k)%8].name,dx:p[4][k%p[4].length]+(k?', review':', consultation')}))}));
+const pt=id=>PT[id];
+const S={appts:[],er:[],wards:[],meds:[],labs:[],bills:[]};let aseq=5000;
+DOCS.forEach(d=>{if(!d.on)return;for(let day=0;day<7;day++){const n=rr(4,9),taken=new Set();while(taken.size<n)taken.add(SLOTS[rr(0,SLOTS.length-1)]);
+ const L=SLOTS.filter(s=>taken.has(s));L.forEach((t,k)=>{let st='Booked';if(day===0){st=k<L.length*.4?'Completed':k<L.length*.4+1?'In consult':k<L.length*.4+3?'Checked-in':'Booked'}
+  S.appts.push({id:'AP-'+(aseq++),doc:d.id,day,time:t,pt:rr(0,11),type:rnd()<.15?'Telemedicine':rnd()<.3?'Follow-up':'Consultation',status:st})})}});
+S.er=[['Ramesh Naik',49,'Chest pain, sweating','Red',4],['Zoya Khan',6,'High fever, seizure','Red',9],['Prakash Hegde',62,'Fall, hip pain','Orange',18],['Divya Menon',29,'Severe abdominal pain','Orange',25],['Arun Dsouza',35,'Deep cut on hand','Yellow',41],['Meghana R',22,'Ankle sprain','Green',55]].map(e=>({name:e[0],age:e[1],c:e[2],tri:e[3],arr:NOW-e[4]*6e4}));
+S.wards=[['General ward',40,31],['ICU',12,9],['Maternity',16,11],['Paediatrics',14,8],['Emergency obs.',10,6]].map(w=>({name:w[0],total:w[1],occ:w[2]}));
+S.meds=[['Paracetamol 650 mg','B2231',420,100,380,3],['Amoxicillin 500 mg','B1984',38,100,120,9],['Metformin 500 mg','B2310',260,120,300,2],['Amlodipine 5 mg','B2275',190,80,410,3],['Atorvastatin 20 mg','B1950',24,80,45,6],['Salbutamol inhaler','B2102',60,30,200,180],['Levothyroxine 50 mcg','B1877',140,60,25,2],['Pantoprazole 40 mg','B2344',300,100,520,4],['Cetirizine 10 mg','B2290',15,60,260,2],['Insulin glargine pen','B1790',22,15,-6,540],['Azithromycin 500 mg','B2198',88,40,210,22],['ORS sachets','B2401',500,150,450,18]].map(m=>({name:m[0],batch:m[1],qty:m[2],min:m[3],exp:T0+m[4]*DAY,price:m[5],onOrder:false}));
+S.labs=[[0,'HbA1c',3,'Reported'],[4,'Lipid profile',2,'In process'],[3,'CBC',1,'Sample collected'],[2,'Chest X-ray',1,'Ordered'],[10,'Spirometry',5,'In process'],[1,'TSH',4,'Reported'],[7,'Vitamin D',2,'Sample collected'],[9,'Fasting insulin',1,'Ordered']].map((l,i)=>({id:'LB-'+(900+i),pt:l[0],test:l[1],ago:l[2],status:l[3]}));
+S.bills=[[0,[['Consultation',500],['HbA1c test',650],['Pharmacy',1180]],'Star Health','Approved'],[4,[['Consultation',800],['ECG',400],['Lipid profile',700]],'HDFC Ergo','Submitted'],[3,[['Consultation',800],['Ultrasound',1500],['Pharmacy',560]],'None','None'],[2,[['Consultation',600],['Chest X-ray',450]],'None','None'],[7,[['Consultation',900],['Physiotherapy x3',2100]],'Niva Bupa','Rejected'],[1,[['Consultation',500],['TSH test',420],['Pharmacy',380]],'None','None'],[10,[['Consultation',1000],['Spirometry',900]],'Care Health','Submitted'],[9,[['Consultation',700],['Pharmacy',340]],'None','None']].map((b,i)=>({id:'INV-'+(7100+i),pt:b[0],items:b[1],ins:b[2],claim:b[3],paid:i===0||i===5?'Paid':i===3?'Paid':'Pending',day:-(i%3),total:b[1].reduce((s,x)=>s+x[1],0),mode:''}));
+const TRI={Red:['bad','#fb7185',0],Orange:['org','#fb923c',1],Yellow:['warn','#fbbf24',2],Green:['ok','#34d399',3]};
+
+/* ---------- Helpers ---------- */
+const toast=(m,b)=>{const t=document.createElement('div');t.className='toast'+(b?' bad':'');t.textContent=m;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3600)};
+const openModal=h=>{$('#mbox').innerHTML=h;$('#modal').hidden=false},closeModal=()=>{$('#modal').hidden=true};
+const openSide=()=>{$('#side').classList.add('open');$('#scrim').classList.add('on')},closeSide=()=>{$('#side').classList.remove('open');$('#scrim').classList.remove('on')};
+const doc=id=>DOCS[id],AS={Booked:'mute','Checked-in':'info','In consult':'warn',Completed:'ok',Cancelled:'bad'};
+const F={doc:1,day:0,pt:0,pq:'',tab:'Pharmacy',callPt:0,calling:false,callSec:0,muted:false,cam:true};
+let callTimer=null;
+const NOTE='<div class="note">All patients, doctors and records are fictional. This demo is not for clinical use.</div>';
+
+/* ---------- Views ---------- */
+function vDashboard(){
+ const A=S.appts.filter(a=>a.day===0),done=A.filter(a=>a.status==='Completed').length,wait=A.filter(a=>a.status==='Checked-in').length,beds=S.wards.reduce((s,w)=>s+w.total,0),occ=S.wards.reduce((s,w)=>s+w.occ,0),er=S.er.slice().sort((a,b)=>TRI[a.tri][2]-TRI[b.tri][2]||a.arr-b.arr);
+ const hrs=[9,10,11,12,15,16,17].map(h=>[h+':00',A.filter(a=>+a.time.slice(0,2)===h).length]),mx=Math.max(...hrs.map(x=>x[1]),1);
+ return `${NOTE}<div class="kpis"><div class="kpi"><small>Today's appointments</small><b>${A.length}</b><span>${done} completed</span></div><div class="kpi"><small>Waiting in OPD</small><b>${wait}</b><span>checked in, avg wait 14 min</span></div><div class="kpi"><small>Bed occupancy</small><b>${Math.round(occ/beds*100)}%</b><span>${occ} of ${beds} beds</span></div><div class="kpi"><small>ER queue</small><b style="color:var(--bad)">${S.er.length}</b><span>${S.er.filter(e=>e.tri==='Red').length} critical</span></div><div class="kpi"><small>Doctors on duty</small><b>${DOCS.filter(d=>d.on).length}</b><span>of ${DOCS.length}</span></div></div>
+ <div class="g2"><div class="card"><h3>Bed occupancy <small>by ward</small></h3><div class="hbar">${S.wards.map((w,i)=>{const p=w.occ/w.total;return`<div><div class="l"><span>${w.name} <b>${w.occ}/${w.total}</b></span><span><button class="btn sm" data-act="disch" data-i="${i}" ${w.occ?'':'disabled'}>Discharge</button> <button class="btn sm" data-act="admit" data-i="${i}" ${w.occ<w.total?'':'disabled'}>Admit</button></span></div><div class="t"><i style="width:${p*100}%;${p>.85?'background:var(--bad)':''}"></i></div></div>`}).join('')}</div></div>
+ <div class="card"><h3>Emergency queue <small><button class="btn sm pri" data-act="erNew">+ Register</button> <button class="btn sm" data-act="erNext" ${S.er.length?'':'disabled'}>Call next</button></small></h3><ul class="list">${er.map(e=>`<li><span class="tri" style="background:${TRI[e.tri][1]}"></span><div class="g"><b>${esc(e.name)}</b>, ${e.age}<small>${esc(e.c)}</small></div><span class="pill ${TRI[e.tri][0]}">${e.tri}</span><span class="muted">${Math.round((Date.now()-e.arr)/6e4)} min</span></li>`).join('')||'<li class="muted">ER is clear.</li>'}</ul></div></div>
+ <div class="g2"><div class="card"><h3>OPD load by hour <small>today</small></h3><div class="hbar">${hrs.map(h=>`<div><div class="l"><span>${h[0]}</span><b>${h[1]}</b></div><div class="t"><i style="width:${h[1]/mx*100}%"></i></div></div>`).join('')}</div></div>
+ <div class="card"><h3>Now consulting</h3><ul class="list">${A.filter(a=>a.status==='In consult'||a.status==='Checked-in').slice(0,6).map(a=>`<li><div class="av">${init(pt(a.pt).name)}</div><div class="g"><b>${esc(pt(a.pt).name)}</b><small>${doc(a.doc).name} &middot; ${a.time} &middot; ${a.type}</small></div><span class="pill ${AS[a.status]}">${a.status}</span></li>`).join('')||'<li class="muted">No active consultations.</li>'}</ul></div></div>`;
+}
+function vAppts(){
+ const d=doc(F.doc),days=Array.from({length:7},(_,i)=>i),depts=[...new Set(DOCS.map(x=>x.dept))];
+ return `<div class="card"><div class="tools"><select id="adept" aria-label="Department">${depts.map(x=>`<option ${x===d.dept?'selected':''}>${x}</option>`).join('')}</select><select id="adoc" aria-label="Doctor">${DOCS.filter(x=>x.dept===d.dept).map(x=>`<option value="${x.id}" ${x.id===d.id?'selected':''}>${x.name}${x.on?'':' (on leave)'}</option>`).join('')}</select><span class="muted" style="font-size:.84rem">${d.room} &middot; fee ${inr(d.fee)}</span></div>
+ <div class="chips days" style="margin-top:12px">${days.map(i=>`<button class="chip ${F.day===i?'on':''}" data-act="aday" data-v="${i}">${i?dow(T0+i*DAY):'Today'}<small>${fD(T0+i*DAY)}</small></button>`).join('')}</div>
+ <div class="sub">Available slots</div>${d.on?`<div class="slots">${SLOTS.map(s=>{const b=S.appts.find(a=>a.doc===d.id&&a.day===F.day&&a.time===s&&a.status!=='Cancelled');return`<button class="slot" data-act="book" data-t="${s}" ${b?'disabled':''}>${s}</button>`}).join('')}</div>`:'<div class="muted">Doctor is on leave on these dates.</div>'}</div>
+ <div class="card"><h3>Appointments on ${fD(T0+F.day*DAY)} <small>${S.appts.filter(a=>a.day===F.day&&a.doc===d.id).length} for ${d.name}</small></h3><div class="tw"><table><thead><tr><th>Time</th><th>Patient</th><th>Type</th><th>Status</th><th>Action</th></tr></thead><tbody>${S.appts.filter(a=>a.day===F.day&&a.doc===d.id).sort((a,b)=>a.time.localeCompare(b.time)).map(a=>{const nx={Booked:['Check in','Checked-in'],'Checked-in':['Start consult','In consult'],'In consult':['Complete','Completed']}[a.status];return`<tr><td><b>${a.time}</b></td><td>${esc(pt(a.pt).name)}<div class="muted" style="font-size:.76rem">${pt(a.pt).age}${pt(a.pt).sex}</div></td><td>${a.type}</td><td><span class="pill ${AS[a.status]}">${a.status}</span></td><td>${nx?`<button class="btn sm pri" data-act="astat" data-id="${a.id}" data-to="${nx[1]}">${nx[0]}</button> `:''}${a.status==='Booked'||a.status==='Checked-in'?`<button class="btn sm" data-act="astat" data-id="${a.id}" data-to="Cancelled">Cancel</button>`:''}</td></tr>`}).join('')||'<tr><td colspan="5" class="muted">No appointments.</td></tr>'}</tbody></table></div></div>`;
+}
+function vPatients(){
+ return `${NOTE}<div class="split"><div class="card"><div class="tools"><input id="pq" type="search" placeholder="Search patient" value="${esc(F.pq)}" aria-label="Search patients" style="flex:1"></div><div class="plist" id="plist" style="margin-top:12px"></div></div><div id="pprof"></div></div>`;
+}
+function fillPList(){
+ const q=F.pq.toLowerCase();$('#plist').innerHTML=PT.filter(p=>!q||(p.name+p.cond.join()).toLowerCase().includes(q)).map(p=>`<button class="pt ${p.id===F.pt?'on':''}" data-act="ppick" data-id="${p.id}"><span class="av">${init(p.name)}</span><span><b>${esc(p.name)}</b><div class="muted" style="font-size:.78rem">${p.age}${p.sex} &middot; ${esc(p.cond[0])}</div></span></button>`).join('')||'<div class="muted">No patients found.</div>';
+}
+function chart(v){
+ const W=320,H=130,all=v.map(r=>r.sys).concat(v.map(r=>r.hr)),lo=Math.min(...all)-10,hi=Math.max(...all)+10,x=i=>20+i*(W-40)/(v.length-1),y=val=>H-16-(val-lo)/(hi-lo)*(H-34),pl=k=>v.map((r,i)=>`${x(i).toFixed(1)},${y(r[k]).toFixed(1)}`).join(' ');
+ return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:150px" role="img" aria-label="Vitals trend"><polyline points="${pl('sys')}" fill="none" stroke="var(--bad)" stroke-width="2.5"/><polyline points="${pl('hr')}" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>${v.map((r,i)=>`<circle cx="${x(i)}" cy="${y(r.sys)}" r="3.5" fill="var(--bad)"/><circle cx="${x(i)}" cy="${y(r.hr)}" r="3.5" fill="var(--accent2)"/><text x="${x(i)}" y="${y(r.sys)-7}" font-size="8" text-anchor="middle" fill="var(--bad)">${r.sys}</text><text x="${x(i)}" y="${y(r.hr)+13}" font-size="8" text-anchor="middle" fill="var(--accent2)">${r.hr}</text><text x="${x(i)}" y="${H-1}" font-size="8" text-anchor="middle" fill="var(--muted)">${fD(r.d)}</text>`).join('')}</svg><div class="chips" style="font-size:.78rem"><span class="pill bad">Systolic BP</span><span class="pill info">Heart rate</span></div>`;
+}
+function fillProfile(){
+ const p=pt(F.pt),l=p.vit[p.vit.length-1];
+ $('#pprof').innerHTML=`<div class="card"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><span class="av" style="width:56px;height:56px;font-size:1.2rem">${init(p.name)}</span><div style="flex:1;min-width:160px"><h2 style="font-size:1.3rem">${esc(p.name)}</h2><div class="muted">${p.age} yrs &middot; ${p.sex==='M'?'Male':'Female'} &middot; Blood ${p.blood} &middot; ${p.phone.slice(0,5)} XXXXX</div></div><button class="btn pri sm" data-act="vitalsForm">+ Record vitals</button></div>
+ <div style="margin-top:12px" class="chips">${p.cond.map(c=>`<span class="pill info">${esc(c)}</span>`).join('')}<span class="pill ${p.allergy==='None known'?'mute':'bad'}">Allergy: ${esc(p.allergy)}</span></div>
+ <div class="kv"><div><small>BP</small><b>${l.sys}/${l.dia}</b></div><div><small>Heart rate</small><b>${l.hr} bpm</b></div><div><small>SpO2</small><b>${l.spo2}%</b></div><div><small>Temp</small><b>${l.temp} &deg;F</b></div></div>
+ <div class="sub">Vitals trend</div>${chart(p.vit)}
+ <div class="sub">Prescriptions</div><div class="tw"><table><thead><tr><th>Medicine</th><th>Dosage</th><th>Prescribed by</th><th>Date</th></tr></thead><tbody>${p.rx.map(r=>`<tr><td><b>${esc(r.drug)}</b></td><td>${esc(r.dose)}</td><td>${esc(r.by)}</td><td>${fD(r.date)}</td></tr>`).join('')}</tbody></table></div>
+ <div class="sub">Lab results</div><div class="tw"><table><thead><tr><th>Test</th><th>Result</th><th>Flag</th><th>Date</th></tr></thead><tbody>${p.labs.map(r=>`<tr><td>${esc(r.test)}</td><td><b>${esc(r.res)}</b></td><td><span class="pill ${r.flag==='Normal'?'ok':r.flag==='High'?'bad':'warn'}">${r.flag}</span></td><td>${fD(r.date)}</td></tr>`).join('')}</tbody></table></div>
+ <div class="sub">Visit history</div><ul class="list">${p.visits.map(v=>`<li><div class="g"><b>${esc(v.dx)}</b><small>${esc(v.doc)}</small></div><span class="muted">${fDY(v.d)}</span></li>`).join('')}</ul></div>`;
+}
+const mst=m=>m.exp<T0?['bad','Expired']:m.exp<T0+60*DAY?['warn','Expiring soon']:m.qty<m.min?['warn','Low stock']:['ok','OK'];
+function vPharmacy(){
+ return `<div class="card"><div class="tabs">${['Pharmacy','Lab orders'].map(t=>`<button class="${F.tab===t?'on':''}" data-act="tab" data-v="${t}">${t}</button>`).join('')}</div>${F.tab==='Pharmacy'?
+ `<div class="tw"><table><thead><tr><th>Medicine</th><th>Batch</th><th>Stock</th><th>Expiry</th><th>Status</th><th>Action</th></tr></thead><tbody>${S.meds.map((m,i)=>{const s=mst(m);return`<tr><td><b>${m.name}</b><div class="muted" style="font-size:.76rem">${inr(m.price)} / unit</div></td><td>${m.batch}</td><td><b>${m.qty}</b> <span class="muted">/ min ${m.min}</span></td><td>${fDY(m.exp)}</td><td><span class="pill ${s[0]}">${s[1]}</span>${m.onOrder?' <span class="pill info">On order</span>':''}</td><td>${m.onOrder?`<button class="btn sm pri" data-act="mrecv" data-i="${i}">Receive</button>`:`${s[1]!=='Expired'?`<button class="btn sm" data-act="mdisp" data-i="${i}" ${m.qty>=10?'':'disabled'}>Dispense 10</button> `:''}${s[1]!=='OK'?`<button class="btn sm" data-act="mre" data-i="${i}">Reorder</button>`:''}`}</td></tr>`}).join('')}</tbody></table></div>`
+ :`<div class="tw"><table><thead><tr><th>Order</th><th>Patient</th><th>Test</th><th>Ordered</th><th>Status</th><th>Action</th></tr></thead><tbody>${S.labs.map((l,i)=>{const nx={'Ordered':'Sample collected','Sample collected':'In process','In process':'Reported'}[l.status];return`<tr><td>${l.id}</td><td>${esc(pt(l.pt).name)}</td><td>${esc(l.test)}</td><td>${l.ago}h ago</td><td><span class="pill ${l.status==='Reported'?'ok':l.status==='Ordered'?'mute':'info'}">${l.status}</span></td><td>${nx?`<button class="btn sm pri" data-act="lstat" data-i="${i}">${nx==='Reported'?'Publish report':'Mark '+nx.toLowerCase()}</button>`:'<span class="muted">Done</span>'}</td></tr>`}).join('')}</tbody></table></div>`}</div>`;
+}
+const bst=b=>b.paid==='Paid'?['ok','Paid']:['warn','Pending'],cst={None:['mute','No insurance'],Submitted:['info','Claim submitted'],Approved:['ok','Claim approved'],Rejected:['bad','Claim rejected'],Paid:['ok','Claim settled']};
+function vBilling(){
+ const coll=S.bills.filter(b=>b.paid==='Paid').reduce((s,b)=>s+b.total,0),out=S.bills.filter(b=>b.paid!=='Paid').reduce((s,b)=>s+b.total,0),cl=S.bills.filter(b=>b.claim==='Submitted').length;
+ return `<div class="kpis"><div class="kpi"><small>Collected</small><b>${inr(coll)}</b><span>this week</span></div><div class="kpi"><small>Outstanding</small><b style="color:var(--warn)">${inr(out)}</b><span>${S.bills.filter(b=>b.paid!=='Paid').length} invoices</span></div><div class="kpi"><small>Claims in review</small><b>${cl}</b><span>insurer approval pending</span></div></div>
+ <div class="card"><h3>Invoices</h3><div class="tw"><table><thead><tr><th>Invoice</th><th>Patient</th><th>Date</th><th>Insurance</th><th>Amount</th><th>Payment</th></tr></thead><tbody>${S.bills.map((b,i)=>`<tr class="click" data-act="bill" data-i="${i}"><td><b>${b.id}</b></td><td>${esc(pt(b.pt).name)}</td><td>${fD(T0+b.day*DAY)}</td><td>${b.ins==='None'?'<span class="muted">Self pay</span>':b.ins+' <span class="pill '+cst[b.claim][0]+'">'+cst[b.claim][1]+'</span>'}</td><td><b>${inr(b.total)}</b></td><td><span class="pill ${bst(b)[0]}">${bst(b)[1]}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+}
+function vTele(){
+ const p=pt(F.callPt),tm=pad(Math.floor(F.callSec/60))+':'+pad(F.callSec%60);
+ return `${NOTE}<div class="card"><div class="tools"><label class="muted" style="font-size:.84rem">Patient</label><select id="callPt" aria-label="Patient" ${F.calling?'disabled':''}>${PT.map(x=>`<option value="${x.id}" ${x.id===F.callPt?'selected':''}>${esc(x.name)}</option>`).join('')}</select>${F.calling?'':'<button class="btn pri" data-act="callStart">&#128222; Start video consultation</button>'}<span class="muted" style="font-size:.8rem">Demo only. A production build uses secure WebRTC video.</span></div></div>
+ ${F.calling?`<div class="call"><div class="card"><div class="video"><span class="tm" id="callTm">&#9679; ${tm}</span><div class="big">${init(p.name)}</div><span class="nm">${esc(p.name)}</span><div class="me">${F.cam?'You (Dr.)':'Camera off'}</div></div>
+  <div class="ctrls"><button class="${F.muted?'off':''}" data-act="cmute" aria-label="Mute">${F.muted?'&#128263;':'&#127908;'}</button><button class="${F.cam?'':'off'}" data-act="ccam" aria-label="Camera">&#128249;</button><button class="end" data-act="cend" aria-label="End call">&#128222;</button></div></div>
+  <div class="card side-note"><h3>${esc(p.name)} <small>${p.age}${p.sex}</small></h3><div class="muted" style="font-size:.84rem">${p.cond.map(esc).join(', ')}</div><div class="pill ${p.allergy==='None known'?'mute':'bad'}" style="margin:8px 0">Allergy: ${esc(p.allergy)}</div>
+  <div class="sub" style="margin-top:6px">Consultation notes</div><textarea id="cnote" placeholder="Symptoms, findings, advice" aria-label="Notes"></textarea>
+  <div class="sub">Prescribe</div><div class="row2"><input id="cdrug" placeholder="Medicine" aria-label="Medicine" style="background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0"><input id="cdose" placeholder="Dosage" aria-label="Dosage" style="background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0"></div></div></div>`
+ :`<div class="card" style="text-align:center;padding:40px 18px"><div style="font-size:3rem">&#127909;</div><h3 style="justify-content:center;margin-top:8px">Ready for a video consultation</h3><p class="muted">Choose a patient and start the call. Notes and prescriptions are saved to the patient record.</p></div>`}`;
+}
+const VIEWS={dashboard:['Dashboard',vDashboard],appointments:['Appointments',vAppts],patients:['Patients',vPatients,()=>{fillPList();fillProfile()}],pharmacy:['Pharmacy & labs',vPharmacy],billing:['Billing',vBilling],tele:['Telemedicine',vTele]};
+let cur='dashboard';
+function render(){const v=VIEWS[cur];$('#pageTitle').textContent=v[0];document.title=v[0]+' | CareSync (Demo)';$('#view').innerHTML=v[1]();if(v[2])v[2]();$$('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===cur))}
+function route(){const h=location.hash.slice(1);cur=VIEWS[h]?h:'dashboard';closeSide();render();window.scrollTo(0,0)}
+
+/* ---------- Actions ---------- */
+function bookForm(t){
+ const d=doc(F.doc);openModal(`<h2>Book appointment</h2><div class="muted">${d.name} &middot; ${d.dept} &middot; ${fD(T0+F.day*DAY)} at <b>${t}</b> &middot; fee ${inr(d.fee)}</div><form class="form" id="bookF" data-t="${t}">
+ <label>Patient<select id="b-pt">${PT.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.age}${p.sex})</option>`).join('')}<option value="new">+ New patient</option></select></label>
+ <div id="b-new" hidden class="row2"><label>Name<input id="b-n" maxlength="50"></label><label>Mobile<input id="b-ph" inputmode="numeric" maxlength="10"></label></div>
+ <label>Visit type<select id="b-ty"><option>Consultation</option><option>Follow-up</option><option>Telemedicine</option></select></label><label>Reason<textarea id="b-r" maxlength="200" placeholder="Optional"></textarea></label><div class="err" id="b-err"></div>
+ <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn" data-act="closeModal">Cancel</button><button class="btn pri" type="submit">Confirm booking</button></div></form>`);
+}
+function submitBook(e){
+ e.preventDefault();let id=$('#b-pt').value;
+ if(id==='new'){const n=$('#b-n').value.trim(),ph=$('#b-ph').value.trim();if(!n){$('#b-err').textContent='Enter the patient name.';return}if(!/^\d{10}$/.test(ph)){$('#b-err').textContent='Enter a valid 10 digit mobile number.';return}
+  PT.push({id:PT.length,name:n,age:30,sex:'M',blood:'-',cond:['New patient'],allergy:'None known',rx:[],labs:[],phone:ph.slice(0,5)+' '+ph.slice(5),vit:Array.from({length:6},(_,k)=>({d:T0-(5-k)*30*DAY,sys:120,dia:80,hr:76,spo2:98,temp:'98.4'})),visits:[]});id=PT.length-1}
+ const d=doc(F.doc),a={id:'AP-'+(aseq++),doc:d.id,day:F.day,time:e.target.dataset.t,pt:+id,type:$('#b-ty').value,status:'Booked'};S.appts.push(a);closeModal();render();toast('Booked '+pt(a.pt).name+' with '+d.name+' at '+a.time+'. SMS confirmation sent.');
+}
+function billModal(i){
+ const b=S.bills[i],p=pt(b.pt);
+ openModal(`<div style="display:flex;justify-content:space-between;gap:10px"><div><h2>${b.id}</h2><div class="muted">${esc(p.name)} &middot; ${fDY(T0+b.day*DAY)}</div></div><span class="pill ${bst(b)[0]}" style="align-self:flex-start">${bst(b)[1]}</span></div>
+ <ul class="list" style="margin:14px 0">${b.items.map(x=>`<li><div class="g">${x[0]}</div><b>${inr(x[1])}</b></li>`).join('')}<li style="background:transparent;border-top:1px solid var(--line);border-radius:0"><div class="g"><b>Total</b></div><b style="font-size:1.1rem">${inr(b.total)}</b></li></ul>
+ <div class="muted" style="font-size:.84rem">Insurance: ${b.ins==='None'?'Self pay':b.ins} ${b.ins!=='None'?'<span class="pill '+cst[b.claim][0]+'">'+cst[b.claim][1]+'</span>':''}${b.mode?' &middot; Paid by '+b.mode:''}</div>
+ <div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap"><button class="btn" data-act="closeModal">Close</button>${b.ins!=='None'&&b.claim==='None'?`<button class="btn" data-act="claim" data-i="${i}">Submit claim</button>`:''}${b.claim==='Submitted'?`<button class="btn" data-act="approve" data-i="${i}">Mark approved</button>`:''}${b.paid!=='Paid'?['UPI','Card','Cash'].map(m=>`<button class="btn pri" data-act="pay" data-i="${i}" data-m="${m}">Collect ${m}</button>`).join(''):''}</div>`);
+}
+function startCall(){F.calling=true;F.callSec=0;F.muted=false;F.cam=true;clearInterval(callTimer);callTimer=setInterval(()=>{F.callSec++;const t=$('#callTm');if(t)t.innerHTML='&#9679; '+pad(Math.floor(F.callSec/60))+':'+pad(F.callSec%60)},1000);render()}
+function endCall(){
+ clearInterval(callTimer);const p=pt(F.callPt),note=($('#cnote')||{}).value||'',dr=(($('#cdrug')||{}).value||'').trim(),ds=(($('#cdose')||{}).value||'').trim();
+ if(dr)p.rx.unshift({drug:dr.slice(0,60),dose:(ds||'As directed').slice(0,60),by:'Dr. (Telemedicine)',date:T0});
+ p.visits.unshift({d:T0,doc:'Telemedicine consult',dx:(note.trim().slice(0,70)||'Video consultation')});
+ const m=Math.floor(F.callSec/60);F.calling=false;render();toast('Call ended ('+m+' min). Notes'+(dr?' and prescription':'')+' saved to '+p.name+"'s record.");
+}
+function vitalsForm(){
+ openModal(`<h2>Record vitals</h2><div class="muted">${esc(pt(F.pt).name)}</div><form class="form" id="vitF"><div class="row2"><label>Systolic BP<input id="v-s" type="number" min="60" max="260" value="120"></label><label>Diastolic BP<input id="v-d" type="number" min="30" max="160" value="80"></label></div><div class="row2"><label>Heart rate<input id="v-h" type="number" min="30" max="220" value="76"></label><label>SpO2 %<input id="v-o" type="number" min="60" max="100" value="98"></label></div><label>Temperature &deg;F<input id="v-t" type="number" step="0.1" min="90" max="108" value="98.4"></label><div class="err" id="v-err"></div><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn" data-act="closeModal">Cancel</button><button class="btn pri" type="submit">Save</button></div></form>`);
+}
+function submitVitals(e){
+ e.preventDefault();const v={d:T0,sys:+$('#v-s').value,dia:+$('#v-d').value,hr:+$('#v-h').value,spo2:+$('#v-o').value,temp:(+$('#v-t').value).toFixed(1)};
+ if([v.sys,v.dia,v.hr,v.spo2,v.temp].some(x=>!isFinite(x)||!x)||v.dia>=v.sys){$('#v-err').textContent='Please enter valid values (diastolic must be lower than systolic).';return}
+ const p=pt(F.pt);p.vit.push(v);if(p.vit.length>8)p.vit.shift();closeModal();fillProfile();toast('Vitals recorded'+(v.sys>=140||v.spo2<94?'. Flagged for doctor review.':'.'),v.sys>=140||v.spo2<94);
+}
+const acts={
+ closeModal,reset:()=>location.reload(),
+ admit:e=>{S.wards[+e.dataset.i].occ++;render()},disch:e=>{S.wards[+e.dataset.i].occ--;render();toast('Patient discharged.')},
+ erNext:()=>{const q=S.er.slice().sort((a,b)=>TRI[a.tri][2]-TRI[b.tri][2]||a.arr-b.arr)[0];S.er.splice(S.er.indexOf(q),1);render();toast(q.name+' sent to treatment bay.')},
+ erNew:()=>openModal(`<h2>Register ER arrival</h2><form class="form" id="erF"><label>Name<input id="e-n" maxlength="50"></label><div class="row2"><label>Age<input id="e-a" type="number" min="0" max="120" value="30"></label><label>Triage<select id="e-t"><option>Red</option><option>Orange</option><option selected>Yellow</option><option>Green</option></select></label></div><label>Complaint<input id="e-c" maxlength="80"></label><div class="err" id="e-err"></div><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn" data-act="closeModal">Cancel</button><button class="btn pri" type="submit">Add to queue</button></div></form>`),
+ aday:e=>{F.day=+e.dataset.v;render()},book:e=>bookForm(e.dataset.t),
+ astat:e=>{const a=S.appts.find(x=>x.id===e.dataset.id);a.status=e.dataset.to;render();toast(pt(a.pt).name+': '+a.status)},
+ ppick:e=>{F.pt=+e.dataset.id;fillPList();fillProfile()},vitalsForm,
+ tab:e=>{F.tab=e.dataset.v;render()},
+ mdisp:e=>{const m=S.meds[+e.dataset.i];m.qty-=10;render();toast('Dispensed 10 x '+m.name)},mre:e=>{S.meds[+e.dataset.i].onOrder=true;render();toast('Purchase order raised.')},
+ mrecv:e=>{const m=S.meds[+e.dataset.i];m.qty+=m.min*2;m.onOrder=false;if(m.exp<T0+60*DAY){m.exp=T0+540*DAY;m.batch='B'+(2500+Number(e.dataset.i))}render();toast('Stock received for '+m.name)},
+ lstat:e=>{const l=S.labs[+e.dataset.i];l.status={'Ordered':'Sample collected','Sample collected':'In process','In process':'Reported'}[l.status];if(l.status==='Reported'){pt(l.pt).labs.unshift({test:l.test,res:'Within reference range',flag:'Normal',date:T0});toast(l.test+' report published to '+pt(l.pt).name+"'s record.")}else toast(l.id+': '+l.status);render()},
+ bill:e=>billModal(+e.dataset.i),
+ claim:e=>{S.bills[+e.dataset.i].claim='Submitted';billModal(+e.dataset.i);toast('Claim submitted to insurer.')},
+ approve:e=>{S.bills[+e.dataset.i].claim='Approved';S.bills[+e.dataset.i].paid='Paid';S.bills[+e.dataset.i].mode='Insurance';closeModal();render();toast('Claim approved and invoice settled.')},
+ pay:e=>{const b=S.bills[+e.dataset.i];b.paid='Paid';b.mode=e.dataset.m;closeModal();render();toast(b.id+': '+inr(b.total)+' received by '+e.dataset.m)},
+ callStart:startCall,cend:endCall,cmute:()=>{F.muted=!F.muted;render()},ccam:()=>{F.cam=!F.cam;render()}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&acts[b.dataset.act]){acts[b.dataset.act](b);return}if(e.target===$('#modal'))closeModal()});
+document.addEventListener('input',e=>{if(e.target.id==='pq'){F.pq=e.target.value;fillPList()}});
+document.addEventListener('change',e=>{const t=e.target.id;
+ if(t==='adept'){F.doc=DOCS.find(d=>d.dept===e.target.value).id;render()}else if(t==='adoc'){F.doc=+e.target.value;render()}
+ else if(t==='callPt'){F.callPt=+e.target.value}else if(t==='b-pt'){$('#b-new').hidden=e.target.value!=='new'}});
+document.addEventListener('submit',e=>{
+ const id=e.target.id;
+ if(id==='bookF')submitBook(e);else if(id==='vitF')submitVitals(e);
+ else if(id==='erF'){e.preventDefault();const n=$('#e-n').value.trim(),c=$('#e-c').value.trim();if(!n||!c){$('#e-err').textContent='Name and complaint are required.';return}S.er.push({name:n,age:+$('#e-a').value||0,c,tri:$('#e-t').value,arr:Date.now()});closeModal();render();toast(n+' added to the ER queue.')}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeSide()}});
+$('#menu').addEventListener('click',openSide);$('#scrim').addEventListener('click',closeSide);window.addEventListener('hashchange',()=>{if(F.calling&&cur==='tele'){}route()});
+const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme')}catch(e){}
+function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme',t)}catch(e){}}
+setTheme(sv||'dark');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').hidden=false});
+$('#install').addEventListener('click',()=>{if(dp){dp.prompt();dp=null;$('#install').hidden=true}});
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+route();
+})();
+</script>
+</body>
+</html>

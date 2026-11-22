@@ -1,0 +1,23 @@
+{
+  "name": "SkyOps MRO (Demo)",
+  "short_name": "SkyOps",
+  "start_url": "aerospace-mro.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0f1d",
+  "theme_color": "#0a0f1d",
+  "description": "Demo app by Kishore Nandhaluru (fictional data)",
+  "icons": [
+    {
+      "sizes": "192x192",
+      "src": "icons/aero-192.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any maskable",
+      "sizes": "512x512",
+      "src": "icons/aero-512.png",
+      "type": "image/png"
+    }
+  ]
+}

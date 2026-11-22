@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SkyOps MRO | Fleet Maintenance &amp; AOG Control (Demo)</title>
+<meta name="description" content="Demo: aircraft MRO and fleet management with AOG command center, maintenance planning, work orders, parts and compliance. Built by Kishore Nandhaluru. Fictional data.">
+<meta name="theme-color" content="#0a0f1d">
+<link rel="manifest" href="manifest-aerospace.json">
+<link rel="icon" href="icons/aero-192.png">
+<link rel="apple-touch-icon" href="icons/aero-192.png">
+<style>
+:root{--bg:#0a0f1d;--panel:#111a2e;--panel2:#16213a;--line:rgba(255,255,255,.1);--text:#e7ecf8;--muted:#93a0bf;--accent:#3da5ff;--accent2:#22d3ee;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--info:#818cf8;--shadow:0 10px 30px rgba(0,0,0,.35)}
+[data-theme=light]{--bg:#eef2f9;--panel:#fff;--panel2:#f4f7fc;--line:rgba(15,30,70,.13);--text:#0f1a33;--muted:#58658a;--accent:#1a73e8;--accent2:#0891b2;--ok:#047857;--warn:#a16207;--bad:#dc2626;--info:#4f46e5;--shadow:0 8px 24px rgba(20,40,90,.1)}
+*{box-sizing:border-box;margin:0;padding:0}[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:80px}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:15px;overflow-x:hidden}
+a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}
+code{font-family:Consolas,"SF Mono",monospace;font-size:.85em}
+.app{display:grid;grid-template-columns:244px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;z-index:60}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 18px}
+.brand svg{width:40px;height:40px;padding:9px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.brand b{display:block;font-size:1.05rem;line-height:1.1}.brand small{color:var(--muted);font-size:.74rem}
+#nav{display:flex;flex-direction:column;gap:3px}
+#nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:11px;color:var(--muted);font-weight:600;transition:.2s}
+#nav a i{font-style:normal;width:22px;text-align:center}
+#nav a:hover{background:var(--panel2);color:var(--text)}
+#nav a.on{background:linear-gradient(135deg,rgba(61,165,255,.2),rgba(34,211,238,.12));color:var(--text);box-shadow:inset 0 0 0 1px rgba(61,165,255,.35)}
+#nav .n{margin-left:auto;background:var(--bad);color:#fff;border-radius:99px;font-size:.7rem;padding:1px 7px;font-weight:700}
+.side-foot{margin-top:auto;display:grid;gap:10px;font-size:.8rem;color:var(--muted)}
+.main{min-width:0}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 24px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top h1{font-size:1.2rem;white-space:nowrap}.grow{flex:1}
+.utc{font-family:Consolas,monospace;color:var(--muted);font-size:.85rem;white-space:nowrap}
+.badge-demo{font-size:.68rem;font-weight:800;letter-spacing:.08em;padding:5px 10px;border-radius:99px;background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.4);white-space:nowrap}
+.icon{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:grid;place-items:center;font-size:1.05rem;flex:none}
+#menu{display:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 16px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-weight:600;font-size:.88rem;transition:.2s;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}.btn.pri{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.btn.danger{background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;border-color:transparent}
+.btn.sm{padding:6px 11px;font-size:.8rem;border-radius:9px}
+#view{padding:24px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-content:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.card h3{font-size:1rem;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card h3 small{font-weight:500;color:var(--muted);font-size:.78rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;position:relative;overflow:hidden}
+.kpi small{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
+.kpi b{display:block;font-size:1.9rem;line-height:1.2;margin-top:4px}
+.kpi span{font-size:.78rem;color:var(--muted)}
+.kpi.bad b{color:var(--bad)}.kpi.ok b{color:var(--ok)}.kpi.warn b{color:var(--warn)}.kpi.info b{color:var(--info)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.74rem;font-weight:700;white-space:nowrap;border:1px solid transparent}
+.pill.ok{background:rgba(52,211,153,.15);color:var(--ok);border-color:rgba(52,211,153,.35)}
+.pill.warn{background:rgba(251,191,36,.15);color:var(--warn);border-color:rgba(251,191,36,.35)}
+.pill.bad{background:rgba(248,113,113,.15);color:var(--bad);border-color:rgba(248,113,113,.4)}
+.pill.info{background:rgba(129,140,248,.16);color:var(--info);border-color:rgba(129,140,248,.4)}
+.pill.mute{background:var(--panel2);color:var(--muted);border-color:var(--line)}
+.tail{font-family:Consolas,monospace;font-weight:700;color:var(--accent)}
+.muted{color:var(--muted)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:620px}table.c{min-width:0}
+th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th.s{cursor:pointer}th.s:hover{color:var(--text)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--panel2)}
+.bar{height:8px;border-radius:99px;background:var(--panel2);overflow:hidden;min-width:90px}
+.bar i{display:block;height:100%;border-radius:99px}
+.bar-c{display:flex;align-items:center;gap:10px}
+.bar-c span{font-size:.78rem;min-width:44px;text-align:right}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tools input,.tools select,.form input,.form select,.form textarea{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0;outline:none}
+.tools input:focus,.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--accent)}
+.chip{padding:6px 13px;border-radius:99px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.donut{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.donut svg{width:150px;height:150px;flex:none}
+.legend{display:grid;gap:8px;font-size:.88rem}.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px}
+.bars{display:flex;align-items:flex-end;gap:12px;height:170px;padding-top:10px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;font-size:.75rem;color:var(--muted)}
+.bars i{display:block;width:100%;max-width:44px;border-radius:8px 8px 3px 3px;background:linear-gradient(var(--accent),var(--info))}
+.bars div.live i{background:linear-gradient(var(--bad),#f97316)}
+.bars b{color:var(--text);font-size:.78rem}
+.feed{display:grid;gap:10px}
+.feed li{list-style:none;display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--panel2);border-left:3px solid var(--info);font-size:.87rem}
+.feed li.bad{border-color:var(--bad)}.feed li.warn{border-color:var(--warn)}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:18px}
+.case{border-left:4px solid var(--warn)}.case.crit{border-left-color:var(--bad)}
+.case-h{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.clock{font-family:Consolas,monospace;font-size:1.15rem;font-weight:700;color:var(--bad);text-align:right}
+.clock small{display:block;font-family:"Segoe UI",sans-serif;font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.case h4{margin:10px 0 4px;font-size:1.02rem}.case p{color:var(--muted);font-size:.88rem}
+.steps{list-style:none;display:flex;gap:4px;margin:16px 0;overflow-x:auto;padding-bottom:4px}
+.steps li{flex:1;min-width:62px;text-align:center;font-size:.7rem;color:var(--muted);position:relative}
+.steps li::before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:2px;background:var(--line);z-index:0}
+.steps li:first-child::before{display:none}
+.steps .dot{position:relative;z-index:1;display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:var(--panel2);border:2px solid var(--line);margin:0 auto 5px;font-weight:700;font-size:.72rem}
+.steps li.done .dot{background:var(--ok);border-color:var(--ok);color:#052e1c}.steps li.done::before,.steps li.cur::before{background:var(--ok)}
+.steps li.cur .dot{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px rgba(61,165,255,.2)}
+.steps b{display:block;color:var(--text);font-weight:600;line-height:1.2;font-size:.68rem}.steps small{display:block;margin-top:2px}
+.sub{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:12px 0 6px}
+.plist{list-style:none;display:grid;gap:6px;font-size:.86rem}.plist li{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.notes{list-style:none;display:grid;gap:5px;font-size:.82rem;color:var(--muted)}.notes b{color:var(--text);font-weight:600}
+.case .row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.case .row input{flex:1;min-width:140px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 11px}
+.kan{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:14px;align-items:start}
+.col{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:10px;align-content:start}
+.col>h4{display:flex;justify-content:space-between;font-size:.88rem}
+.wo{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:.84rem;display:grid;gap:6px}
+.wo b{font-size:.88rem}.wo .r{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.gantt{overflow-x:auto}.g-in{min-width:900px}
+.g-head,.g-row{display:grid;grid-template-columns:78px 1fr}
+.g-track{position:relative;height:48px;border-bottom:1px solid var(--line);background:repeating-linear-gradient(90deg,transparent 0,transparent calc(12.5% - 1px),var(--line) calc(12.5% - 1px),var(--line) 12.5%)}
+.g-head .g-track{height:30px;border:0}.g-head span{position:absolute;top:6px;font-size:.72rem;color:var(--muted);transform:translateX(4px)}
+.g-lbl{display:flex;align-items:center;font-weight:700;font-size:.85rem;border-bottom:1px solid var(--line)}.g-head .g-lbl{border:0}
+.g-bar{position:absolute;top:8px;height:32px;border-radius:8px;display:flex;align-items:center;padding:0 8px;font-size:.74rem;font-weight:700;color:#fff;overflow:hidden;white-space:nowrap;background:linear-gradient(135deg,#2563eb,#38bdf8)}
+.g-bar.C{background:linear-gradient(135deg,#7c3aed,#a78bfa)}.g-bar.X{background:linear-gradient(135deg,#0d9488,#2dd4bf)}.g-bar.now{box-shadow:0 0 0 2px var(--warn)}
+.g-today{position:absolute;top:0;bottom:0;width:2px;background:var(--bad);z-index:3;pointer-events:none}
+.cta{margin:0 24px 28px;padding:22px;border-radius:18px;background:linear-gradient(135deg,rgba(61,165,255,.16),rgba(129,140,248,.14));border:1px solid var(--line);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cta h3{font-size:1.1rem;margin-bottom:4px}.cta p{color:var(--muted);font-size:.9rem;max-width:620px}
+.cta-b{display:flex;gap:10px;flex-wrap:wrap}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(100%,460px);background:var(--panel);border-left:1px solid var(--line);z-index:90;transform:translateX(105%);transition:transform .3s;overflow-y:auto;padding:22px;box-shadow:-20px 0 50px rgba(0,0,0,.35)}
+.drawer.open{transform:none}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.kv div{background:var(--panel2);border-radius:10px;padding:10px}.kv small{display:block;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+.scrim{position:fixed;inset:0;background:rgba(2,6,15,.6);z-index:70;opacity:0;pointer-events:none;transition:.25s}.scrim.on{opacity:1;pointer-events:auto}
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:rgba(2,6,15,.65)}
+.modal[hidden]{display:none}.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;width:min(100%,520px);max-height:92vh;overflow-y:auto}
+.form{display:grid;gap:12px;margin-top:14px}.form label{display:grid;gap:5px;font-size:.82rem;color:var(--muted);font-weight:600}.form textarea{min-height:84px;resize:vertical}
+.err{color:var(--bad);font-size:.82rem;min-height:1em}
+#toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:200;width:min(92%,420px)}
+.toast{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok);padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);font-size:.88rem;animation:in .3s}
+.toast.bad{border-left-color:var(--bad)}@keyframes in{from{opacity:0;transform:translateY(10px)}}
+@media(max-width:900px){
+ .app{grid-template-columns:minmax(0,1fr)}
+ .side{position:fixed;left:0;top:0;bottom:0;width:260px;transform:translateX(-105%);transition:transform .3s}
+ .side.open{transform:none}#menu{display:grid}
+ .top{padding:10px 14px}.top h1{font-size:1.02rem;overflow:hidden;text-overflow:ellipsis}.utc{display:none}
+ #view{padding:14px}.cta{margin:0 14px 24px}
+}
+@media(max-width:520px){.badge-demo{display:none}.kpi b{font-size:1.6rem}.card{padding:14px}.clock{text-align:left}}
+@media print{.side,.top,.cta{display:none}.app{display:block}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="side" id="side">
+  <div class="brand"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg><div><b>SkyOps MRO</b><small>Fleet &amp; AOG Control</small></div></div>
+  <nav id="nav" aria-label="Main">
+   <a href="#dashboard" data-v="dashboard"><i>&#9672;</i>Dashboard</a>
+   <a href="#fleet" data-v="fleet"><i>&#9992;</i>Fleet</a>
+   <a href="#aog" data-v="aog"><i>&#128680;</i>AOG Center<span class="n" id="aogN"></span></a>
+   <a href="#planning" data-v="planning"><i>&#128197;</i>Planning</a>
+   <a href="#workorders" data-v="workorders"><i>&#128736;</i>Work Orders</a>
+   <a href="#parts" data-v="parts"><i>&#128230;</i>Parts</a>
+   <a href="#compliance" data-v="compliance"><i>&#9989;</i>Compliance</a>
+  </nav>
+  <div class="side-foot"><div>Fictional airline &amp; data. Built as a sample by Kishore Nandhaluru.</div><a class="btn" href="index.html">&larr; Back to portfolio</a><button class="btn" data-act="reset">&#8635; Reset demo data</button></div>
+ </aside>
+ <div class="scrim" id="scrim"></div>
+ <div class="main">
+  <header class="top">
+   <button class="icon" id="menu" aria-label="Menu">&#9776;</button>
+   <h1 id="pageTitle">Dashboard</h1><div class="grow"></div>
+   <span class="utc" id="utc"></span><span class="badge-demo">DEMO DATA</span>
+   <button class="btn sm" id="install" hidden>Install app</button>
+   <button class="icon" id="theme" aria-label="Toggle theme">&#9790;</button>
+  </header>
+  <main id="view"></main>
+  <section class="cta">
+   <div><h3>Need a system like this for your airline, MRO or airport?</h3><p>I design and build maintenance, fleet and AOG platforms, web dashboards and mobile apps. Everything in this demo uses fictional data.</p></div>
+   <div class="cta-b">
+    <a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/917358332692?text=Hi%20Kishore%2C%20I%20saw%20your%20SkyOps%20MRO%20demo%20and%20want%20to%20discuss%20a%20project.">WhatsApp me</a>
+    <a class="btn" href="mailto:nandhaluruk@gmail.com?subject=Project%20enquiry%20-%20MRO%20demo">Email</a>
+    <a class="btn" href="index.html">Portfolio</a>
+   </div>
+  </section>
+ </div>
+</div>
+<aside class="drawer" id="drawer" aria-label="Aircraft details"></aside>
+<div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
+<div id="toasts" aria-live="polite"></div>
+<noscript><p style="padding:20px">Please enable JavaScript to use this demo.</p></noscript>
+
+<script>
+(function(){
+'use strict';
+const $=(s,c)=>(c||document).querySelector(s),$$=(s,c)=>Array.prototype.slice.call((c||document).querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAY=864e5,HR=36e5,pad=n=>String(n).padStart(2,'0');
+const T0=(()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()})(),NOW0=Date.now();
+const fD=t=>new Date(t).toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+const fT=t=>new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+const dur=ms=>{ms=Math.max(0,ms);const s=Math.floor(ms/1e3),d=Math.floor(s/86400);return(d?d+'d ':'')+pad(Math.floor(s%86400/3600))+':'+pad(Math.floor(s%3600/60))+':'+pad(s%60)};
+const hm=ms=>{const m=Math.floor(Math.abs(ms)/6e4);return Math.floor(m/60)+'h '+pad(m%60)+'m'};
+let seed=20240611;const rnd=()=>(seed=(seed*1664525+1013904223)%4294967296)/4294967296;
+
+/* ---------- Data (all fictional) ---------- */
+const STATIONS=['BLR','DEL','BOM','HYD','MAA','CCU','GOI','COK'];
+const ATA={'05':'Time limits / checks','21':'Air conditioning','24':'Electrical power','27':'Flight controls','28':'Fuel','29':'Hydraulic power','33':'Lights','36':'Pneumatic','32':'Landing gear','34':'Navigation','49':'APU','52':'Doors','53':'Fuselage','71':'Powerplant','79':'Engine oil'};
+const STAGES=['Reported','Troubleshooting','Parts sourced','Parts delivered','Repair & test','Released to service'];
+const S={fleet:[],cases:[],closed:[],parts:[],wos:[],ads:[],llp:[],checks:[]};
+const AOGI={4:1,11:1,17:1},CHKI={2:1,8:1,15:1},MELI={6:1,13:1,20:1};
+for(let i=0;i<24;i++){
+ const atr=i>=17,type=i<12?'A320neo':i<17?'A321neo':'ATR 72-600',util=atr?6:9;
+ const fh=Math.round((atr?6000:4000)+rnd()*(atr?14000:26000)),fc=Math.round(fh/((atr?1:1.7)+rnd()*.6)),rem=Math.round(60+rnd()*640);
+ S.fleet.push({tail:'VT-SK'+String.fromCharCode(65+i),type,msn:String(5000+Math.floor(rnd()*4500)),loc:STATIONS[i%8],fh,fc,yr:2+Math.floor(rnd()*9),
+  status:AOGI[i]?'AOG':CHKI[i]?'In check':MELI[i]?'MEL':'Serviceable',nextCheck:i%5===0?'C':'A',remFH:rem,dueTs:T0+Math.round(rem/util)*DAY});
+}
+S.fleet[4].loc='DEL';S.fleet[11].loc='BLR';S.fleet[17].loc='GOI';
+const ac=t=>S.fleet.find(a=>a.tail===t);
+S.parts=[['NLG-STR-3321','Nose gear steering actuator','32',0,1,4,'DEL Stores',1],['ENG-CHIP-7710','Magnetic chip detector, engine oil','79',2,4,2,'BLR Stores',1],['RDM-ATR-5502','Radome assembly, ATR 72','53',0,1,6,'AOG pool (CDG)',1],['HYD-PMP-2290','Hydraulic pump (EDP)','29',3,2,5,'BLR Stores',0],['BRK-ASM-1184','Main wheel brake assembly','32',5,6,3,'HYD Stores',0],['TIR-MLG-0442','Main wheel tyre 46x16','32',18,12,1,'BLR Stores',0],['FLT-OIL-8831','Engine oil filter element','79',9,10,2,'BLR Stores',0],['APU-GEN-6601','APU starter generator','49',1,1,7,'MAA Stores',1],['ELC-IDG-1207','Integrated drive generator','24',1,1,9,'BOM Pool',1],['PCK-VLV-3305','Pack flow control valve','21',2,2,4,'BLR Stores',0],['NAV-ADR-9012','Air data reference unit','34',0,1,8,'DEL Stores',0],['FUEL-PMP-4421','Fuel boost pump','28',4,2,3,'BLR Stores',0],['DOR-SEL-7720','Cargo door seal','52',3,4,2,'HYD Stores',0],['AIL-ACT-3380','Aileron servo actuator','27',1,2,6,'DEL Stores',1],['ENG-IGN-2140','Engine igniter plug','71',6,4,2,'BLR Stores',0],['FLT-HYD-5011','Hydraulic filter element','29',14,8,1,'All stations',0],['SEN-TAT-2208','Total air temperature probe','34',4,2,5,'BLR Stores',0],['WHL-ASM-9140','Main wheel assembly','32',8,4,3,'DEL Stores',0],['LGT-LND-3012','Landing light unit','33',12,6,2,'All stations',0],['VLV-BLD-6650','Bleed air check valve','36',3,2,4,'MAA Stores',0],['ELC-BAT-1180','Main battery 24V','24',5,3,3,'BLR Stores',0]]
+ .map(p=>({pn:p[0],desc:p[1],ata:p[2],qty:p[3],min:p[4],lead:p[5],loc:p[6],crit:!!p[7],onOrder:false,eta:0}));
+const part=pn=>S.parts.find(p=>p.pn===pn);
+['NLG-STR-3321','RDM-ATR-5502'].forEach(pn=>{const p=part(pn);p.onOrder=true;p.eta=NOW0+p.lead*DAY*.5});
+const pstat=p=>p.qty<=0?'Out':p.qty<p.min?'Low':'OK';
+function mkCase(id,tail,st,ata,title,desc,pri,agoH,stage,parts,team,etrH,notes){
+ const started=NOW0-agoH*HR,ts=[];for(let k=0;k<=stage;k++)ts.push(k?started+(NOW0-started)*(k/(stage+1)):started);
+ return{id,tail,station:st,ata,title,desc,pri,started,stage,ts,parts,partEta:NOW0+etrH*HR*.4,team,etr:NOW0+etrH*HR,notes:notes.map((n,i)=>({ts:started+(NOW0-started)*((i+1)/(notes.length+1)),by:n[0],t:n[1]}))};
+}
+S.cases=[
+ mkCase('AOG-2417','VT-SKE','DEL','32','Nose landing gear steering actuator leak','Hydraulic fluid leak found on NLG steering actuator during transit check. Aircraft grounded at DEL; next sector cancelled.','Critical',14,2,['NLG-STR-3321'],['K. Rao (B1)','P. Nair (B2)'],9,[['K. Rao','Leak confirmed at actuator rod seal, replacement required.'],['Stores DEL','No serviceable unit on shelf. AOG order raised with pool.']]),
+ mkCase('AOG-2418','VT-SKL','BLR','79','ENG 2 oil chip detector: metal particles','Chip detector warning on ENG 2. Particles on magnetic plug exceed limits. Borescope scheduled.','High',6,1,['ENG-CHIP-7710'],['M. Das (B1)'],16,[['M. Das','Oil sample sent to lab. Awaiting spectrometric result.']]),
+ mkCase('AOG-2416','VT-SKR','GOI','53','Bird strike: radome delamination','Bird strike on approach. Radome cracked and delaminated, weather radar inoperative. NDT inspection done.','Critical',31,3,['RDM-ATR-5502'],['A. Shetty (B1)','S. Iyer (B2)','D. Kulkarni'],6,[['A. Shetty','Structural check around radome complete, no further damage.'],['AOG desk','Radome shipped from pool, arriving by evening flight.']])
+];
+S.closed=[{id:'AOG-2409',tail:'VT-SKH',title:'Pack 1 overheat: flow valve replaced',station:'BOM',dur:9.5*HR},{id:'AOG-2405',tail:'VT-SKD',title:'Main wheel brake wear beyond limits',station:'HYD',dur:5*HR},{id:'AOG-2398',tail:'VT-SKQ',title:'Fuel boost pump low pressure',station:'BLR',dur:21*HR}];
+S.wos=[['WO-10412','VT-SKC','C-Check: structural inspection zones 500-600','53','Scheduled','In progress','R. Menon',142,3],['WO-10413','VT-SKC','C-Check: replace cargo door seal','52','Scheduled','Awaiting parts','S. Iyer',18,5],['WO-10420','VT-SKI','A-Check: task cards 1-52','05','Scheduled','In progress','P. Nair',36,1],['WO-10421','VT-SKP','A-Check: filters and lubrication','05','Scheduled','In progress','A. Shetty',28,1],['WO-10428','VT-SKG','Pack 2 flow control valve inop (MEL 21-51-01)','21','Defect','Open','K. Rao',6,3,'B'],['WO-10431','VT-SKN','Cabin door 2L warning, intermittent (MEL 52-71-02)','52','Defect','Awaiting parts','M. Das',4,7,'C'],['WO-10433','VT-SKU','Weather radar degraded range (MEL 34-43-01)','34','Defect','Open','D. Kulkarni',5,10,'C'],['WO-10440','VT-SKA','AD 2025-0142: fuel pump connector inspection','28','AD/SB','Open','R. Menon',8,12],['WO-10441','VT-SKB','SB A320-32-1458: MLG actuator','32','AD/SB','Open','S. Iyer',20,9],['WO-10446','VT-SKE','NLG steering actuator replacement (AOG-2417)','32','Defect','Awaiting parts','K. Rao',10,0],['WO-10447','VT-SKL','ENG 2 chip detector investigation (AOG-2418)','79','Defect','In progress','M. Das',12,0],['WO-10392','VT-SKD','Replace main wheel brake unit #3','32','Defect','Completed','P. Nair',7,-1],['WO-10398','VT-SKF','Engine oil filter change and borescope','79','Scheduled','Completed','A. Shetty',5,-2],['WO-10405','VT-SKH','Cabin pressure controller software update','21','AD/SB','Completed','D. Kulkarni',3,-1]]
+ .map(w=>({id:w[0],tail:w[1],task:w[2],ata:w[3],type:w[4],status:w[5],tech:w[6],mh:w[7],due:T0+w[8]*DAY,mel:w[9]||''}));
+S.ads=[['AD 2025-0142','Fuel pump connector inspection','A320neo',12],['SB A320-32-1458','MLG retraction actuator replacement','A320neo',9],['AD 2024-0311','Wing anti-ice duct inspection','A321neo',-4],['AD 2025-0098','Elevator servo actuator replacement','A320neo / A321neo',45],['AD 2025-0201','Propeller blade root inspection','ATR 72-600',27],['SB ATR72-27-1033','Aileron cable tension check','ATR 72-600',60],['AD 2025-0177','Cabin pressure controller update','A320neo',20],['AD 2023-0455','Engine fan blade inspection (repeat)','A321neo',85]]
+ .map((a,i)=>({ref:a[0],title:a[1],app:a[2],due:T0+a[3]*DAY,done:i===7}));
+S.llp=[['VT-SKA','Main landing gear LH','cycles',20000,17120],['VT-SKM','Main landing gear RH','cycles',20000,18460],['VT-SKE','Nose landing gear','cycles',24000,19830],['VT-SKJ','Engine 1 HPT disk','cycles',20000,16700],['VT-SKL','Engine 2 fan disk','cycles',30000,28100],['VT-SKQ','APU turbine wheel','hours',18000,15220],['VT-SKR','Propeller blade set','hours',12000,11050],['VT-SKT','Wing main fitting','cycles',48000,31200],['VT-SKW','Engine 1 fan disk','cycles',30000,24400],['VT-SKB','Main landing gear LH','cycles',20000,14500]].map(l=>({tail:l[0],comp:l[1],unit:l[2],limit:l[3],used:l[4]}));
+S.checks=[['VT-SKC','C-Check',1,-9,21],['VT-SKI','A-Check',2,-1,3],['VT-SKP','A-Check',3,-3,4],['VT-SKG','A-Check',2,5,3],['VT-SKN','C-Check',1,16,20],['VT-SKT','A-Check',3,9,3],['VT-SKB','A-Check',2,14,3],['VT-SKV','Cabin retrofit',3,20,12],['VT-SKK','A-Check',2,30,3],['VT-SKS','C-Check',3,36,18],['VT-SKA','A-Check',2,42,3]].map(c=>({tail:c[0],type:c[1],h:c[2],s:c[3],d:c[4]}));
+let caseSeq=2419;
+
+/* ---------- UI helpers ---------- */
+const F={fs:'All',ft:'All',fq:'',sort:'tail',dir:1,pf:'All',pq:'',wq:'',wt:'All'};
+const SL={Serviceable:['ok','Serviceable'],MEL:['warn','Serviceable (MEL)'],'In check':['info','In check'],AOG:['bad','AOG']};
+const sp=a=>`<span class="pill ${SL[a.status][0]}">${SL[a.status][1]}</span>`;
+function toast(m,bad){const t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.textContent=m;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3800)}
+function openModal(h){$('#mbox').innerHTML=h;$('#modal').hidden=false}
+function closeModal(){$('#modal').hidden=true}
+function closeDrawer(){$('#drawer').classList.remove('open')}
+function openSide(){$('#side').classList.add('open');$('#scrim').classList.add('on')}
+function closeSide(){$('#side').classList.remove('open');$('#scrim').classList.remove('on')}
+const melOpen=()=>S.wos.filter(w=>w.mel&&w.status!=='Completed');
+function alerts(){
+ const a=[];
+ S.cases.forEach(c=>a.push({l:'bad',w:0,t:`<b>${c.id} ${c.tail}</b> at ${c.station}: ${esc(c.title)} <span class="muted">(${STAGES[c.stage]})</span>`}));
+ S.parts.filter(p=>p.crit&&pstat(p)!=='OK'&&!p.onOrder).forEach(p=>a.push({l:'warn',w:1,t:`<b>${pstat(p)==='Out'?'Stock-out':'Low stock'}:</b> ${esc(p.desc)} (${p.pn}) at ${esc(p.loc)}`}));
+ S.ads.filter(d=>!d.done&&d.due<T0+30*DAY).forEach(d=>a.push({l:d.due<T0?'bad':'warn',w:d.due<T0?0.5:2,t:`<b>${d.due<T0?'Overdue':'Due '+fD(d.due)}:</b> ${d.ref}, ${esc(d.title)}`}));
+ S.llp.filter(l=>1-l.used/l.limit<.15).forEach(l=>a.push({l:'warn',w:3,t:`<b>Life limit:</b> ${l.tail} ${l.comp}, ${Math.round((1-l.used/l.limit)*100)}% remaining`}));
+ melOpen().forEach(w=>a.push({l:'info',w:4,t:`<b>Deferred defect (MEL ${w.mel}):</b> ${w.tail}, due ${fD(w.due)}`}));
+ return a.sort((x,y)=>x.w-y.w);
+}
+
+/* ---------- Views ---------- */
+function vDashboard(){
+ const f=S.fleet,n=f.length,c=k=>f.filter(a=>a.status===k).length,ok=c('Serviceable'),mel=c('MEL'),chk=c('In check'),aog=c('AOG');
+ const avail=(ok+mel)/(n-chk)*100,live=S.cases.reduce((s,x)=>s+(Date.now()-x.started)/HR,0)+S.closed.reduce((s,x)=>s+x.dur/HR,0);
+ const aogH=Math.round(60+live),partsOk=Math.round(S.parts.filter(p=>pstat(p)==='OK').length/S.parts.length*100);
+ const seg=[[ok,'var(--ok)','Serviceable'],[mel,'var(--warn)','Serviceable (MEL)'],[chk,'var(--info)','In check'],[aog,'var(--bad)','AOG']],C=2*Math.PI*48;let cum=0;
+ const rings=seg.map(s=>{const l=s[0]/n*C,r=`<circle r="48" cx="70" cy="70" fill="none" stroke="${s[1]}" stroke-width="20" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-cum}" transform="rotate(-90 70 70)"/>`;cum+=l;return r}).join('');
+ const mo=[112,87,134,66,92],labels=[5,4,3,2,1].map(i=>{const d=new Date();d.setMonth(d.getMonth()-i);return d.toLocaleString('en',{month:'short'})});
+ const mx=Math.max(...mo,aogH),bars=mo.map((v,i)=>`<div><b>${v}</b><i style="height:${v/mx*100}%"></i>${labels[i]}</div>`).join('')+`<div class="live"><b>${aogH}</b><i style="height:${aogH/mx*100}%"></i>Now</div>`;
+ const up=f.filter(a=>a.status!=='In check'&&a.status!=='AOG').sort((a,b)=>a.dueTs-b.dueTs).slice(0,6);
+ const pts=Array.from({length:30},(_,i)=>i===29?avail:86+rnd()*8),spark=pts.map((v,i)=>`${(i*10.3).toFixed(1)},${(74-(v-80)/20*66).toFixed(1)}`).join(' ');
+ const al=alerts().slice(0,8);
+ return `<div class="kpis">
+  <div class="kpi ok"><small>Fleet availability</small><b>${avail.toFixed(1)}%</b><span>${ok+mel} of ${n-chk} in service (excl. checks)</span></div>
+  <div class="kpi bad"><small>AOG now</small><b>${aog}</b><span>${S.cases.length} open cases</span></div>
+  <div class="kpi info"><small>In maintenance check</small><b>${chk}</b><span>Hangars H1 to H3</span></div>
+  <div class="kpi warn"><small>Deferred defects</small><b>${melOpen().length}</b><span>Open MEL items</span></div>
+  <div class="kpi"><small>AOG hours (30 days)</small><b>${aogH}</b><span>Target below 150 h</span></div>
+  <div class="kpi ok"><small>Parts availability</small><b>${partsOk}%</b><span>${S.parts.filter(p=>pstat(p)!=='OK').length} lines low or out</span></div></div>
+ <div class="g2">
+  <div class="card"><h3>Fleet status <small>${n} aircraft</small></h3><div class="donut"><svg viewBox="0 0 140 140" role="img" aria-label="Fleet status chart">${rings}<text x="70" y="68" text-anchor="middle" fill="var(--text)" font-size="24" font-weight="700">${n}</text><text x="70" y="86" text-anchor="middle" fill="var(--muted)" font-size="10">aircraft</text></svg>
+   <div class="legend">${seg.map(s=>`<div><i style="background:${s[1]}"></i>${s[2]} <b>${s[0]}</b></div>`).join('')}</div></div></div>
+  <div class="card"><h3>AOG hours per month <small>lower is better</small></h3><div class="bars">${bars}</div></div></div>
+ <div class="g2">
+  <div class="card"><h3>Alerts &amp; actions <small>live</small></h3><ul class="feed">${al.map(x=>`<li class="${x.l}"><span>${x.t}</span></li>`).join('')}</ul></div>
+  <div class="card"><h3>Upcoming checks <small>next due</small></h3><div class="tw"><table class="c"><thead><tr><th>Aircraft</th><th>Check</th><th>Due</th><th>Remaining</th></tr></thead><tbody>${up.map(a=>`<tr class="click" data-act="ac" data-id="${a.tail}"><td><span class="tail">${a.tail}</span><div class="muted" style="font-size:.76rem">${a.type}</div></td><td>${a.nextCheck}-check</td><td>${fD(a.dueTs)}</td><td><span class="pill ${a.remFH<150?'warn':'mute'}">${a.remFH} FH</span></td></tr>`).join('')}</tbody></table></div>
+  <h3 style="margin-top:18px">Dispatch availability <small>last 30 days</small></h3><svg viewBox="0 0 300 80" style="width:100%;height:80px"><polyline points="${spark}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/></svg></div></div>`;
+}
+function vFleet(){
+ const types=['All','A320neo','A321neo','ATR 72-600'],sts=['All','Serviceable','MEL','In check','AOG'];
+ return `<div class="card"><div class="tools"><input id="fq" type="search" placeholder="Search tail, type, station" value="${esc(F.fq)}" aria-label="Search fleet">
+  <select id="ft" aria-label="Aircraft type">${types.map(t=>`<option ${F.ft===t?'selected':''}>${t}</option>`).join('')}</select>
+  <div class="chips">${sts.map(s=>`<button class="chip ${F.fs===s?'on':''}" data-act="chip" data-k="fs" data-v="${s}">${s==='MEL'?'MEL':s} ${s==='All'?S.fleet.length:S.fleet.filter(a=>a.status===s).length}</button>`).join('')}</div></div>
+  <div class="tw" style="margin-top:12px" id="fleetTbl"></div></div>`;
+}
+function fillFleet(){
+ const q=F.fq.toLowerCase(),r=S.fleet.filter(a=>(F.fs==='All'||a.status===F.fs)&&(F.ft==='All'||a.type===F.ft)&&(!q||(a.tail+' '+a.type+' '+a.loc).toLowerCase().includes(q)));
+ r.sort((a,b)=>(a[F.sort]>b[F.sort]?1:a[F.sort]<b[F.sort]?-1:0)*F.dir);
+ const th=(k,l)=>`<th class="s" data-act="sort" data-k="${k}">${l}${F.sort===k?(F.dir>0?' &#9650;':' &#9660;'):''}</th>`;
+ $('#fleetTbl').innerHTML=`<table><thead><tr>${th('tail','Tail')}${th('type','Type')}${th('loc','Location')}${th('status','Status')}${th('fh','Flight hrs')}${th('fc','Cycles')}${th('dueTs','Next check')}${th('remFH','Remaining')}</tr></thead><tbody>${r.map(a=>`<tr class="click" data-act="ac" data-id="${a.tail}"><td><span class="tail">${a.tail}</span></td><td>${a.type}</td><td>${a.loc}</td><td>${sp(a)}</td><td>${a.fh.toLocaleString('en-IN')}</td><td>${a.fc.toLocaleString('en-IN')}</td><td>${a.status==='In check'?'In hangar':a.nextCheck+'-check, '+fD(a.dueTs)}</td><td><span class="pill ${a.remFH<150?'warn':'mute'}">${a.remFH} FH</span></td></tr>`).join('')||'<tr><td colspan="8" class="muted">No aircraft match.</td></tr>'}</tbody></table><p class="muted" style="font-size:.8rem;margin-top:8px">Showing ${r.length} of ${S.fleet.length}. Click a row for details.</p>`;
+}
+function caseCard(c){
+ const ps=c.stage<2?['Sourcing','warn']:c.stage===2?['In transit','info']:c.stage===3?['Delivered','ok']:['Installed','ok'];
+ const steps=STAGES.map((s,i)=>`<li class="${i<c.stage?'done':i===c.stage?'cur':''}"><span class="dot">${i<c.stage?'&#10003;':i+1}</span><b>${s}</b><small>${c.ts[i]?fT(c.ts[i]):'&nbsp;'}</small></li>`).join('');
+ const parts=c.parts.length?c.parts.map(pn=>{const p=part(pn);return`<li><code>${pn}</code><span>${esc(p.desc)}</span><span class="pill ${ps[1]}">${ps[0]}${c.stage===2?' &middot; ETA '+fT(c.partEta):''}</span></li>`}).join(''):'<li class="muted">No part required yet</li>';
+ return `<div class="card case ${c.pri==='Critical'?'crit':''}"><div class="case-h"><div><b>${c.id}</b> &nbsp;<span class="tail">${c.tail}</span> <span class="pill ${c.pri==='Critical'?'bad':'warn'}">${c.pri}</span><div class="muted" style="font-size:.84rem;margin-top:3px">${c.station} &middot; ATA ${c.ata} ${ATA[c.ata]||''}</div></div>
+  <div class="clock"><small>Ground time</small><span data-since="${c.started}">${dur(Date.now()-c.started)}</span></div></div>
+  <h4>${esc(c.title)}</h4><p>${esc(c.desc)}</p><ol class="steps">${steps}</ol>
+  <div class="sub">Parts</div><ul class="plist">${parts}</ul>
+  <div class="sub">Team &amp; ETR</div><div style="font-size:.86rem">${c.team.map(esc).join(', ')} &middot; <b data-etr="${c.etr}"></b></div>
+  <div class="sub">Log</div><ul class="notes">${c.notes.slice(-3).map(n=>`<li>${fT(n.ts)} <b>${esc(n.by)}:</b> ${esc(n.t)}</li>`).join('')}</ul>
+  <div class="row"><input id="n-${c.id}" placeholder="Add update to log" aria-label="Add update"><button class="btn sm" data-act="note" data-id="${c.id}">Log</button><button class="btn pri sm" data-act="adv" data-id="${c.id}">${c.stage===4?'Release to service (CRS)':'Advance: '+STAGES[c.stage+1]}</button></div></div>`;
+}
+function vAog(){
+ const long=S.cases.reduce((m,c)=>Math.max(m,Date.now()-c.started),0);
+ return `<div class="tools"><div class="kpi bad" style="min-width:150px"><small>Active AOG</small><b>${S.cases.length}</b></div><div class="kpi warn" style="min-width:170px"><small>Longest ground time</small><b>${S.cases.length?hm(long):'0h 00m'}</b></div><div class="grow"></div><button class="btn danger" data-act="raise">&#128680; Raise AOG</button></div>
+ <div class="cases">${S.cases.map(caseCard).join('')||'<div class="card muted">No aircraft on ground. Fleet is fully available.</div>'}</div>
+ <div class="card"><h3>Recently released <small>last 30 days</small></h3><div class="tw"><table><thead><tr><th>Case</th><th>Aircraft</th><th>Station</th><th>Issue</th><th>Downtime</th></tr></thead><tbody>${S.closed.map(c=>`<tr><td>${c.id}</td><td><span class="tail">${c.tail}</span></td><td>${c.station}</td><td>${esc(c.title)}</td><td>${hm(c.dur)}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+function vPlanning(){
+ const MIN=-10,SPAN=56,pc=d=>((d-MIN)/SPAN*100),hdr=Array.from({length:8},(_,w)=>`<span style="left:${w*12.5}%">${fD(T0+(MIN+w*7)*DAY)}</span>`).join('');
+ const rows=[1,2,3].map(h=>`<div class="g-row"><div class="g-lbl">Hangar ${h}</div><div class="g-track">${S.checks.filter(c=>c.h===h).map(c=>{const l=Math.max(c.s,MIN),r=Math.min(c.s+c.d,MIN+SPAN),cls=c.type.startsWith('C')?'C':c.type.startsWith('A')?'':'X',now=c.s<=0&&c.s+c.d>0;return`<div class="g-bar ${cls} ${now?'now':''}" style="left:${pc(l)}%;width:${(r-l)/SPAN*100}%" title="${c.tail} ${c.type}, ${fD(T0+c.s*DAY)} to ${fD(T0+(c.s+c.d)*DAY)}">${c.tail.slice(3)} ${c.type.replace('-Check','')}</div>`}).join('')}<div class="g-today" style="left:${pc(0)}%"></div></div></div>`).join('');
+ const occ=h=>S.checks.find(c=>c.h===h&&c.s<=0&&c.s+c.d>0);
+ return `<div class="g3">${[1,2,3].map(h=>{const o=occ(h);return`<div class="kpi ${o?'info':'ok'}"><small>Hangar ${h}</small><b style="font-size:1.3rem">${o?o.tail:'Free'}</b><span>${o?o.type+', day '+(1-o.s)+' of '+o.d:'Available for slot booking'}</span></div>`}).join('')}</div>
+ <div class="card"><h3>Hangar schedule <small>8-week view, red line is today</small></h3><div class="gantt"><div class="g-in"><div class="g-head"><div class="g-lbl"></div><div class="g-track">${hdr}</div></div>${rows}</div></div>
+  <div class="chips" style="margin-top:12px"><span class="pill info">A-check</span><span class="pill" style="background:rgba(124,58,237,.18);color:#a78bfa;border-color:rgba(124,58,237,.4)">C-check</span><span class="pill" style="background:rgba(13,148,136,.2);color:#2dd4bf;border-color:rgba(13,148,136,.4)">Modification</span></div></div>
+ <div class="card"><h3>Planned slots</h3><div class="tw"><table><thead><tr><th>Aircraft</th><th>Check</th><th>Hangar</th><th>Start</th><th>End</th><th>Days</th></tr></thead><tbody>${S.checks.slice().sort((a,b)=>a.s-b.s).map(c=>`<tr class="click" data-act="ac" data-id="${c.tail}"><td><span class="tail">${c.tail}</span></td><td>${c.type}</td><td>H${c.h}</td><td>${fD(T0+c.s*DAY)}</td><td>${fD(T0+(c.s+c.d)*DAY)}</td><td>${c.d}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+function vWO(){
+ return `<div class="card"><div class="tools"><input id="wq" type="search" placeholder="Search work orders" value="${esc(F.wq)}" aria-label="Search work orders"><select id="wt" aria-label="Aircraft"><option>All</option>${[...new Set(S.wos.map(w=>w.tail))].sort().map(t=>`<option ${F.wt===t?'selected':''}>${t}</option>`).join('')}</select><span class="muted" style="font-size:.84rem">Technician sign-off moves a task to Completed.</span></div></div><div class="kan" id="kan"></div>`;
+}
+function fillWO(){
+ const q=F.wq.toLowerCase(),L=S.wos.filter(w=>(F.wt==='All'||w.tail===F.wt)&&(!q||(w.id+w.task+w.tail+w.tech).toLowerCase().includes(q)));
+ const act=w=>w.status==='Open'?`<button class="btn sm pri" data-act="wo" data-id="${w.id}" data-to="In progress">Start</button>`:w.status==='In progress'?`<button class="btn sm" data-act="wo" data-id="${w.id}" data-to="Awaiting parts">Hold: parts</button><button class="btn sm pri" data-act="wo" data-id="${w.id}" data-to="Completed">Sign off</button>`:w.status==='Awaiting parts'?`<button class="btn sm pri" data-act="wo" data-id="${w.id}" data-to="In progress">Parts received</button>`:'';
+ $('#kan').innerHTML=['Open','In progress','Awaiting parts','Completed'].map(s=>{const l=L.filter(w=>w.status===s);return`<div class="col"><h4>${s} <span class="pill mute">${l.length}</span></h4>${l.map(w=>{const dd=Math.round((w.due-T0)/DAY);return`<div class="wo"><div><b>${w.id}</b> <span class="tail">${w.tail}</span></div><div>${esc(w.task)}</div><div class="muted">ATA ${w.ata} &middot; ${esc(w.tech)} &middot; ${w.mh} MH</div><div class="r"><span class="pill ${w.type==='Defect'?'warn':w.type==='AD/SB'?'info':'mute'}">${w.type}</span>${w.mel?`<span class="pill ${dd<=3?'bad':'warn'}">MEL ${w.mel}${w.status!=='Completed'?': '+(dd>=0?dd+' d left':'overdue'):''}</span>`:''}${w.status!=='Completed'?`<span class="pill ${dd<0?'bad':'mute'}">Due ${fD(w.due)}</span>`:''}</div>${act(w)?`<div class="r">${act(w)}</div>`:''}</div>`}).join('')||'<div class="muted" style="font-size:.84rem">Nothing here</div>'}</div>`}).join('');
+}
+function vParts(){
+ const fs=['All','Low','Out','AOG-critical'];
+ return `<div class="card"><div class="tools"><input id="pq" type="search" placeholder="Search part number or description" value="${esc(F.pq)}" aria-label="Search parts"><div class="chips">${fs.map(s=>`<button class="chip ${F.pf===s?'on':''}" data-act="chip" data-k="pf" data-v="${s}">${s}</button>`).join('')}</div></div><div class="tw" style="margin-top:12px" id="partsTbl"></div></div>`;
+}
+function fillParts(){
+ const q=F.pq.toLowerCase(),r=S.parts.filter(p=>(F.pf==='All'||(F.pf==='AOG-critical'?p.crit:pstat(p)===F.pf))&&(!q||(p.pn+p.desc).toLowerCase().includes(q)));
+ $('#partsTbl').innerHTML=`<table><thead><tr><th>Part no.</th><th>Description</th><th>ATA</th><th>Stock</th><th>Min</th><th>Status</th><th>Lead time</th><th>Location</th><th>Action</th></tr></thead><tbody>${r.map(p=>{const s=pstat(p),a=p.onOrder?`<button class="btn sm pri" data-act="recv" data-id="${p.pn}">Receive stock</button>`:s!=='OK'?`<button class="btn sm" data-act="exp" data-id="${p.pn}">Expedite order</button>`:'<span class="muted">-</span>';return`<tr><td><code>${p.pn}</code>${p.crit?' <span class="pill bad">AOG-critical</span>':''}</td><td>${esc(p.desc)}</td><td>${p.ata}</td><td><b>${p.qty}</b></td><td>${p.min}</td><td><span class="pill ${s==='OK'?'ok':s==='Low'?'warn':'bad'}">${s}</span>${p.onOrder?` <span class="pill info">On order, ETA ${fD(p.eta)}</span>`:''}</td><td>${p.lead} d</td><td>${esc(p.loc)}</td><td>${a}</td></tr>`}).join('')||'<tr><td colspan="9" class="muted">No parts match.</td></tr>'}</tbody></table>`;
+}
+function vCompliance(){
+ const st=d=>d.done?['ok','Complied']:d.due<T0?['bad','Overdue']:d.due<T0+30*DAY?['warn','Due soon']:['info','Open'];
+ return `<div class="card"><h3>Airworthiness directives &amp; service bulletins <small>${S.ads.filter(d=>!d.done).length} open</small></h3><div class="tw"><table><thead><tr><th>Reference</th><th>Subject</th><th>Applicability</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>${S.ads.map(d=>{const s=st(d);return`<tr><td><b>${d.ref}</b></td><td>${esc(d.title)}</td><td>${d.app}</td><td>${fD(d.due)}</td><td><span class="pill ${s[0]}">${s[1]}</span></td><td>${d.done?'':`<button class="btn sm" data-act="cmp" data-id="${d.ref}">Mark complied</button>`}</td></tr>`}).join('')}</tbody></table></div></div>
+ <div class="card"><h3>Life-limited parts <small>remaining life</small></h3><div class="tw"><table><thead><tr><th>Aircraft</th><th>Component</th><th>Used / limit</th><th style="min-width:200px">Remaining</th></tr></thead><tbody>${S.llp.map(l=>{const r=1-l.used/l.limit,c=r<.1?'var(--bad)':r<.25?'var(--warn)':'var(--ok)';return`<tr class="click" data-act="ac" data-id="${l.tail}"><td><span class="tail">${l.tail}</span></td><td>${l.comp}</td><td>${l.used.toLocaleString('en-IN')} / ${l.limit.toLocaleString('en-IN')} ${l.unit}</td><td><div class="bar-c"><div class="bar" style="flex:1"><i style="width:${r*100}%;background:${c}"></i></div><span>${Math.round(r*100)}%</span></div></td></tr>`}).join('')}</tbody></table></div></div>`;
+}
+const VIEWS={dashboard:['Operations dashboard',vDashboard],fleet:['Fleet',vFleet,fillFleet],aog:['AOG command center',vAog],planning:['Maintenance planning',vPlanning],workorders:['Work orders',vWO,fillWO],parts:['Parts & inventory',vParts,fillParts],compliance:['Airworthiness & compliance',vCompliance]};
+let cur='dashboard';
+function render(){
+ const v=VIEWS[cur];$('#pageTitle').textContent=v[0];document.title=v[0]+' | SkyOps MRO (Demo)';
+ $('#view').innerHTML=v[1]();if(v[2])v[2]();
+ $$('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===cur));
+ $('#aogN').textContent=S.cases.length||'';$('#aogN').style.display=S.cases.length?'':'none';tick();
+}
+function route(){const h=location.hash.slice(1);cur=VIEWS[h]?h:'dashboard';closeDrawer();closeSide();render();window.scrollTo(0,0)}
+
+/* ---------- Actions ---------- */
+function openAircraft(t){
+ const a=ac(t),cs=S.cases.find(c=>c.tail===t),w=S.wos.filter(x=>x.tail===t),l=S.llp.filter(x=>x.tail===t);
+ $('#drawer').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><h2 class="tail" style="font-size:1.5rem">${a.tail}</h2><div class="muted">${a.type} &middot; MSN ${a.msn} &middot; ${a.yr} yrs old</div></div><button class="icon" data-act="closeDrawer" aria-label="Close">&#10005;</button></div>
+ <div style="margin-top:10px">${sp(a)} <span class="pill mute">${a.loc}</span></div>
+ <div class="kv"><div><small>Flight hours</small>${a.fh.toLocaleString('en-IN')}</div><div><small>Cycles</small>${a.fc.toLocaleString('en-IN')}</div><div><small>Next check</small>${a.status==='In check'?'In hangar':a.nextCheck+'-check'}</div><div><small>Due</small>${fD(a.dueTs)} (${a.remFH} FH)</div></div>
+ ${cs?`<div class="sub">Open AOG</div><div class="card" style="padding:12px"><b>${cs.id}</b> <span class="pill bad">${STAGES[cs.stage]}</span><div style="margin-top:6px">${esc(cs.title)}</div><div class="muted" style="font-size:.84rem;margin-top:4px">Ground time <span data-since="${cs.started}">${dur(Date.now()-cs.started)}</span></div></div>`:''}
+ <div class="sub">Work orders</div>${w.length?`<ul class="plist">${w.map(x=>`<li><b>${x.id}</b><span>${esc(x.task)}</span><span class="pill ${x.status==='Completed'?'ok':'mute'}">${x.status}</span></li>`).join('')}</ul>`:'<div class="muted">None</div>'}
+ <div class="sub">Life-limited parts</div>${l.length?l.map(x=>`<div style="margin-bottom:8px">${x.comp}: <b>${Math.round((1-x.used/x.limit)*100)}%</b> remaining</div>`).join(''):'<div class="muted">No tracked components flagged</div>'}
+ <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">${a.status==='Serviceable'||a.status==='MEL'?`<button class="btn danger" data-act="raise" data-tail="${a.tail}">&#128680; Raise AOG</button>`:''}<button class="btn" data-act="closeDrawer">Close</button></div>`;
+ $('#drawer').classList.add('open');
+}
+function openRaise(tail){
+ const av=S.fleet.filter(a=>a.status==='Serviceable'||a.status==='MEL');
+ if(!av.length){toast('All aircraft are already on the ground.',1);return}
+ const sel=tail&&av.find(a=>a.tail===tail)?tail:av[0].tail;
+ openModal(`<h2>Raise AOG</h2><p class="muted" style="font-size:.88rem">Opens a new case, grounds the aircraft and starts the downtime clock.</p><form class="form" id="raiseF">
+  <label>Aircraft<select id="r-tail">${av.map(a=>`<option value="${a.tail}" ${a.tail===sel?'selected':''}>${a.tail} &middot; ${a.type}</option>`).join('')}</select></label>
+  <label>Station<select id="r-st">${STATIONS.map(s=>`<option ${s===ac(sel).loc?'selected':''}>${s}</option>`).join('')}</select></label>
+  <label>ATA chapter<select id="r-ata">${Object.keys(ATA).map(k=>`<option value="${k}">${k} ${ATA[k]}</option>`).join('')}</select></label>
+  <label>Priority<select id="r-pri"><option>Critical</option><option>High</option></select></label>
+  <label>Required part (optional)<select id="r-part"><option value="">None / not known yet</option>${S.parts.map(p=>`<option value="${p.pn}">${p.pn} ${esc(p.desc)}</option>`).join('')}</select></label>
+  <label>Defect description<textarea id="r-desc" maxlength="300" placeholder="e.g. Hydraulic leak found at left main gear"></textarea></label><div class="err" id="r-err"></div>
+  <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn" data-act="closeModal">Cancel</button><button class="btn danger" type="submit">Raise AOG</button></div></form>`);
+}
+function submitRaise(e){
+ e.preventDefault();const d=$('#r-desc').value.trim();if(!d){$('#r-err').textContent='Please describe the defect.';return}
+ const tail=$('#r-tail').value,pri=$('#r-pri').value,pn=$('#r-part').value,now=Date.now(),a=ac(tail);
+ a.status='AOG';a.loc=$('#r-st').value;
+ S.cases.unshift({id:'AOG-'+(caseSeq++),tail,station:a.loc,ata:$('#r-ata').value,title:d.length>60?d.slice(0,57)+'...':d,desc:d,pri,started:now,stage:0,ts:[now],parts:pn?[pn]:[],partEta:now+6*HR,team:['Duty engineer (B1)'],etr:now+(pri==='Critical'?18:36)*HR,notes:[{ts:now,by:'AOG desk',t:'AOG raised. Troubleshooting team notified.'}]});
+ closeModal();closeDrawer();toast(tail+' grounded. AOG case opened.',1);location.hash==='#aog'?render():location.hash='aog';
+}
+function advance(id){
+ const c=S.cases.find(x=>x.id===id);if(!c)return;c.stage++;c.ts.push(Date.now());
+ if(c.stage>=5){const a=ac(c.tail);a.status='Serviceable';S.cases=S.cases.filter(x=>x!==c);S.closed.unshift({id:c.id,tail:c.tail,title:c.title,station:c.station,dur:Date.now()-c.started});toast(c.tail+' released to service after '+hm(Date.now()-c.started)+'.')}
+ else{c.notes.push({ts:Date.now(),by:'System',t:'Stage updated: '+STAGES[c.stage]});toast(c.id+': '+STAGES[c.stage])}
+ render();
+}
+const acts={
+ ac:e=>openAircraft(e.dataset.id),raise:e=>{openRaise(e.dataset.tail)},closeModal,closeDrawer,adv:e=>advance(e.dataset.id),reset:()=>location.reload(),
+ note:e=>{const i=$('#n-'+e.dataset.id),v=i.value.trim();if(!v)return;S.cases.find(c=>c.id===e.dataset.id).notes.push({ts:Date.now(),by:'You',t:v});render();toast('Update logged.')},
+ chip:e=>{F[e.dataset.k]=e.dataset.v;render()},
+ sort:e=>{const k=e.dataset.k;F.dir=F.sort===k?-F.dir:1;F.sort=k;fillFleet()},
+ wo:e=>{const w=S.wos.find(x=>x.id===e.dataset.id);w.status=e.dataset.to;fillWO();toast(w.id+': '+w.status+(w.status==='Completed'?' (CRS signed by '+w.tech+')':''))},
+ exp:e=>{const p=part(e.dataset.id);p.onOrder=true;p.eta=Date.now()+p.lead*DAY;render();toast('Expedited '+p.pn+', ETA '+fD(p.eta))},
+ recv:e=>{const p=part(e.dataset.id);p.qty=p.min+2;p.onOrder=false;render();toast(p.pn+' received into stock.')},
+ cmp:e=>{S.ads.find(d=>d.ref===e.dataset.id).done=true;render();toast(e.dataset.id+' marked as complied.')}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&acts[b.dataset.act]){acts[b.dataset.act](b);return}if(e.target===$('#modal'))closeModal()});
+document.addEventListener('input',e=>{const m={fq:'fq',pq:'pq',wq:'wq'}[e.target.id];if(m){F[m]=e.target.value;({fq:fillFleet,pq:fillParts,wq:fillWO})[e.target.id]()}});
+document.addEventListener('change',e=>{
+ if(e.target.id==='ft'){F.ft=e.target.value;fillFleet()}else if(e.target.id==='wt'){F.wt=e.target.value;fillWO()}
+ else if(e.target.id==='r-tail'){$('#r-st').value=ac(e.target.value).loc}
+});
+document.addEventListener('submit',e=>{if(e.target.id==='raiseF')submitRaise(e)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDrawer();closeSide()}});
+$('#menu').addEventListener('click',openSide);$('#scrim').addEventListener('click',closeSide);
+window.addEventListener('hashchange',route);
+
+/* ---------- Clocks, theme, PWA ---------- */
+function tick(){
+ $('#utc').textContent=new Date().toUTCString().slice(17,25)+' UTC';
+ $$('[data-since]').forEach(el=>el.textContent=dur(Date.now()-(+el.dataset.since)));
+ $$('[data-etr]').forEach(el=>{const d=+el.dataset.etr-Date.now();el.textContent=d>=0?'ETR in '+hm(d):'ETR overdue by '+hm(d);el.style.color=d>=0?'':'var(--bad)'});
+}
+setInterval(tick,1000);
+const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme')}catch(e){}
+function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme',t)}catch(e){}}
+setTheme(sv||'dark');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').hidden=false});
+$('#install').addEventListener('click',()=>{if(dp){dp.prompt();dp=null;$('#install').hidden=true}});
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+route();
+})();
+</script>
+</body>
+</html>

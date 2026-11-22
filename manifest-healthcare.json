@@ -1,0 +1,23 @@
+{
+  "name": "CareSync Clinic (Demo)",
+  "short_name": "CareSync",
+  "start_url": "healthcare-clinic.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08161c",
+  "theme_color": "#08161c",
+  "description": "Demo app by Kishore Nandhaluru (fictional data)",
+  "icons": [
+    {
+      "sizes": "192x192",
+      "src": "icons/health-192.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any maskable",
+      "sizes": "512x512",
+      "src": "icons/health-512.png",
+      "type": "image/png"
+    }
+  ]
+}
