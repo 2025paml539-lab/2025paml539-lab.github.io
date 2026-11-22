@@ -1,0 +1,23 @@
+{
+  "name": "LifeScan Diagnostics (Demo)",
+  "short_name": "LifeScan",
+  "start_url": "diagnostics-center.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
+  "description": "Demo app by Kishore Nandhaluru (fictional data)",
+  "icons": [
+    {
+      "sizes": "192x192",
+      "src": "icons/lab-192.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any maskable",
+      "sizes": "512x512",
+      "src": "icons/lab-512.png",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LifeScan Diagnostics | Tests, Radiology &amp; Reports (Demo)</title>
+<meta name="description" content="Demo: diagnostic center with pathology and radiology test catalogue, booking, home collection, scan scheduling and downloadable reports. Built by Kishore Nandhaluru. Fictional data.">
+<meta name="theme-color" content="#0b1020">
+<link rel="manifest" href="manifest-diagnostics.json">
+<link rel="icon" href="icons/lab-192.png">
+<link rel="apple-touch-icon" href="icons/lab-192.png">
+<style>
+:root{--bg:#0b1020;--panel:#121a33;--panel2:#1a2444;--line:rgba(255,255,255,.1);--text:#e8ecff;--muted:#93a0c8;--accent:#6366f1;--accent2:#22d3ee;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;--info:#60a5fa;--shadow:0 10px 30px rgba(0,0,0,.35)}
+[data-theme=light]{--bg:#eff2fb;--panel:#fff;--panel2:#f2f4fc;--line:rgba(30,40,100,.14);--text:#141a3d;--muted:#58638f;--accent:#4f46e5;--accent2:#0891b2;--ok:#047857;--warn:#a16207;--bad:#e11d48;--info:#2563eb;--shadow:0 8px 24px rgba(30,40,100,.1)}
+*{box-sizing:border-box;margin:0;padding:0}[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:15px;overflow-x:hidden}
+a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;z-index:60}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 14px}
+.brand i{font-style:normal;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:1.3rem}
+.brand b{display:block;font-size:1.05rem;line-height:1.1}.brand small{color:var(--muted);font-size:.74rem}
+.grp{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;padding:12px 12px 4px}
+#nav{display:flex;flex-direction:column;gap:3px}
+#nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;color:var(--muted);font-weight:600;transition:.2s}
+#nav a i{font-style:normal;width:22px;text-align:center}#nav a:hover{background:var(--panel2);color:var(--text)}
+#nav a.on{background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(34,211,238,.13));color:var(--text);box-shadow:inset 0 0 0 1px rgba(99,102,241,.45)}
+#nav .n{margin-left:auto;background:var(--accent);color:#fff;border-radius:99px;font-size:.7rem;padding:1px 7px;font-weight:700}
+.side-foot{margin-top:auto;padding-top:14px;display:grid;gap:10px;font-size:.8rem;color:var(--muted)}
+.main{min-width:0}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 24px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top h1{font-size:1.2rem;white-space:nowrap}.grow{flex:1}
+.badge-demo{font-size:.68rem;font-weight:800;letter-spacing:.08em;padding:5px 10px;border-radius:99px;background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.4);white-space:nowrap}
+.icon{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:grid;place-items:center;font-size:1.05rem;flex:none;position:relative}
+#menu{display:none}.cartn{position:absolute;top:-6px;right:-6px;background:var(--accent2);color:#06202a;border-radius:99px;font-size:.68rem;font-weight:800;min-width:19px;height:19px;display:grid;place-items:center;padding:0 4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 16px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-weight:600;font-size:.88rem;transition:.2s;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}.btn.pri{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.btn.lg{padding:13px 20px;font-size:1rem;width:100%}.btn.sm{padding:5px 11px;font-size:.8rem;border-radius:9px}.btn:disabled{opacity:.45;cursor:not-allowed}
+#view{padding:24px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-content:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.card h3{font-size:1rem;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card h3 small{font-weight:500;color:var(--muted);font-size:.78rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.kpi small{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
+.kpi b{display:block;font-size:1.7rem;line-height:1.2;margin-top:4px}.kpi span{font-size:.78rem;color:var(--muted)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:20px}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.74rem;font-weight:700;white-space:nowrap;border:1px solid transparent}
+.pill.ok{background:rgba(52,211,153,.15);color:var(--ok);border-color:rgba(52,211,153,.35)}.pill.warn{background:rgba(251,191,36,.15);color:var(--warn);border-color:rgba(251,191,36,.35)}
+.pill.bad{background:rgba(251,113,133,.15);color:var(--bad);border-color:rgba(251,113,133,.4)}.pill.info{background:rgba(96,165,250,.16);color:var(--info);border-color:rgba(96,165,250,.4)}
+.pill.mute{background:var(--panel2);color:var(--muted);border-color:var(--line)}.pill.pur{background:rgba(99,102,241,.2);color:#a5b4fc;border-color:rgba(99,102,241,.45)}
+.muted{color:var(--muted)}.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:560px}
+th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--panel2)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tools input,.tools select,.form input,.form select,.form textarea{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0;outline:none}
+.tools input:focus,.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--accent)}
+.chip{padding:6px 13px;border-radius:99px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}.chips{display:flex;flex-wrap:wrap;gap:8px}
+.hbar{display:grid;gap:12px}.hbar>div{display:grid;gap:4px;font-size:.86rem}.hbar .t{height:9px;border-radius:99px;background:var(--panel2);overflow:hidden}.hbar .t i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2))}.hbar .l{display:flex;justify-content:space-between;gap:8px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:150px;padding-top:10px}.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:5px;font-size:.7rem;color:var(--muted);min-width:0}
+.bars i{display:block;width:100%;max-width:38px;border-radius:7px 7px 3px 3px;background:linear-gradient(var(--accent2),var(--accent))}.bars b{color:var(--text);font-size:.7rem}
+.list{list-style:none;display:grid;gap:8px}.list li{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--panel2);font-size:.88rem;flex-wrap:wrap}.list .g{flex:1;min-width:140px}.list .g small{display:block;color:var(--muted)}
+.shop{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.trow b{font-size:.92rem}.trow small{color:var(--muted);display:block;font-size:.78rem;line-height:1.4}
+.price{font-weight:800;font-size:1.02rem;text-align:right}.price small{display:block}
+.cart{position:sticky;top:76px;display:grid;gap:10px}
+.cl{display:flex;justify-content:space-between;gap:10px;font-size:.86rem;padding:7px 0;border-bottom:1px dashed var(--line);align-items:center}.cl button{background:none;border:0;color:var(--bad);cursor:pointer;font-size:1rem}
+.tot{display:grid;gap:5px;font-size:.88rem}.tot div{display:flex;justify-content:space-between}.tot .big{font-size:1.2rem;font-weight:800;padding-top:8px;border-top:1px solid var(--line)}
+.pk{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:16px}
+.pkc{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:10px;align-content:start;position:relative;overflow:hidden}
+.pkc::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.pkc h4{font-size:1.1rem}.pkc ul{list-style:none;font-size:.82rem;color:var(--muted);display:grid;gap:3px;max-height:150px;overflow:auto}.pkc li::before{content:"\2713 ";color:var(--ok);font-weight:700}
+.pkc .pr{font-size:1.6rem;font-weight:800}.pkc .pr s{font-size:.9rem;color:var(--muted);font-weight:500;margin-left:6px}
+.sched{overflow-x:auto}.sg{display:grid;grid-template-columns:150px repeat(11,minmax(58px,1fr));gap:4px;min-width:860px;align-items:center;font-size:.76rem}
+.sg .h{color:var(--muted);text-align:center;font-weight:700}.sg .m{font-weight:700;font-size:.82rem}
+.cell{height:30px;border-radius:7px;background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.35);display:grid;place-items:center;color:var(--ok);font-size:.7rem;font-weight:700}
+.cell.b{background:rgba(251,113,133,.14);border-color:rgba(251,113,133,.4);color:var(--bad)}
+.steps{list-style:none;display:flex;gap:2px}.steps li{flex:1;height:6px;border-radius:99px;background:var(--panel2)}.steps li.d{background:var(--ok)}.steps li.c{background:var(--accent2)}
+.cta{margin:0 24px 28px;padding:22px;border-radius:18px;background:linear-gradient(135deg,rgba(99,102,241,.18),rgba(34,211,238,.13));border:1px solid var(--line);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cta h3{font-size:1.1rem;margin-bottom:4px}.cta p{color:var(--muted);font-size:.9rem;max-width:620px}.cta-b{display:flex;gap:10px;flex-wrap:wrap}
+.scrim{position:fixed;inset:0;background:rgba(3,6,18,.6);z-index:70;opacity:0;pointer-events:none;transition:.25s}.scrim.on{opacity:1;pointer-events:auto}
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:rgba(3,6,18,.7)}
+.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;width:min(100%,560px);max-height:92vh;overflow-y:auto}.modal .box.wide{width:min(100%,820px)}
+.form{display:grid;gap:12px;margin-top:14px}.form label{display:grid;gap:5px;font-size:.82rem;color:var(--muted);font-weight:600}.form textarea{min-height:64px;resize:vertical}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.err{color:var(--bad);font-size:.82rem;min-height:1em}
+.rp{background:#fff;color:#111;border-radius:12px;padding:22px;font-size:.88rem}.rp h2{font-size:1.2rem;color:#1e1b4b}.rp .hd{display:flex;justify-content:space-between;gap:14px;border-bottom:3px solid #4f46e5;padding-bottom:10px;margin-bottom:12px;flex-wrap:wrap}
+.rp table{min-width:0;font-size:.84rem;color:#111}.rp th{color:#555;border-color:#ddd}.rp td{border-color:#eee}.rp .sec{background:#eef2ff;color:#312e81;padding:6px 10px;font-weight:700;margin:14px 0 6px;border-radius:6px}
+.rp .hi{color:#c026d3;font-weight:800}.rp .lo{color:#d97706;font-weight:800}.rp .meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;margin-bottom:6px}.rp .sign{display:flex;justify-content:space-between;margin-top:26px;font-size:.8rem;gap:12px;flex-wrap:wrap}.rp .fine{font-size:.7rem;color:#666;margin-top:12px}
+#toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:200;width:min(92%,420px)}
+.toast{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok);padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);font-size:.88rem;animation:in .3s}.toast.bad{border-left-color:var(--bad)}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.cartbar{display:none}
+@media(max-width:1000px){.shop{grid-template-columns:minmax(0,1fr)}.cart{position:static}.cartbar{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:55;justify-content:space-between;align-items:center;padding:12px 16px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;box-shadow:var(--shadow);border:0;cursor:pointer}}
+@media(max-width:900px){.app{grid-template-columns:minmax(0,1fr)}.side{position:fixed;left:0;top:0;bottom:0;width:270px;transform:translateX(-105%);transition:transform .3s}.side.open{transform:none}#menu{display:grid}.top{padding:10px 14px}.top h1{font-size:1.02rem;overflow:hidden;text-overflow:ellipsis}#view{padding:14px}.cta{margin:0 14px 80px}}
+@media(max-width:520px){.badge-demo{display:none}.kpi b{font-size:1.45rem}.card{padding:14px}.row2{grid-template-columns:1fr}.rp .meta{grid-template-columns:1fr}}
+@media print{body>*:not(.modal){display:none!important}.modal{position:static;background:#fff;padding:0;display:block!important}.modal .box{border:0;background:#fff;max-height:none;width:100%;padding:0;overflow:visible}.noprint{display:none!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="side" id="side">
+  <div class="brand"><i>&#129514;</i><div><b>LifeScan</b><small>Diagnostics &amp; imaging</small></div></div>
+  <nav id="nav" aria-label="Main">
+   <div class="grp">Patient portal</div>
+   <a href="#tests" data-v="tests"><i>&#129514;</i>Book tests</a>
+   <a href="#packages" data-v="packages"><i>&#127873;</i>Health packages</a>
+   <a href="#reports" data-v="reports"><i>&#128196;</i>My reports</a>
+   <div class="grp">Lab operations</div>
+   <a href="#dashboard" data-v="dashboard"><i>&#128202;</i>Dashboard</a>
+   <a href="#worklist" data-v="worklist"><i>&#128203;</i>Worklist<span class="n" id="wlN"></span></a>
+   <a href="#radiology" data-v="radiology"><i>&#128247;</i>Scan schedule</a>
+   <a href="#home" data-v="home"><i>&#127968;</i>Home collection</a>
+  </nav>
+  <div class="side-foot"><div>Fictional lab and patients. Built as a sample by Kishore Nandhaluru.</div><a class="btn" href="index.html">&larr; Back to portfolio</a><button class="btn" data-act="reset">&#8635; Reset demo data</button></div>
+ </aside>
+ <div class="scrim" id="scrim"></div>
+ <div class="main">
+  <header class="top">
+   <button class="icon" id="menu" aria-label="Menu">&#9776;</button>
+   <h1 id="pageTitle">Book tests</h1><div class="grow"></div>
+   <span class="badge-demo">DEMO DATA</span>
+   <button class="btn sm" id="install" hidden>Install app</button>
+   <button class="icon" data-act="opencart" aria-label="Open cart">&#128722;<span class="cartn" id="cartN" hidden></span></button>
+   <button class="icon" id="theme" aria-label="Toggle theme">&#9790;</button>
+  </header>
+  <main id="view"></main>
+  <section class="cta">
+   <div><h3>Running a diagnostic center or lab? Get a system like this.</h3><p>I build test booking, LIS/RIS-style workflows, report generation, home collection and patient apps. Everything here uses fictional data.</p></div>
+   <div class="cta-b"><a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/917358332692?text=Hi%20Kishore%2C%20I%20saw%20your%20LifeScan%20diagnostics%20demo%20and%20want%20to%20discuss%20a%20project.">WhatsApp me</a><a class="btn" href="mailto:nandhaluruk@gmail.com?subject=Project%20enquiry%20-%20Diagnostics%20demo">Email</a><a class="btn" href="index.html">Portfolio</a></div>
+  </section>
+ </div>
+</div>
+<button class="cartbar" id="cartbar" data-act="opencart" hidden></button>
+<div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
+<div id="toasts" aria-live="polite"></div>
+<noscript><p style="padding:20px">Please enable JavaScript to use this demo.</p></noscript>
+<script>
+(function(){
+'use strict';
+const $=(s,c)=>(c||document).querySelector(s),$$=(s,c)=>Array.prototype.slice.call((c||document).querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>'\u20B9'+Math.round(n).toLocaleString('en-IN'),pad=n=>String(n).padStart(2,'0');
+const T0=(()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()})(),DAY=864e5,NOW=Date.now();
+const fD=t=>new Date(t).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}),fDY=t=>new Date(t).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),dow=t=>new Date(t).toLocaleDateString('en-GB',{weekday:'short'});
+let seed=9911;const rnd=()=>(seed=(seed*1664525+1013904223)%4294967296)/4294967296,rr=(a,b)=>a+Math.floor(rnd()*(b-a+1)),pick=a=>a[Math.floor(rnd()*a.length)];
+const sr=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return()=>{h=Math.imul(h^h>>>15,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return(h>>>0)/4294967296}};
+
+/* ---------- Test catalogue (fictional lab, indicative Bengaluru cost) ---------- */
+const T=[];
+const add=(cat,sub,list,home,tat)=>list.forEach(x=>T.push({id:T.length,name:x[0],cat,sub,cost:x[1],prep:x[2]||'No special preparation',tat:x[3]||tat,home}));
+const FS='Fasting 8 to 10 hours',BL='Drink 4 glasses of water 1 hour before. Do not empty bladder',CN='Fasting 6 hours. Recent creatinine report needed',MR='Remove all metal items. Inform about implants or pacemaker';
+add('Pathology','Hematology',[['Complete Blood Count (CBC)',350],['Hemoglobin',120],['ESR',150],['Platelet Count',200],['Peripheral Smear',250],['Blood Group & Rh Typing',150],['Reticulocyte Count',300],['PT / INR',450],['aPTT',500],['D-Dimer',1300,null,'6 hours'],['Hb Electrophoresis',1500,null,'48 hours'],['Sickling Test',300]],true,'Same day');
+add('Pathology','Diabetes',[['Fasting Blood Sugar',90,FS],['Post-Prandial Blood Sugar',90,'2 hours after a meal'],['Random Blood Sugar',90],['HbA1c',500],['Insulin (Fasting)',700,FS],['Glucose Tolerance Test (75g)',400,FS],['Urine Microalbumin',500],['C-Peptide',1100,FS,'24 hours']],true,'Same day');
+add('Pathology','Lipid & Cardiac',[['Lipid Profile',600,'Fasting 10 to 12 hours'],['Total Cholesterol',200,FS],['Triglycerides',250,'Fasting 10 to 12 hours'],['Troponin I',1200,null,'3 hours'],['CK-MB',800],['NT-proBNP',2500,null,'24 hours'],['hs-CRP',700],['Homocysteine',1100,FS,'24 hours'],['Lipoprotein (a)',1600,null,'24 hours']],true,'Same day');
+add('Pathology','Thyroid & Hormones',[['TSH',350],['Thyroid Profile (T3, T4, TSH)',650],['Free T3',450],['Free T4',450],['Anti-TPO Antibody',1000,null,'24 hours'],['Prolactin',700],['Testosterone Total',900],['FSH',650],['LH',650],['Estradiol (E2)',800],['Progesterone',800],['AMH',2000,null,'24 hours'],['Cortisol (Morning)',700,'Sample before 9 AM'],['Beta HCG (Quantitative)',800],['Parathyroid Hormone (PTH)',1500,null,'24 hours']],true,'Same day');
+add('Pathology','Liver & Kidney',[['Liver Function Test (LFT)',600],['SGOT (AST)',200],['SGPT (ALT)',200],['Total Bilirubin',250],['GGT',300],['Kidney Function Test (KFT)',600],['Urea',150],['Serum Creatinine',200],['Uric Acid',250],['Electrolytes (Na, K, Cl)',450],['Calcium',250],['Phosphorus',250]],true,'Same day');
+add('Pathology','Vitamins & Minerals',[['Vitamin D (25-OH)',1100,null,'24 hours'],['Vitamin B12',800,null,'24 hours'],['Folate',800],['Iron Profile',900,FS],['Ferritin',700],['Magnesium',450],['Zinc',900,null,'24 hours']],true,'Same day');
+add('Pathology','Infection & Serology',[['Dengue NS1 Antigen',700],['Dengue IgG / IgM',900],['Malaria Antigen',400],['Widal Test',300],['Typhidot IgM / IgG',500],['C-Reactive Protein (CRP)',600],['Chikungunya IgM',1000],['HIV I & II',500],['HBsAg',400],['Anti-HCV',700],['VDRL',250],['TORCH Panel',2800,null,'48 hours'],['Rheumatoid Factor',450],['ASO Titre',500],['ANA (IF)',1400,null,'48 hours'],['Anti-CCP',1800,null,'48 hours'],['Sputum AFB',300,'Early morning sample','48 hours'],['TB Quantiferon Gold',3000,null,'72 hours'],['H. pylori Antigen (Stool)',900]],true,'Same day');
+add('Pathology','Urine, Stool & Semen',[['Urine Routine',120],['Urine Culture & Sensitivity',700,'Clean-catch midstream sample','72 hours'],['Stool Routine',150],['Stool Occult Blood',250],['Semen Analysis',600,'Abstain 3 to 5 days. Deliver within 1 hour'],['24-hour Urine Protein',600]],true,'Same day');
+add('Pathology','Cancer Screening',[['PSA Total',800],['CEA',1100,null,'24 hours'],['CA-125',1200,null,'24 hours'],['CA 19-9',1300,null,'24 hours'],['AFP',900],['CA 15-3',1200,null,'24 hours'],['PAP Smear',800,null,'48 hours'],['HPV DNA Test',4000,null,'72 hours'],['Biopsy (Histopathology)',1500,null,'5 days']],false,'24 hours');
+add('Pathology','Allergy',[['Food Allergy Panel (Veg & Non-veg)',5500,null,'72 hours'],['Inhalant Allergy Panel',5500,null,'72 hours']],true,'72 hours');
+add('Radiology','X-Ray',[['X-Ray Chest PA',450],['X-Ray Abdomen',500],['X-Ray Lumbar Spine',700],['X-Ray Cervical Spine',700],['X-Ray Knee',600],['X-Ray Shoulder',600],['X-Ray Wrist / Hand',500],['X-Ray Foot / Ankle',500],['X-Ray Skull',600],['X-Ray PNS',500],['X-Ray Pelvis with Hips',600]],false,'2 hours');
+add('Radiology','Ultrasound',[['USG Whole Abdomen',1300,BL],['USG Abdomen & Pelvis',1300,BL],['USG KUB',1100,BL],['USG Pelvis (Transabdominal)',1100,BL],['USG Transvaginal',1300],['USG Obstetric (Dating / Viability)',1200,BL],['NT / NB Scan',2000,BL],['Anomaly Scan (Level II)',2500,BL],['USG Thyroid / Neck',1100],['USG Breast',1300],['USG Scrotum',1100],['Follicular Study (per scan)',700],['Doppler Lower Limb Venous',3000],['Doppler Lower Limb Arterial',3500],['Carotid Doppler',3200],['Obstetric Doppler',2200,BL]],false,'4 hours');
+add('Radiology','CT Scan',[['CT Brain (Plain)',3000],['CT PNS',2800],['CT HRCT Chest',4500],['CT Low-dose Lung Screening',4500],['CT Calcium Score',3500],['CT Abdomen & Pelvis (Plain)',5500,FS],['CT Abdomen & Pelvis (Contrast)',7500,CN],['CT KUB / Urogram',6000,CN],['CT Neck (Contrast)',5500,CN],['CT Lumbar Spine',5000],['CT Angiography Brain',9500,CN],['CT Coronary Angiography',11000,CN]],false,'6 hours');
+add('Radiology','MRI',[['MRI Brain (Plain)',6500,MR],['MRI Brain (Contrast)',9000,MR+'. '+CN],['MRI Brain with MRA',9500,MR],['MRI Cervical Spine',7000,MR],['MRI Lumbar Spine',7000,MR],['MRI Whole Spine',14000,MR],['MRI Knee',6500,MR],['MRI Shoulder',6500,MR],['MRI Abdomen',9000,MR+'. '+FS],['MRCP',8500,MR+'. '+FS],['MRI Pelvis',8500,MR],['MRI Breast',10000,MR],['MRI Prostate (Multiparametric)',12000,MR],['MRI Cardiac',15000,MR]],false,'24 hours');
+add('Radiology','Mammography & Bone',[['Digital Mammography (Bilateral)',2500,'Do not apply powder or deodorant'],['Digital Mammography (Unilateral)',1600,'Do not apply powder or deodorant'],['DEXA Bone Density Scan',2500]],false,'6 hours');
+add('Radiology','PET & Nuclear',[['PET-CT Whole Body (FDG)',22000,'Fasting 6 hours. Blood sugar below 200','48 hours'],['Thyroid Scan',3500,null,'48 hours'],['Bone Scan',6500,null,'48 hours']],false,'48 hours');
+add('Cardio & Neuro','Heart',[['ECG',300,null,'Immediate'],['2D Echo with Doppler',2000,null,'Immediate'],['TMT (Treadmill Test)',1800,'Light meal. Wear sports shoes','Immediate'],['Holter Monitoring (24 hr)',3500,null,'48 hours'],['ABPM (24 hr BP)',3000,null,'48 hours']],false,'Immediate');
+add('Cardio & Neuro','Neuro & Others',[['EEG',1800,'Wash hair. No oil or gel','6 hours'],['EEG (Sleep Deprived)',3000,'Sleep only 4 hours the night before','24 hours'],['NCV (Two Limbs)',3500,null,'6 hours'],['EMG',3500,null,'6 hours'],['BERA',3000,null,'24 hours'],['Spirometry / PFT',900,'Avoid inhalers 4 hours before','Immediate'],['Audiometry (PTA)',600,null,'Immediate'],['Tympanometry',500,null,'Immediate'],['Polysomnography (Sleep Study)',9500,'Overnight stay','48 hours']],false,'Same day');
+const tid=n=>T.find(t=>t.name===n).id;
+const PK=[['Basic Health Checkup','Annual screening for adults',['Complete Blood Count (CBC)','Fasting Blood Sugar','Lipid Profile','Liver Function Test (LFT)','Kidney Function Test (KFT)','Thyroid Profile (T3, T4, TSH)','Urine Routine','ECG']],
+ ['Diabetes Care','Control and complication screening',['Fasting Blood Sugar','Post-Prandial Blood Sugar','HbA1c','Lipid Profile','Kidney Function Test (KFT)','Urine Microalbumin','Urine Routine','Vitamin B12']],
+ ['Heart Health','Cardiac risk assessment',['Lipid Profile','hs-CRP','Homocysteine','HbA1c','Kidney Function Test (KFT)','ECG','2D Echo with Doppler','TMT (Treadmill Test)']],
+ ['Women\'s Wellness','Hormones, nutrition and screening',['Complete Blood Count (CBC)','Thyroid Profile (T3, T4, TSH)','Vitamin D (25-OH)','Vitamin B12','Ferritin','Prolactin','PAP Smear','USG Pelvis (Transabdominal)','Digital Mammography (Bilateral)']],
+ ['Senior Citizen','For ages 60 and above',['Complete Blood Count (CBC)','HbA1c','Lipid Profile','Liver Function Test (LFT)','Kidney Function Test (KFT)','Thyroid Profile (T3, T4, TSH)','Vitamin D (25-OH)','Vitamin B12','PSA Total','ECG','2D Echo with Doppler','DEXA Bone Density Scan']],
+ ['Fever Panel','For fever lasting more than 3 days',['Complete Blood Count (CBC)','Dengue NS1 Antigen','Malaria Antigen','Typhidot IgM / IgG','C-Reactive Protein (CRP)','Urine Routine']],
+ ['Full Body Advanced','Comprehensive head-to-toe check',['Complete Blood Count (CBC)','HbA1c','Lipid Profile','Liver Function Test (LFT)','Kidney Function Test (KFT)','Thyroid Profile (T3, T4, TSH)','Vitamin D (25-OH)','Vitamin B12','Iron Profile','hs-CRP','Urine Routine','ECG','2D Echo with Doppler','USG Whole Abdomen','X-Ray Chest PA']]]
+ .map((p,i)=>{const ids=p[2].map(tid),sum=ids.reduce((s,id)=>s+T[id].cost,0);return{id:i,name:p[0],desc:p[1],tests:ids,sum,price:Math.round(sum*.72/10)*10}});
+const SL=['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+const MACH=[['MRI 3T','MRI'],['MRI 1.5T','MRI'],['CT 128-slice','CT Scan'],['Ultrasound Room 1','Ultrasound'],['Ultrasound Room 2','Ultrasound'],['Ultrasound Room 3','Ultrasound'],['Digital X-Ray','X-Ray'],['Mammography & DEXA','Mammography & Bone']];
+const STAT=['Booked','Collected / scanned','In process','Report ready','Delivered'],HC=['Assigned','On the way','Sample collected','Reached lab'];
+const AREAS=['Indiranagar','Koramangala','Whitefield','HSR Layout','Jayanagar','JP Nagar','Marathahalli','Hebbal','Electronic City','Malleshwaram','Yelahanka','Bannerghatta Road'];
+const NAMES=['Rohit Sharma','Anjali Desai','Karthik Subramanian','Pooja Nambiar','Mohammed Irfan','Swathi Reddy','Vikram Rao','Deepa Shenoy','Arun Prakash','Nisha Kapoor','Sandeep Gowda','Lavanya Iyer','Harish Patil','Meena Kumari','Rajan Pillai','Divya Bhat','Faisal Ahmed','Kiran Joshi','Shruthi Hegde','Manoj Tiwari','Revathi Menon','Ajay Chandra'];
+const PHL=['Suresh K.','Manjunath R.','Farhana B.','Ganesh S.'];
+const S={orders:[],sched:{},cart:{tests:[],pkgs:[]},coupon:null};let oseq=24001;
+MACH.forEach(m=>{for(let d=0;d<7;d++)SL.forEach(s=>{if(rnd()<.45)S.sched[d+'|'+m[0]+'|'+s]='Walk-in'})});
+function machineFor(t){const m=MACH.filter(x=>x[1]===t.sub);return m}
+function allocate(t,day,from){
+ const ms=machineFor(t);if(!ms.length)return null;
+ for(let k=Math.max(0,SL.indexOf(from));k<SL.length;k++)for(const m of ms){const key=day+'|'+m[0]+'|'+SL[k];if(!S.sched[key])return{key,machine:m[0],slot:SL[k]}}
+ return null;
+}
+function mkOrder(o){
+ o.id='LS-'+(oseq++);o.ts=o.ts||Date.now();o.sched=o.sched||[];
+ const hasRad=o.tests.some(i=>T[i].cat==='Radiology'||T[i].cat==='Cardio & Neuro'&&!T[i].home);
+ o.hasPath=o.tests.some(i=>T[i].cat==='Pathology');o.hasRad=hasRad;
+ return o;
+}
+for(let i=0;i<22;i++){
+ const kind=rnd(),tests=[];
+ if(kind<.45){for(let k=rr(1,4);k--;)tests.push(pick(T.filter(t=>t.cat==='Pathology')).id)}
+ else if(kind<.7){tests.push(pick(T.filter(t=>t.sub==='MRI'||t.sub==='CT Scan')).id)}
+ else if(kind<.85){tests.push(pick(T.filter(t=>t.sub==='Ultrasound'||t.sub==='X-Ray')).id)}
+ else{tests.push(...PK[pick([0,1,2,3,5])].tests)}
+ const home=rnd()<.35&&tests.every(id=>T[id].cat==='Pathology'),day=i<12?0:rr(0,3);
+ const st=i<12?(i<2?4:i<6?3:i<8?2:i<10?1:0):0,n=NAMES[i%NAMES.length];
+ const o=mkOrder({name:n,age:rr(19,74),sex:rnd()<.5?'M':'F',phone:'9'+rr(1000,9999)+rr(10000,99999),tests:[...new Set(tests)],mode:home?'Home':'Walk-in',area:home?pick(AREAS):'',day,slot:pick(SL.slice(0,8)),status:st,hc:home?Math.min(st+1,3):-1,phl:pick(PHL),ts:NOW-rr(1,300)*6e4,paid:true});
+ o.total=o.tests.reduce((s,id)=>s+T[id].cost,0);o.hasPath&&home&&0;S.orders.push(o);
+}
+S.orders.sort((a,b)=>b.ts-a.ts);
+const ord=id=>S.orders.find(o=>o.id===id);
+
+/* ---------- Cart ---------- */
+const covered=()=>{const s=new Set();S.cart.pkgs.forEach(p=>PK[p].tests.forEach(t=>s.add(t)));return s};
+function cartCalc(home){
+ const cv=covered(),loose=S.cart.tests.filter(t=>!cv.has(t)),sub=loose.reduce((s,t)=>s+T[t].cost,0)+S.cart.pkgs.reduce((s,p)=>s+PK[p].price,0);
+ const all=[...new Set([...cv,...S.cart.tests])],pathSub=all.filter(t=>T[t].cat==='Pathology').length;
+ const disc=S.coupon?Math.min(500,Math.round(sub*.1)):0,hf=home&&pathSub?(sub>=800?0:100):0;
+ return{loose,sub,all,disc,hf,total:sub-disc+hf,hasPath:pathSub>0,hasNon:all.some(t=>T[t].cat!=='Pathology')};
+}
+const inCart=id=>S.cart.tests.includes(id)||covered().has(id);
+
+/* ---------- Report engine ---------- */
+const PANEL={'Complete Blood Count (CBC)':[['Hemoglobin','g/dL',12.5,16.5,1],['Total WBC count','/\u00B5L',4000,11000,0],['Neutrophils','%',40,75,0],['Lymphocytes','%',20,45,0],['RBC count','mill/\u00B5L',4.2,5.6,2],['Hematocrit (PCV)','%',37,49,1],['MCV','fL',80,100,1],['Platelet count','/\u00B5L',150000,410000,0]],
+ 'Lipid Profile':[['Total cholesterol','mg/dL',125,200,0],['Triglycerides','mg/dL',40,150,0],['HDL cholesterol','mg/dL',40,80,0],['LDL cholesterol','mg/dL',50,100,0],['VLDL','mg/dL',5,30,0]],
+ 'Liver Function Test (LFT)':[['Total bilirubin','mg/dL',.2,1.2,1],['Direct bilirubin','mg/dL',0,.3,1],['SGOT (AST)','U/L',10,40,0],['SGPT (ALT)','U/L',7,56,0],['Alkaline phosphatase','U/L',44,147,0],['Total protein','g/dL',6,8.3,1],['Albumin','g/dL',3.5,5.2,1]],
+ 'Kidney Function Test (KFT)':[['Urea','mg/dL',15,45,0],['Creatinine','mg/dL',.6,1.3,2],['Uric acid','mg/dL',3.5,7.2,1],['Sodium','mmol/L',135,145,0],['Potassium','mmol/L',3.5,5.1,1]],
+ 'Thyroid Profile (T3, T4, TSH)':[['T3 total','ng/dL',80,200,0],['T4 total','\u00B5g/dL',5.1,14.1,1],['TSH','\u00B5IU/mL',.4,4.2,2]],
+ 'HbA1c':[['HbA1c','%',4,5.6,1]],'Fasting Blood Sugar':[['Glucose (fasting)','mg/dL',70,100,0]],'Post-Prandial Blood Sugar':[['Glucose (post-prandial)','mg/dL',70,140,0]],'Vitamin D (25-OH)':[['25-OH Vitamin D','ng/mL',30,100,1]],'Vitamin B12':[['Vitamin B12','pg/mL',211,911,0]],'TSH':[['TSH','\u00B5IU/mL',.4,4.2,2]],
+ 'Iron Profile':[['Serum iron','\u00B5g/dL',60,170,0],['TIBC','\u00B5g/dL',250,450,0],['Transferrin saturation','%',20,50,0]],'hs-CRP':[['hs-CRP','mg/L',0,3,1]],'Ferritin':[['Ferritin','ng/mL',13,150,0]],'ESR':[['ESR (1st hour)','mm/hr',0,20,0]],'PSA Total':[['PSA total','ng/mL',0,4,2]],'Prolactin':[['Prolactin','ng/mL',4,25,1]],'Hemoglobin':[['Hemoglobin','g/dL',12.5,16.5,1]],'Serum Creatinine':[['Creatinine','mg/dL',.6,1.3,2]],'Uric Acid':[['Uric acid','mg/dL',3.5,7.2,1]],'Total Cholesterol':[['Total cholesterol','mg/dL',125,200,0]],'Triglycerides':[['Triglycerides','mg/dL',40,150,0]],'Random Blood Sugar':[['Glucose (random)','mg/dL',70,140,0]],'Calcium':[['Calcium','mg/dL',8.6,10.2,1]],'Urea':[['Urea','mg/dL',15,45,0]],'Homocysteine':[['Homocysteine','\u00B5mol/L',5,15,1]]};
+const QUAL={'Urine Routine':[['Colour','Pale yellow'],['Appearance','Clear'],['Reaction (pH)','6.0'],['Specific gravity','1.015'],['Protein','Nil'],['Glucose','Nil'],['Ketones','Nil'],['Pus cells','1-2 /hpf'],['Epithelial cells','1-2 /hpf'],['RBC','Nil']],'Stool Routine':[['Colour','Brown'],['Consistency','Semi-solid'],['Mucus','Absent'],['Ova / cysts','Not seen'],['Occult blood','Negative']],'Dengue NS1 Antigen':[['Dengue NS1','Negative']],'Malaria Antigen':[['P. vivax','Negative'],['P. falciparum','Negative']],'Widal Test':[['S. Typhi O','1:40'],['S. Typhi H','1:40']],'Typhidot IgM / IgG':[['IgM','Negative'],['IgG','Negative']],'HIV I & II':[['HIV I & II','Non-reactive']],'HBsAg':[['HBsAg','Non-reactive']],'Blood Group & Rh Typing':[['Blood group','B'],['Rh factor','Positive']]};
+const RAD={'X-Ray':['Bony cortices and joint spaces appear normal. No fracture or dislocation. Soft tissues are unremarkable.','No significant abnormality detected.'],
+ 'Ultrasound':['Organs in the scanned region appear normal in size, shape and echotexture. No focal lesion, collection or free fluid seen.','Normal ultrasound study.'],
+ 'CT Scan':['No focal lesion, mass effect or abnormal enhancement. Visualised structures are normal. No lymphadenopathy or free fluid.','No significant abnormality detected on this study.'],
+ 'MRI':['Normal signal intensity in the visualised structures. No focal lesion, restricted diffusion or abnormal enhancement. Mild age-related changes only.','No significant abnormality detected. Clinical correlation advised.'],
+ 'Mammography & Bone':['Breast tissue is fibroglandular with no suspicious mass, distortion or microcalcification. Bone density is within the expected range for age.','BI-RADS 1 (negative) / Normal bone mineral density.'],
+ 'PET & Nuclear':['No abnormal FDG-avid focus identified. Physiological uptake only.','No evidence of metabolically active disease.']};
+const CARD={'ECG':'Normal sinus rhythm. Heart rate 74 bpm. Normal axis. No ST-T changes. Normal ECG.','2D Echo with Doppler':'LVEF 60%. No regional wall motion abnormality. All four valves are normal. No pericardial effusion. Normal study.','TMT (Treadmill Test)':'Achieved 92% of target heart rate. No ST depression or arrhythmia. Negative for inducible ischemia.','EEG':'Normal background activity. No epileptiform discharges. Normal EEG.','Spirometry / PFT':'FEV1 and FVC within normal limits. FEV1/FVC 82%. No obstruction.'};
+function reportHTML(o){
+ const R=sr(o.id),parts=o.tests.map(id=>{
+  const t=T[id],r=sr(o.id+t.name);let h=`<div class="sec">${esc(t.name)}</div>`;
+  if(PANEL[t.name]){h+=`<table><thead><tr><th>Parameter</th><th>Result</th><th>Unit</th><th>Reference range</th></tr></thead><tbody>${PANEL[t.name].map(p=>{let v=p[2]+(p[3]-p[2])*(.22+.56*r()),f='';const q=r();if(q<.14){v=p[3]+(p[3]-p[2])*.18*(r()+.4);f='H'}else if(q<.2&&p[2]>0){v=p[2]-(p[3]-p[2])*.12*(r()+.4);f='L'}
+   v=v.toFixed(p[4]);return`<tr><td>${p[0]}</td><td class="${f==='H'?'hi':f==='L'?'lo':''}"><b>${p[4]?v:Number(v).toLocaleString('en-IN')}</b> ${f}</td><td>${p[1]}</td><td>${p[2]} - ${p[3]}</td></tr>`}).join('')}</tbody></table>`}
+  else if(QUAL[t.name])h+=`<table><tbody>${QUAL[t.name].map(q=>`<tr><td style="width:50%">${q[0]}</td><td><b>${q[1]}</b></td></tr>`).join('')}</tbody></table>`;
+  else if(t.cat==='Radiology'){const x=RAD[t.sub];h+=`<p><b>Findings:</b> ${x[0]}</p><p style="margin-top:6px"><b>Impression:</b> ${x[1]}</p>`}
+  else if(CARD[t.name])h+=`<p>${CARD[t.name]}</p>`;
+  else h+=`<p><b>Result:</b> No abnormality detected. Values within the biological reference interval.</p>`;
+  return h}).join('');
+ const rad=o.tests.some(i=>T[i].cat==='Radiology');
+ return `<div class="rp"><div class="hd"><div><h2>LifeScan Diagnostics</h2><div>12, 100 Feet Road, Indiranagar, Bengaluru 560038 (demo address)</div></div><div style="text-align:right"><b>LABORATORY REPORT</b><div>Report ID: ${o.id}-R</div></div></div>
+ <div class="meta"><div><b>Patient:</b> ${esc(o.name)}</div><div><b>Age / Sex:</b> ${o.age} / ${o.sex}</div><div><b>Booking ID:</b> ${o.id}</div><div><b>Referred by:</b> Self</div><div><b>Collected:</b> ${fDY(T0+o.day*DAY)} ${o.slot}</div><div><b>Reported:</b> ${fDY(NOW)}</div></div>${parts}
+ <div class="sign"><div><b>Dr. Meera Krishnan</b><br>MD (Pathology)</div>${rad?'<div><b>Dr. Rohan Deshpande</b><br>MD (Radiodiagnosis)</div>':''}</div>
+ <div class="fine">Demo report generated from fictional data. Not valid for clinical use. H = above range, L = below range.</div></div>`;
+}
+
+/* ---------- UI helpers ---------- */
+const toast=(m,b)=>{const t=document.createElement('div');t.className='toast'+(b?' bad':'');t.textContent=m;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3600)};
+const openModal=(h,w)=>{$('#mbox').className='box'+(w?' wide':'');$('#mbox').innerHTML=h;$('#modal').hidden=false},closeModal=()=>{$('#modal').hidden=true};
+const openSide=()=>{$('#side').classList.add('open');$('#scrim').classList.add('on')},closeSide=()=>{$('#side').classList.remove('open');$('#scrim').classList.remove('on')};
+const sc=s=>['mute','info','pur','ok','ok'][s];
+const F={q:'',cat:'All',sub:'All',oq:'',os:'All',oc:'All',lim:60};
+
+/* ---------- Views ---------- */
+function vTests(){
+ const subs=['All'].concat([...new Set(T.filter(t=>F.cat==='All'||t.cat===F.cat).map(t=>t.sub))]);
+ return `<div class="shop"><div class="card"><div class="tools"><input id="tq" type="search" placeholder="Search tests: CBC, MRI brain, thyroid..." value="${esc(F.q)}" aria-label="Search tests" style="flex:1;min-width:180px"></div>
+ <div class="chips" style="margin-top:12px">${['All','Pathology','Radiology','Cardio & Neuro'].map(c=>`<button class="chip ${F.cat===c?'on':''}" data-act="cat" data-v="${c}">${c}</button>`).join('')}</div>
+ <div class="chips" style="margin-top:8px">${subs.map(c=>`<button class="chip ${F.sub===c?'on':''}" data-act="sub" data-v="${c}" style="font-size:.76rem;padding:4px 11px">${c}</button>`).join('')}</div>
+ <div id="tlist" style="margin-top:8px"></div></div>${cartCard()}</div>`;
+}
+function fillTests(){
+ const q=F.q.toLowerCase(),r=T.filter(t=>(F.cat==='All'||t.cat===F.cat)&&(F.sub==='All'||t.sub===F.sub)&&(!q||(t.name+t.sub).toLowerCase().includes(q)));
+ $('#tlist').innerHTML=r.slice(0,F.lim).map(t=>{const inc=inCart(t.id);return`<div class="trow"><div><b>${esc(t.name)}</b><small>${t.sub} &middot; Report: ${t.tat}${t.home?' &middot; Home collection available':''}<br>${esc(t.prep)}</small></div><div class="price">${inr(t.cost)}<small class="muted" style="font-weight:500">Cost of test</small><button class="btn sm ${inc?'':'pri'}" data-act="${S.cart.tests.includes(t.id)?'rm':'add'}" data-id="${t.id}" style="margin-top:6px" ${inc&&!S.cart.tests.includes(t.id)?'disabled':''}>${S.cart.tests.includes(t.id)?'Remove':inc?'In package':'Add'}</button></div></div>`}).join('')||'<div class="muted" style="padding:20px 0">No tests found.</div>';
+ $('#tlist').insertAdjacentHTML('beforeend','<div style="padding:14px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="muted" style="font-size:.84rem">Showing '+Math.min(F.lim,r.length)+' of '+r.length+' tests</span>'+(r.length>F.lim?'<button class="btn sm" data-act="more">Show 60 more</button>':'')+'</div>');
+}
+function cartCard(){
+ const c=cartCalc(false),n=S.cart.tests.length+S.cart.pkgs.length;
+ return `<div class="card cart" id="cart"><h3>Your cart <small>${n} item(s)</small></h3>${S.cart.pkgs.map(p=>`<div class="cl"><span><b>${PK[p].name}</b><br><small class="muted">Package, ${PK[p].tests.length} tests</small></span><span>${inr(PK[p].price)} <button data-act="rmp" data-id="${p}" aria-label="Remove">&#10005;</button></span></div>`).join('')}${S.cart.tests.map(t=>`<div class="cl"><span>${esc(T[t].name)}${covered().has(t)?' <span class="pill ok">in package</span>':''}</span><span>${covered().has(t)?'-':inr(T[t].cost)} <button data-act="rm" data-id="${t}" aria-label="Remove">&#10005;</button></span></div>`).join('')}${n?'':'<div class="muted" style="text-align:center;padding:14px 0">Add tests or a package to begin.</div>'}
+ <div class="tools"><input id="cpn" placeholder="Coupon (try LIFE10)" value="${S.coupon?'LIFE10':''}" style="flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px" aria-label="Coupon code"><button class="btn sm" data-act="cpn">Apply</button></div>
+ <div class="tot"><div><span>Subtotal</span><span>${inr(c.sub)}</span></div>${c.disc?`<div style="color:var(--ok)"><span>Coupon LIFE10</span><span>&minus; ${inr(c.disc)}</span></div>`:''}<div class="big"><span>Total</span><span>${inr(c.total)}</span></div></div>
+ <button class="btn pri lg" data-act="checkout" ${n?'':'disabled'}>Book now</button></div>`;
+}
+function vPackages(){
+ return `<div class="pk">${PK.map(p=>`<div class="pkc"><h4>${p.name}</h4><div class="muted" style="font-size:.84rem">${p.desc}</div><div class="pr">${inr(p.price)}<s>${inr(p.sum)}</s></div><span class="pill ok" style="justify-self:start">Save ${inr(p.sum-p.price)}</span><ul>${p.tests.map(t=>`<li>${esc(T[t].name)}</li>`).join('')}</ul><button class="btn pri" data-act="${S.cart.pkgs.includes(p.id)?'rmp':'addp'}" data-id="${p.id}">${S.cart.pkgs.includes(p.id)?'Remove from cart':'Add package'}</button></div>`).join('')}</div>`;
+}
+function checkout(){
+ const days=Array.from({length:7},(_,i)=>i),c=cartCalc(false);
+ openModal(`<h2>Book appointment</h2><div class="muted">${S.cart.tests.length+S.cart.pkgs.length} item(s) &middot; <b>${inr(c.total)}</b></div><form class="form" id="bookF">
+ <div class="row2"><label>Patient name<input id="b-n" maxlength="60" autocomplete="name"></label><label>Mobile<input id="b-p" inputmode="numeric" maxlength="10" placeholder="10 digits"></label></div>
+ <div class="row2"><label>Age<input id="b-a" type="number" min="0" max="110" value="35"></label><label>Gender<select id="b-g"><option>M</option><option>F</option></select></label></div>
+ <div class="row2"><label>Date<select id="b-d">${days.map(d=>`<option value="${d}">${d?dow(T0+d*DAY)+' ':'Today '}${fD(T0+d*DAY)}</option>`).join('')}</select></label><label>Time slot<select id="b-s">${SL.slice(0,10).map(s=>`<option>${s}</option>`).join('')}</select></label></div>
+ ${c.hasPath?`<label>Sample collection<select id="b-m"><option value="Walk-in">Visit the center</option><option value="Home">Home collection ${c.sub>=800?'(free)':'(+ '+inr(100)+')'}</option></select></label><div id="b-hm" hidden class="row2"><label>Area<select id="b-ar">${AREAS.map(a=>`<option>${a}</option>`).join('')}</select></label><label>Address<input id="b-ad" maxlength="120" placeholder="House, street"></label></div>`:''}
+ ${c.hasNon?'<div class="muted" style="font-size:.82rem">Scans and cardio tests are done at the center. A slot will be reserved on the right machine.</div>':''}
+ <div class="err" id="b-e"></div><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn" data-act="closeModal">Back</button><button class="btn pri" type="submit">Confirm booking</button></div></form>`);
+}
+function submitBook(e){
+ e.preventDefault();const n=$('#b-n').value.trim(),p=$('#b-p').value.trim(),m=$('#b-m')?$('#b-m').value:'Walk-in';
+ if(!n){$('#b-e').textContent='Enter the patient name.';return}if(!/^\d{10}$/.test(p)){$('#b-e').textContent='Enter a valid 10 digit mobile number.';return}
+ const home=m==='Home';if(home&&!$('#b-ad').value.trim()){$('#b-e').textContent='Enter the collection address.';return}
+ const c=cartCalc(home),day=+$('#b-d').value,slot=$('#b-s').value,sched=[];
+ for(const id of c.all){const t=T[id];if(t.cat==='Radiology'){const a=allocate(t,day,slot);if(a){S.sched[a.key]=n;sched.push({test:t.name,machine:a.machine,slot:a.slot})}}}
+ const o=mkOrder({name:n,age:+$('#b-a').value||30,sex:$('#b-g').value,phone:p,tests:c.all,mode:home?'Home':'Walk-in',area:home?$('#b-ar').value:'',addr:home?$('#b-ad').value.trim():'',day,slot,status:0,hc:home?0:-1,phl:PHL[rr(0,3)],ts:Date.now(),paid:false,sched});
+ o.total=c.total;S.orders.unshift(o);S.cart={tests:[],pkgs:[]};S.coupon=null;render();
+ openModal(`<div style="text-align:center"><div style="font-size:3rem">&#9989;</div><h2>Booking confirmed</h2><div class="muted">Booking ID <b>${o.id}</b></div></div><div class="list" style="margin:14px 0"><li><div class="g"><b>${esc(o.name)}</b><small>${o.tests.length} test(s) &middot; ${inr(o.total)}</small></div></li><li><div class="g"><b>${fDY(T0+day*DAY)} at ${slot}</b><small>${home?'Home collection, '+esc(o.area)+' (phlebotomist '+o.phl+')':'Visit LifeScan, Indiranagar'}</small></div></li>${sched.map(s=>`<li><div class="g"><b>${esc(s.test)}</b><small>${s.machine} at ${s.slot}</small></div></li>`).join('')}</div><p class="muted" style="font-size:.84rem">SMS and WhatsApp confirmation sent to ${p.slice(0,5)}XXXXX. Preparation instructions are in your booking slip.</p>
+ <div class="noprint" style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap"><button class="btn" data-act="closeModal">Close</button><button class="btn pri" data-act="print">Download slip (PDF)</button></div>`);
+}
+function vReports(){
+ return `<div class="card"><div class="tools"><input id="rq" type="search" placeholder="Search by name, booking ID or phone" value="${esc(F.oq)}" aria-label="Search reports" style="flex:1;min-width:180px"></div><div class="tw" style="margin-top:12px" id="rtbl"></div></div>`;
+}
+function fillReports(){
+ const q=F.oq.toLowerCase(),r=S.orders.filter(o=>o.status>=3&&(!q||(o.name+o.id+o.phone).toLowerCase().includes(q)));
+ $('#rtbl').innerHTML=`<table><thead><tr><th>Booking</th><th>Patient</th><th>Tests</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody>${r.map(o=>`<tr><td><b>${o.id}</b></td><td>${esc(o.name)}<div class="muted" style="font-size:.76rem">${o.age}${o.sex}</div></td><td>${o.tests.length>2?esc(T[o.tests[0]].name)+' +'+(o.tests.length-1)+' more':o.tests.map(t=>esc(T[t].name)).join(', ')}</td><td>${fD(T0+o.day*DAY)}</td><td><span class="pill ${sc(o.status)}">${STAT[o.status]}</span></td><td><button class="btn sm pri" data-act="report" data-id="${o.id}">View / download</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">No reports ready yet. Advance a booking in the Worklist.</td></tr>'}</tbody></table>`;
+}
+function vDash(){
+ const O=S.orders.filter(o=>o.day===0),rev=O.reduce((s,o)=>s+o.total,0),tests=O.reduce((s,o)=>s+o.tests.length,0),pend=S.orders.filter(o=>o.status<3).length;
+ const cats=['Pathology','Radiology','Cardio & Neuro'].map(c=>[c,S.orders.reduce((s,o)=>s+o.tests.filter(t=>T[t].cat===c).reduce((a,t)=>a+T[t].cost,0),0)]),cm=Math.max(...cats.map(c=>c[1]),1);
+ const util=MACH.map(m=>{const n=SL.filter(s=>S.sched['0|'+m[0]+'|'+s]).length;return[m[0],n/SL.length*100]});
+ const hrs=SL.slice(0,10).map(s=>[s.slice(0,2),S.orders.filter(o=>o.day===0&&o.slot===s).length+rr(0,0)]),hm=Math.max(...hrs.map(h=>h[1]),1);
+ return `<div class="kpis"><div class="kpi"><small>Bookings today</small><b>${O.length}</b><span>${tests} tests</span></div><div class="kpi"><small>Revenue today</small><b>${inr(rev)}</b><span>all channels</span></div><div class="kpi"><small>Reports pending</small><b style="color:var(--warn)">${pend}</b><span>in worklist</span></div><div class="kpi"><small>Home collections</small><b>${S.orders.filter(o=>o.hc>=0&&o.day===0).length}</b><span>${S.orders.filter(o=>o.hc>=0&&o.hc<2).length} still to collect</span></div><div class="kpi"><small>Avg report time</small><b>4.2 h</b><span>pathology, today</span></div></div>
+ <div class="g2"><div class="card"><h3>Revenue by department</h3><div class="hbar">${cats.map(c=>`<div><div class="l"><span>${c[0]}</span><b>${inr(c[1])}</b></div><div class="t"><i style="width:${c[1]/cm*100}%"></i></div></div>`).join('')}</div></div>
+ <div class="card"><h3>Machine utilisation <small>today</small></h3><div class="hbar">${util.map(u=>`<div><div class="l"><span>${u[0]}</span><b>${Math.round(u[1])}%</b></div><div class="t"><i style="width:${u[1]}%;${u[1]>80?'background:var(--bad)':''}"></i></div></div>`).join('')}</div></div></div>
+ <div class="g2"><div class="card"><h3>Footfall by hour <small>today's bookings</small></h3><div class="bars">${hrs.map(h=>`<div><b>${h[1]||''}</b><i style="height:${Math.max(h[1]/hm*100,3)}%"></i>${h[0]}h</div>`).join('')}</div></div>
+ <div class="card"><h3>Latest bookings</h3><ul class="list">${S.orders.slice(0,6).map(o=>`<li><div class="g"><b>${o.id}</b> ${esc(o.name)}<small>${o.tests.length} test(s) &middot; ${o.mode==='Home'?'Home, '+esc(o.area):'At center'}</small></div><b>${inr(o.total)}</b><span class="pill ${sc(o.status)}">${STAT[o.status]}</span></li>`).join('')}</ul></div></div>`;
+}
+function vWork(){
+ return `<div class="card"><div class="tools"><input id="wq" type="search" placeholder="Search booking or patient" value="${esc(F.oq)}" aria-label="Search" style="flex:1;min-width:160px"><select id="ws" aria-label="Status"><option>All</option>${STAT.map(s=>`<option ${F.os===s?'selected':''}>${s}</option>`).join('')}</select><select id="wc" aria-label="Department">${['All','Pathology','Radiology'].map(s=>`<option ${F.oc===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="tw" style="margin-top:12px" id="wtbl"></div></div>`;
+}
+function fillWork(){
+ const q=F.oq.toLowerCase(),r=S.orders.filter(o=>(F.os==='All'||STAT[o.status]===F.os)&&(F.oc==='All'||o.tests.some(t=>T[t].cat===F.oc))&&(!q||(o.name+o.id).toLowerCase().includes(q)));
+ $('#wtbl').innerHTML=`<table><thead><tr><th>Booking</th><th>Patient</th><th>Tests</th><th>When</th><th>Progress</th><th>Amount</th><th>Action</th></tr></thead><tbody>${r.map(o=>`<tr><td><b>${o.id}</b><div class="muted" style="font-size:.74rem">${o.mode==='Home'?'Home':'Center'}</div></td><td>${esc(o.name)}<div class="muted" style="font-size:.76rem">${o.age}${o.sex}</div></td><td>${o.tests.length>1?esc(T[o.tests[0]].name)+' +'+(o.tests.length-1):esc(T[o.tests[0]].name)}</td><td>${o.day?fD(T0+o.day*DAY):'Today'} ${o.slot}</td><td style="min-width:150px"><ul class="steps">${STAT.map((s,i)=>`<li class="${i<o.status?'d':i===o.status?'c':''}"></li>`).join('')}</ul><span class="pill ${sc(o.status)}" style="margin-top:4px">${STAT[o.status]}</span></td><td>${inr(o.total)}${o.paid?'':' <span class="pill warn">Due</span>'}</td><td>${o.status<3?`<button class="btn sm pri" data-act="adv" data-id="${o.id}">${['Mark collected','Start processing','Release report'][o.status]}</button>`:o.status===3?`<button class="btn sm" data-act="deliver" data-id="${o.id}">Mark delivered</button> <button class="btn sm" data-act="report" data-id="${o.id}">Report</button>`:`<button class="btn sm" data-act="report" data-id="${o.id}">Report</button>`}</td></tr>`).join('')||'<tr><td colspan="7" class="muted">Nothing here.</td></tr>'}</tbody></table>`;
+}
+function vRad(){
+ const d=F.day||0;
+ return `<div class="card"><div class="tools"><div class="chips">${Array.from({length:7},(_,i)=>`<button class="chip ${d===i?'on':''}" data-act="rday" data-v="${i}">${i?dow(T0+i*DAY):'Today'} ${fD(T0+i*DAY)}</button>`).join('')}</div></div>
+ <div class="sched" style="margin-top:14px"><div class="sg"><div></div>${SL.map(s=>`<div class="h">${s}</div>`).join('')}${MACH.map(m=>`<div class="m">${m[0]}</div>${SL.map(s=>{const v=S.sched[d+'|'+m[0]+'|'+s];return`<div class="cell ${v?'b':''}" title="${v?esc(v):'Free'}">${v?'Booked':'Free'}</div>`}).join('')}`).join('')}</div></div>
+ <p class="muted" style="font-size:.82rem;margin-top:12px">New radiology bookings from the patient portal reserve the next free slot on the correct machine automatically.</p></div>`;
+}
+function vHome(){
+ const L=S.orders.filter(o=>o.hc>=0);
+ return `<div class="kpis"><div class="kpi"><small>Visits assigned</small><b>${L.length}</b></div><div class="kpi"><small>On the road</small><b style="color:var(--warn)">${L.filter(o=>o.hc===1).length}</b></div><div class="kpi"><small>Samples collected</small><b style="color:var(--ok)">${L.filter(o=>o.hc>=2).length}</b></div><div class="kpi"><small>Phlebotomists</small><b>${PHL.length}</b></div></div>
+ <div class="card"><h3>Collection routes</h3><div class="tw"><table><thead><tr><th>Booking</th><th>Patient</th><th>Area</th><th>Window</th><th>Phlebotomist</th><th>Status</th><th>Action</th></tr></thead><tbody>${L.map(o=>`<tr><td><b>${o.id}</b></td><td>${esc(o.name)}<div class="muted" style="font-size:.76rem">${o.phone.slice(0,5)}XXXXX</div></td><td>${esc(o.area)}</td><td>${o.slot}</td><td>${o.phl}</td><td><span class="pill ${o.hc===3?'ok':o.hc===2?'pur':o.hc===1?'warn':'mute'}">${HC[o.hc]}</span></td><td>${o.hc<3?`<button class="btn sm pri" data-act="hc" data-id="${o.id}">${['Start trip','Sample collected','Reached lab'][o.hc]}</button>`:'<span class="muted">Done</span>'}</td></tr>`).join('')||'<tr><td colspan="7" class="muted">No home collections.</td></tr>'}</tbody></table></div></div>`;
+}
+const VIEWS={tests:['Book tests',vTests,fillTests],packages:['Health packages',vPackages],reports:['My reports',vReports,fillReports],dashboard:['Lab dashboard',vDash],worklist:['Worklist',vWork,fillWork],radiology:['Scan schedule',vRad],home:['Home collection',vHome]};
+let cur='tests';
+function render(){
+ const v=VIEWS[cur];$('#pageTitle').textContent=v[0];document.title=v[0]+' | LifeScan (Demo)';$('#view').innerHTML=v[1]();if(v[2])v[2]();
+ $$('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===cur));
+ const n=S.cart.tests.length+S.cart.pkgs.length,pend=S.orders.filter(o=>o.status<3).length;
+ $('#cartN').textContent=n;$('#cartN').hidden=!n;$('#wlN').textContent=pend||'';$('#wlN').hidden=!pend;
+ const cb=$('#cartbar');cb.hidden=!(n&&(cur==='tests'||cur==='packages'));cb.innerHTML=`<span>&#128722; ${n} item(s)</span><span>${inr(cartCalc(false).total)} &rarr;</span>`;
+}
+function route(){const h=location.hash.slice(1);cur=VIEWS[h]?h:'tests';closeSide();render();window.scrollTo(0,0)}
+
+/* ---------- Actions ---------- */
+const acts={
+ closeModal,print:()=>window.print(),reset:()=>location.reload(),
+ cat:e=>{F.cat=e.dataset.v;F.sub='All';F.lim=60;render()},sub:e=>{F.sub=e.dataset.v;F.lim=60;render()},more:()=>{F.lim+=60;fillTests()},
+ add:e=>{S.cart.tests.push(+e.dataset.id);render();toast('Added to cart.')},rm:e=>{S.cart.tests=S.cart.tests.filter(x=>x!==+e.dataset.id);render()},
+ addp:e=>{S.cart.pkgs.push(+e.dataset.id);render();toast('Package added to cart.')},rmp:e=>{S.cart.pkgs=S.cart.pkgs.filter(x=>x!==+e.dataset.id);render()},
+ cpn:()=>{const v=$('#cpn').value.trim().toUpperCase();if(v==='LIFE10'){S.coupon=true;toast('Coupon LIFE10 applied: 10% off, up to '+inr(500)+'.')}else{S.coupon=null;toast('Invalid coupon.',1)}render()},
+ opencart:()=>{if(cur!=='tests'){location.hash='tests'}else{const c=$('#cart');if(c)c.scrollIntoView({behavior:'smooth'})}},
+ checkout,
+ report:e=>{const o=ord(e.dataset.id);openModal(reportHTML(o)+'<div class="noprint" style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button class="btn" data-act="closeModal">Close</button><button class="btn pri" data-act="print">Download PDF</button></div>',1)},
+ adv:e=>{const o=ord(e.dataset.id);o.status++;if(o.status>=1&&o.hc>=0&&o.hc<2)o.hc=2;if(o.status===3)o.paid=true;render();toast(o.id+': '+STAT[o.status]+(o.status===3?'. SMS sent to patient.':''))},
+ deliver:e=>{const o=ord(e.dataset.id);o.status=4;render();toast(o.id+' report delivered.')},
+ rday:e=>{F.day=+e.dataset.v;render()},
+ hc:e=>{const o=ord(e.dataset.id);o.hc++;if(o.hc===2&&o.status===0)o.status=1;if(o.hc===3&&o.status<2)o.status=2;render();toast(o.id+': '+HC[o.hc])}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&acts[b.dataset.act]){acts[b.dataset.act](b);return}if(e.target===$('#modal'))closeModal()});
+document.addEventListener('input',e=>{const t=e.target.id;if(t==='tq'){F.q=e.target.value;F.lim=60;fillTests()}else if(t==='rq'){F.oq=e.target.value;fillReports()}else if(t==='wq'){F.oq=e.target.value;fillWork()}});
+document.addEventListener('change',e=>{const t=e.target.id;if(t==='ws'){F.os=e.target.value;fillWork()}else if(t==='wc'){F.oc=e.target.value;fillWork()}else if(t==='b-m'){$('#b-hm').hidden=e.target.value!=='Home'}});
+document.addEventListener('submit',e=>{if(e.target.id==='bookF')submitBook(e)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeSide()}});
+$('#menu').addEventListener('click',openSide);$('#scrim').addEventListener('click',closeSide);window.addEventListener('hashchange',route);
+const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme')}catch(e){}
+function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme',t)}catch(e){}}
+setTheme(sv||'dark');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').hidden=false});
+$('#install').addEventListener('click',()=>{if(dp){dp.prompt();dp=null;$('#install').hidden=true}});
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+route();
+})();
+</script>
+</body>
+</html>

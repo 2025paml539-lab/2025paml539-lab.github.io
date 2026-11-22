@@ -26,7 +26,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:90px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-main,footer{overflow-x:clip}
 body{font-family:"Plus Jakarta Sans",system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;transition:background .4s,color .4s}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
@@ -662,17 +661,23 @@ footer{text-align:center;color:var(--muted);padding:40px 24px 60px;font-size:.9r
   var D={
     aero:{i:'&#9992;&#65039;',c:'rgba(61,165,255,.2)',t:'SkyOps MRO',d:'Aerospace MRO, fleet management and AOG command center',u:'aerospace-mro.html'},
     retail:{i:'&#128717;&#65039;',c:'rgba(224,82,168,.2)',t:'ShopPulse Retail',d:'POS billing, multi-store inventory and online storefront',u:'retail-store.html'},
-    health:{i:'&#127973;',c:'rgba(20,184,166,.2)',t:'CareSync Clinic',d:'Appointments, patient records, pharmacy and telemedicine',u:'healthcare-clinic.html'}
+    health:{i:'&#127973;',c:'rgba(20,184,166,.2)',t:'CareSync Clinic',d:'Appointments, patient records, pharmacy and telemedicine',u:'healthcare-clinic.html'},
+    diag:{i:'&#129514;',c:'rgba(99,102,241,.22)',t:'LifeScan Diagnostics',d:'170+ lab and radiology tests, booking, scan schedule and PDF reports',u:'diagnostics-center.html'},
+    pay:{i:'&#128176;',c:'rgba(16,185,129,.22)',t:'PayDesk Payroll',d:'Salary structure, tax calculator, payroll run, payslips and statutory reports',u:'payroll-system.html'},
+    bake:{i:'&#129360;',c:'rgba(245,158,11,.25)',t:'Golden Crust Bakery',d:'Bengaluru favourites, cake designer and owner dashboard with photo upload',u:'bakery-shop.html'}
   };
   function card(k){var d=D[k];return '<a class="dc" href="'+d.u+'" target="_blank" rel="noopener"><span class="ic" style="background:'+d.c+'">'+d.i+'</span><span><b>'+d.t+'</b><small>'+d.d+'</small></span><span class="go">&rarr;</span></a>'}
   function cards(list){return '<div class="dcards">'+list.map(card).join('')+'</div>'}
   var R={
-    work:['Here are three live demos. Each is a working app with fictional data, so you can click around:'+cards(['aero','retail','health'])],
+    work:['Here are six live demos. Each is a working app with fictional data, so you can click around:'+cards(['aero','retail','health','diag','pay','bake'])],
+    diag:['A diagnostic center system: a catalogue of 170+ pathology, radiology and cardiac tests with costs, health packages, booking with home collection, scan scheduling and downloadable reports:'+cards(['diag'])],
+    pay:['A complete payroll system: salary structure for a 20 LPA package, old vs new tax regime calculator, payroll run, payslip PDF and PF, ESI, TDS and bank reports:'+cards(['pay'])],
+    bake:['A bakery website with Bengaluru favourites, a live cake designer, online ordering, and an owner dashboard (PIN 1234) where the owner uploads new items with photos and prices:'+cards(['bake'])],
     aero:['Aerospace is my main domain. This demo covers fleet status, an AOG command center with live downtime clocks, maintenance planning, work orders, parts and compliance:'+cards(['aero'])],
     retail:['A retail operations console: POS billing with GST and coupons, stock across stores, orders, loyalty and an online storefront:'+cards(['retail'])],
     health:['A clinic management system: appointment booking, patient records with vitals trends, pharmacy and labs, billing and a telemedicine screen:'+cards(['health'])],
     build:['I build <b>web apps and dashboards</b>, <b>mobile apps</b> (installable PWAs and cross-platform), <b>AI/ML and automation</b>, enterprise <b>MRO and fleet systems</b>, and legacy modernization from .NET Framework to .NET 8 and Angular.','Want to see examples?'],
-    mobile:['Yes, I build mobile apps. The three demos are installable as phone apps (look for the Install option in your browser menu), and I can also build native-style apps for Android and iOS.'+cards(['aero','retail','health'])],
+    mobile:['Yes, I build mobile apps. All six demos are installable as phone apps (look for the Install option in your browser menu), and I can also build native-style apps for Android and iOS.'+cards(['aero','retail','health','diag','pay','bake'])],
     ai:['I do applied AI/ML and AI-assisted development: ML pipelines, generative and agentic AI, and automating manual work. I am also studying AI &amp; ML at BITS Pilani. Tell me your use case on WhatsApp and I will suggest an approach.'],
     contact:['Great, let us talk about your project. Share what you need and I will reply with a plan and quote.<br><br><a class="lnk" href="'+WA+'" target="_blank" rel="noopener">Chat on WhatsApp</a><br><a class="lnk" href="mailto:nandhaluruk@gmail.com?subject=Project%20enquiry">Email nandhaluruk@gmail.com</a><br>Based in Bangalore, available for meetings in person.'],
     resume:['Downloading my resume now.',function(){var a=document.querySelector('a[data-resume]');if(a)a.click()}],
@@ -693,6 +698,9 @@ footer{text-align:center;color:var(--muted);padding:40px 24px 60px;font-size:.9r
     s=s.toLowerCase();
     if(/resume|\bcv\b/.test(s))return'resume';
     if(/aero|mro|aircraft|aog|fleet|airline|aviation|boeing/.test(s))return'aero';
+    if(/payroll|salary|payslip|hrms|\bhr\b|\btax\b|provident|\bpf\b/.test(s))return'pay';
+    if(/bakery|\bcakes?\b|bake|food|cafe|restaurant|sweet/.test(s))return'bake';
+    if(/diagnos|radiolog|pathology|\bmri\b|\bct\b|\bscan|\blab\b|blood test|\btests?\b/.test(s))return'diag';
     if(/retail|shop|store|\bpos\b|ecommerce|e-commerce|billing|inventory/.test(s))return'retail';
     if(/health|hospital|clinic|patient|doctor|medical|pharma/.test(s))return'health';
     if(/contact|hire|price|cost|quote|whatsapp|call|email|phone|rate|budget|meet/.test(s))return'contact';
@@ -705,7 +713,7 @@ footer{text-align:center;color:var(--muted);padding:40px 24px 60px;font-size:.9r
   }
   function start(){
     if(started)return;started=true;qrs();
-    bot(['Hi &#128075; I am Kishore\'s assistant.','Kishore builds <b>web, mobile and AI solutions</b> for aerospace, retail and healthcare. Want to see his work?'+cards(['aero','retail','health'])]);
+    bot(['Hi &#128075; I am Kishore\'s assistant.','Kishore builds <b>web, mobile and AI solutions</b> for aerospace, retail, healthcare, diagnostics, payroll and food businesses. Here is a taste. Tap <b>Show me your work</b> for all six demos.'+cards(['aero','retail','health'])]);
   }
   function stopAttn(){fab.classList.remove('attn');badge.style.display='none';tip.classList.remove('show');clearTimeout(tipT);tipT=null}
   function open(){opened=true;panel.classList.add('open');fab.classList.add('open');fab.setAttribute('aria-expanded','true');fab.setAttribute('aria-label','Close chat');stopAttn();try{sessionStorage.setItem('chatSeen','1')}catch(e){}start();setTimeout(function(){inp.focus({preventScroll:true})},350)}

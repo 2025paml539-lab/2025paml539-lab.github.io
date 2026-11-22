@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PayDesk Payroll | Salary, Tax &amp; Payslips (Demo)</title>
+<meta name="description" content="Demo: complete payroll system with salary structure, PF, ESI, professional tax, TDS and tax calculator, payroll run, payslip PDF and statutory reports. Built by Kishore Nandhaluru. Fictional data.">
+<meta name="theme-color" content="#0b1511">
+<link rel="manifest" href="manifest-payroll.json">
+<link rel="icon" href="icons/pay-192.png">
+<link rel="apple-touch-icon" href="icons/pay-192.png">
+<style>
+:root{--bg:#0b1511;--panel:#111f19;--panel2:#183024;--line:rgba(255,255,255,.1);--text:#e8f5ee;--muted:#8fb3a2;--accent:#10b981;--accent2:#f5b942;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;--info:#60a5fa;--shadow:0 10px 30px rgba(0,0,0,.35)}
+[data-theme=light]{--bg:#eef6f1;--panel:#fff;--panel2:#f0f7f3;--line:rgba(10,70,40,.14);--text:#0c2418;--muted:#4f6f5e;--accent:#047857;--accent2:#b7791f;--ok:#047857;--warn:#a16207;--bad:#e11d48;--info:#2563eb;--shadow:0 8px 24px rgba(10,70,40,.1)}
+*{box-sizing:border-box;margin:0;padding:0}[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:15px;overflow-x:hidden}
+a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;z-index:60}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 16px}
+.brand i{font-style:normal;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:1.3rem}
+.brand b{display:block;font-size:1.05rem;line-height:1.1}.brand small{color:var(--muted);font-size:.74rem}
+#nav{display:flex;flex-direction:column;gap:3px}
+#nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;color:var(--muted);font-weight:600;transition:.2s}
+#nav a i{font-style:normal;width:22px;text-align:center}#nav a:hover{background:var(--panel2);color:var(--text)}
+#nav a.on{background:linear-gradient(135deg,rgba(16,185,129,.24),rgba(245,185,66,.12));color:var(--text);box-shadow:inset 0 0 0 1px rgba(16,185,129,.45)}
+.side-foot{margin-top:auto;padding-top:14px;display:grid;gap:10px;font-size:.8rem;color:var(--muted)}
+.main{min-width:0}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 24px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top h1{font-size:1.2rem;white-space:nowrap}.grow{flex:1}
+.badge-demo{font-size:.68rem;font-weight:800;letter-spacing:.08em;padding:5px 10px;border-radius:99px;background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.4);white-space:nowrap}
+.icon{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:grid;place-items:center;font-size:1.05rem;flex:none}#menu{display:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 16px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-weight:600;font-size:.88rem;transition:.2s;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}.btn.pri{background:linear-gradient(135deg,var(--accent),#0d9488);color:#fff;border-color:transparent}.btn.gold{background:linear-gradient(135deg,#f5b942,#f59e0b);color:#2b1a00;border-color:transparent}
+.btn.sm{padding:5px 11px;font-size:.8rem;border-radius:9px}.btn:disabled{opacity:.45;cursor:not-allowed}
+#view{padding:24px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-content:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.card h3{font-size:1rem;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.card h3 small{font-weight:500;color:var(--muted);font-size:.78rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.kpi small{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}.kpi b{display:block;font-size:1.55rem;line-height:1.25;margin-top:4px}.kpi span{font-size:.78rem;color:var(--muted)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.74rem;font-weight:700;white-space:nowrap;border:1px solid transparent}
+.pill.ok{background:rgba(52,211,153,.15);color:var(--ok);border-color:rgba(52,211,153,.35)}.pill.warn{background:rgba(251,191,36,.15);color:var(--warn);border-color:rgba(251,191,36,.35)}
+.pill.bad{background:rgba(251,113,133,.15);color:var(--bad);border-color:rgba(251,113,133,.4)}.pill.info{background:rgba(96,165,250,.16);color:var(--info);border-color:rgba(96,165,250,.4)}
+.pill.mute{background:var(--panel2);color:var(--muted);border-color:var(--line)}.pill.gold{background:rgba(245,185,66,.16);color:var(--accent2);border-color:rgba(245,185,66,.4)}
+.muted{color:var(--muted)}.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:560px}
+th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--panel2)}tfoot td{font-weight:800;border-top:2px solid var(--line);background:var(--panel2)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tools input,.tools select,.form input,.form select,td input,.sl input,.sl select{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-width:0;outline:none}
+.tools input:focus,.form input:focus,.form select:focus,td input:focus,.sl input:focus{border-color:var(--accent)}td input{width:84px;padding:5px 8px;text-align:right}
+.chip{padding:6px 13px;border-radius:99px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted)}.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}.chips{display:flex;flex-wrap:wrap;gap:8px}
+.hbar{display:grid;gap:12px}.hbar>div{display:grid;gap:4px;font-size:.86rem}.hbar .t{height:9px;border-radius:99px;background:var(--panel2);overflow:hidden}.hbar .t i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2))}.hbar .l{display:flex;justify-content:space-between;gap:8px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:160px;padding-top:10px}.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:5px;font-size:.72rem;color:var(--muted);min-width:0}
+.bars i{display:block;width:100%;max-width:46px;border-radius:7px 7px 3px 3px;background:linear-gradient(var(--accent2),var(--accent))}.bars b{color:var(--text);font-size:.7rem;white-space:nowrap}.bars .cur i{background:linear-gradient(#fff3,var(--accent2))}
+.flow{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 4px}.flow li{list-style:none;flex:1;min-width:110px;padding:10px 12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:.82rem;font-weight:600;color:var(--muted)}
+.flow li.d{border-color:rgba(52,211,153,.5);color:var(--ok)}.flow li.c{border-color:var(--accent2);color:var(--accent2);box-shadow:0 0 0 3px rgba(245,185,66,.15)}.flow li span{display:block;font-size:.7rem;font-weight:500;opacity:.8}
+.list{list-style:none;display:grid;gap:8px}.list li{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--panel2);font-size:.88rem;flex-wrap:wrap}.list .g{flex:1;min-width:140px}.list .g small{display:block;color:var(--muted)}
+.split{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:20px;align-items:start}
+.sl{display:grid;gap:14px}.sl label{display:grid;gap:5px;font-size:.8rem;color:var(--muted);font-weight:600}.sl input[type=range]{padding:0;accent-color:var(--accent)}.sl .rv{display:flex;justify-content:space-between;color:var(--text)}
+.stack{display:flex;height:26px;border-radius:99px;overflow:hidden;margin:10px 0}.stack i{display:block;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted)}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.big{font-size:2rem;font-weight:800;letter-spacing:-.02em}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}.cmpc{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--panel2)}.cmpc.best{border-color:var(--accent);box-shadow:0 0 0 2px rgba(16,185,129,.25)}
+.cmpc table{min-width:0;font-size:.82rem}.cmpc td{padding:6px 4px}
+.cta{margin:0 24px 28px;padding:22px;border-radius:18px;background:linear-gradient(135deg,rgba(16,185,129,.17),rgba(245,185,66,.12));border:1px solid var(--line);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cta h3{font-size:1.1rem;margin-bottom:4px}.cta p{color:var(--muted);font-size:.9rem;max-width:620px}.cta-b{display:flex;gap:10px;flex-wrap:wrap}
+.scrim{position:fixed;inset:0;background:rgba(2,10,6,.6);z-index:70;opacity:0;pointer-events:none;transition:.25s}.scrim.on{opacity:1;pointer-events:auto}
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:rgba(2,10,6,.7)}
+.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;width:min(100%,560px);max-height:92vh;overflow-y:auto}.modal .box.wide{width:min(100%,860px)}
+.form{display:grid;gap:12px;margin-top:14px}.form label{display:grid;gap:5px;font-size:.82rem;color:var(--muted);font-weight:600}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.err{color:var(--bad);font-size:.82rem;min-height:1em}
+.ps{background:#fff;color:#111;border-radius:12px;padding:24px;font-size:.86rem}.ps .hd{display:flex;justify-content:space-between;gap:14px;border-bottom:3px solid #047857;padding-bottom:10px;flex-wrap:wrap}.ps h2{color:#064e3b;font-size:1.2rem}
+.ps .meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;margin:12px 0;padding:10px 12px;background:#f0fdf4;border-radius:8px}.ps .meta span{color:#555}
+.ps table{min-width:0;font-size:.84rem;color:#111}.ps th{color:#444;border-color:#ccc;background:#f4f4f4}.ps td{border-color:#eee}.ps .net{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#064e3b;color:#fff;padding:12px 16px;border-radius:8px;margin-top:12px;font-size:1.05rem;flex-wrap:wrap}
+.ps .fine{font-size:.7rem;color:#666;margin-top:10px}.ps .wm{color:#b91c1c;font-weight:800;letter-spacing:.1em}
+.ps .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+#toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:200;width:min(92%,420px)}
+.toast{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok);padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);font-size:.88rem;animation:in .3s}.toast.bad{border-left-color:var(--bad)}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+@media(max-width:1000px){.split{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:900px){.app{grid-template-columns:minmax(0,1fr)}.side{position:fixed;left:0;top:0;bottom:0;width:270px;transform:translateX(-105%);transition:transform .3s}.side.open{transform:none}#menu{display:grid}.top{padding:10px 14px}.top h1{font-size:1.02rem;overflow:hidden;text-overflow:ellipsis}#view{padding:14px}.cta{margin:0 14px 24px}}
+@media(max-width:560px){.badge-demo{display:none}.kpi b{font-size:1.3rem}.card{padding:14px}.row2,.ps .meta,.ps .two{grid-template-columns:1fr}}
+@media print{body>*:not(.modal){display:none!important}.modal{position:static;background:#fff;padding:0;display:block!important}.modal .box{border:0;background:#fff;max-height:none;width:100%;padding:0;overflow:visible}.noprint{display:none!important}.ps{padding:0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="side" id="side">
+  <div class="brand"><i>&#128176;</i><div><b>PayDesk</b><small>Nimbus Technologies Pvt Ltd</small></div></div>
+  <nav id="nav" aria-label="Main">
+   <a href="#dashboard" data-v="dashboard"><i>&#128202;</i>Dashboard</a>
+   <a href="#employees" data-v="employees"><i>&#128101;</i>Employees</a>
+   <a href="#structure" data-v="structure"><i>&#129534;</i>Salary structure</a>
+   <a href="#tax" data-v="tax"><i>&#129518;</i>Tax calculator</a>
+   <a href="#run" data-v="run"><i>&#9889;</i>Run payroll</a>
+   <a href="#payslip" data-v="payslip"><i>&#128196;</i>Payslips</a>
+   <a href="#reports" data-v="reports"><i>&#128203;</i>Reports</a>
+  </nav>
+  <div class="side-foot"><div>Fictional company and employees. Built as a sample by Kishore Nandhaluru.</div><a class="btn" href="index.html">&larr; Back to portfolio</a><button class="btn" data-act="reset">&#8635; Reset demo data</button></div>
+ </aside>
+ <div class="scrim" id="scrim"></div>
+ <div class="main">
+  <header class="top">
+   <button class="icon" id="menu" aria-label="Menu">&#9776;</button>
+   <h1 id="pageTitle">Dashboard</h1><div class="grow"></div>
+   <select id="monthSel" aria-label="Payroll month" style="background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px"></select>
+   <span class="badge-demo">DEMO DATA</span>
+   <button class="btn sm" id="install" hidden>Install app</button>
+   <button class="icon" id="theme" aria-label="Toggle theme">&#9790;</button>
+  </header>
+  <main id="view"></main>
+  <section class="cta">
+   <div><h3>Need payroll, HRMS or statutory compliance software?</h3><p>I build payroll engines, salary structures, tax computation, payslip generation and HR portals, tailored to your company's policies. This demo uses fictional data.</p></div>
+   <div class="cta-b"><a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/917358332692?text=Hi%20Kishore%2C%20I%20saw%20your%20PayDesk%20payroll%20demo%20and%20want%20to%20discuss%20a%20project.">WhatsApp me</a><a class="btn" href="mailto:nandhaluruk@gmail.com?subject=Project%20enquiry%20-%20Payroll%20demo">Email</a><a class="btn" href="index.html">Portfolio</a></div>
+  </section>
+ </div>
+</div>
+<div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
+<div id="toasts" aria-live="polite"></div>
+<noscript><p style="padding:20px">Please enable JavaScript to use this demo.</p></noscript>
+<script>
+(function(){
+'use strict';
+const $=(s,c)=>(c||document).querySelector(s),$$=(s,c)=>Array.prototype.slice.call((c||document).querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>(n<0?'-':'')+'\u20B9'+Math.abs(Math.round(n)).toLocaleString('en-IN'),num=n=>Math.round(n).toLocaleString('en-IN');
+const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],MF=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const sr=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return()=>{h=Math.imul(h^h>>>15,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return(h>>>0)/4294967296}};
+const words=n=>{n=Math.round(n);if(!n)return'Zero';const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'],b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+ const two=x=>x<20?a[x]:b[Math.floor(x/10)]+(x%10?' '+a[x%10]:''),three=x=>(x>99?a[Math.floor(x/100)]+' Hundred'+(x%100?' ':''):'')+(x%100?two(x%100):'');
+ let s='';const cr=Math.floor(n/1e7);n%=1e7;const lk=Math.floor(n/1e5);n%=1e5;const th=Math.floor(n/1e3);n%=1e3;
+ if(cr)s+=three(cr)+' Crore ';if(lk)s+=two(lk)+' Lakh ';if(th)s+=two(th)+' Thousand ';if(n)s+=three(n);return s.trim()};
+
+/* ---------- Months & employees ---------- */
+const NOWD=new Date(),MS=Array.from({length:6},(_,i)=>{const x=new Date(NOWD.getFullYear(),NOWD.getMonth()-(5-i),1);return{y:x.getFullYear(),m:x.getMonth()}});
+const mkey=(y,m)=>y+'-'+m,mlabel=x=>MN[x.m]+' '+x.y,dim=x=>new Date(x.y,x.m+1,0).getDate();
+const EMP=[['Aarti Menon','Engineering','Software Engineer',900000,30],['Imran Sheikh','Engineering','QA Engineer',700000,26],['Rahul Verma','Engineering','Senior Software Engineer',2000000,52],['Sneha Kulkarni','Engineering','Tech Lead',3200000,70],['Vivek Nair','Engineering','DevOps Engineer',1500000,38],['Pooja Rao','Engineering','Software Engineer',1100000,22],['Karan Malhotra','Engineering','Senior Software Engineer',2400000,60],['Divya Shetty','Engineering','QA Engineer',650000,14],['Nikhil Joshi','Product','Product Manager',3800000,64],['Ritu Agarwal','Product','Business Analyst',1300000,28],['Farhan Ali','Product','UX Designer',1200000,24],['Anita Pillai','Sales','Sales Manager',2800000,58],['Gaurav Mishra','Sales','Account Executive',1000000,20],['Lakshmi Iyer','Sales','Account Executive',950000,16],['Suresh Babu','Sales','Account Executive',850000,11],['Meera Desai','HR','HR Executive',600000,18],['Tarun Bhat','HR','Recruiter',560000,9],['Deepa Kamath','Finance','Finance Manager',3000000,66],['Arjun Reddy','Finance','Accountant',720000,34],['Shalini Gowda','Finance','Accountant',540000,12],['Rohit Pandey','Operations','Operations Executive',480000,8],['Kavitha Naik','Operations','Admin Associate',360000,15],['Manoj Kumar','Operations','Operations Executive',420000,10],['Bhavna Jain','Support','Customer Support Executive',300000,7],['Yusuf Khan','Support','Customer Support Executive',260000,6],['Preeti Sinha','Support','Customer Support Executive',250000,5],['Dinesh Hegde','Support','Customer Support Executive',240000,4],['Harini Subramanian','Engineering','Software Engineer',850000,1],['Siddharth Roy','Product','Business Analyst',1150000,0],['Neha Bansal','Sales','Sales Manager',2600000,40]]
+ .map((e,i)=>{const r=sr('emp'+i),doj=new Date(NOWD.getFullYear(),NOWD.getMonth()-e[4],1+Math.floor(r()*27));
+  return{id:'NT'+(1001+i),name:e[0],dept:e[1],role:e[2],ctc:e[3],doj,basicPct:40,hraPct:50,pfMode:e[3]>=2400000?'actual':'cap',regime:i%4===1?'old':'new',pan:'ABCPX'+String(1000+i*37).slice(-4)+'K',bank:'XXXX'+String(2000+i*91).slice(-4),uan:'1012'+String(34500000+i*7919),
+   decl:{rent:e[3]>=700000?Math.round(e[3]*.18/1000)*1000:0,d80c:e[3]>=900000?50000:0,d80d:e[3]>=700000?25000:0,hli:i%7===0?150000:0,nps:i%4===0?50000:0}}});
+// featured: Rahul Verma, 20 LPA
+const FEAT='NT1003';
+const emp=id=>EMP.find(e=>e.id===id);
+const PAN={};
+
+/* ---------- Tax engine (new regime slabs per Finance Act 2025, old regime slabs) ---------- */
+const NEW=[[400000,0],[800000,.05],[1200000,.10],[1600000,.15],[2000000,.20],[2400000,.25],[Infinity,.30]],OLD=[[250000,0],[500000,.05],[1000000,.20],[Infinity,.30]];
+function slabs(inc,S){let t=0,p=0;const rows=[];for(const s of S){const part=Math.max(0,Math.min(inc,s[0])-p),tx=part*s[1];if(part>0)rows.push([p,s[0],s[1],part,tx]);t+=tx;p=s[0];if(inc<=s[0])break}return{tax:t,rows}}
+function surch(inc,tax,regime){let r=0;if(inc>2e7)r=.25;else if(inc>1e7)r=.15;else if(inc>5e6)r=.10;if(regime==='old'&&inc>5e7)r=.37;return tax*r}
+function calcTax(p,regime){
+ const L=[];let taxable,ded=0;
+ if(regime==='new'){ded=75000;taxable=Math.max(0,p.gross-75000);L.push(['Standard deduction',-75000])}
+ else{
+  const std=50000,hraEx=Math.max(0,Math.min(p.hra,p.rent-.1*p.basic,(p.metro?.5:.4)*p.basic)),pt=p.pt,c80=Math.min(150000,p.pf+p.d80c),d80d=Math.min(p.d80d,50000),hli=Math.min(p.hli,200000),nps=Math.min(p.nps,50000);
+  [['Standard deduction',std],['HRA exemption',hraEx],['Professional tax',pt],['Section 80C (PF + investments)',c80],['Section 80D (health insurance)',d80d],['Home loan interest (24b)',hli],['NPS 80CCD(1B)',nps]].forEach(x=>{if(x[1]>0){L.push([x[0],-x[1]]);ded+=x[1]}});
+  taxable=Math.max(0,p.gross-ded);
+ }
+ const sl=slabs(taxable,regime==='new'?NEW:OLD);let tax=sl.tax,rebate=0;
+ if(regime==='new'){if(taxable<=1200000){rebate=tax;tax=0}else{const cap=taxable-1200000;if(tax>cap){rebate=tax-cap;tax=cap}}}
+ else if(taxable<=500000){rebate=Math.min(tax,12500);tax-=rebate}
+ const sc=surch(taxable,tax,regime),cess=(tax+sc)*.04,total=tax+sc+cess;
+ return{taxable,ded,lines:L,rows:sl.rows,slabTax:sl.tax,rebate,surcharge:sc,cess,total,monthly:total/12};
+}
+
+/* ---------- Salary structure & payroll engine ---------- */
+function structure(e,o){
+ o=o||e;const ctc=o.ctc||e.ctc,basicA=ctc*o.basicPct/100,hraA=basicA*o.hraPct/100,pfWage=o.pfMode==='cap'?Math.min(basicA/12,15000):basicA/12,erPF=pfWage*.12*12,grat=basicA*.0481,ins=ctc>=500000?18000:0;
+ const gross=ctc-erPF-grat-ins,sp=Math.max(0,gross-basicA-hraA);
+ return{basicA,hraA,spA:sp,grossA:basicA+hraA+sp,erPF,grat,ins,pfWage,eePF:erPF};
+}
+const annualTax=(e,st,regime)=>{st=st||structure(e);return calcTax({gross:st.grossA,basic:st.basicA,hra:st.hraA,rent:e.decl.rent,metro:true,pt:2500,pf:st.eePF,d80c:e.decl.d80c,d80d:e.decl.d80d,hli:e.decl.hli,nps:e.decl.nps},regime||e.regime)};
+const INP={};
+function inp(e,x){const k=e.id+'|'+mkey(x.y,x.m);if(!INP[k]){const r=sr(k+'i');INP[k]={bonus:e.dept==='Sales'?Math.round((6000+r()*20000)/100)*100:(r()<.06?Math.round(r()*10)*1000:0),reimb:r()<.35?Math.round(500+r()*2500):0,other:(e.id.charCodeAt(5)%7===0)?5000:0,lopAdj:null}}return INP[k]}
+function pay(e,x){
+ const eom=new Date(x.y,x.m+1,0);if(e.doj>eom)return null;
+ const d=dim(x),r=sr(e.id+mkey(x.y,x.m)+'l');let lop=r()<.2?1+Math.floor(r()*3):0;
+ if(e.doj.getFullYear()===x.y&&e.doj.getMonth()===x.m)lop=e.doj.getDate()-1;
+ const i=inp(e,x);if(i.lopAdj!=null&&!(e.doj.getFullYear()===x.y&&e.doj.getMonth()===x.m))lop=Math.min(d,i.lopAdj);
+ const f=(d-lop)/d,st=structure(e),basic=Math.round(st.basicA/12*f),hra=Math.round(st.hraA/12*f),sp=Math.round(st.spA/12*f),earn=basic+hra+sp,gross=earn+i.bonus;
+ const pfW=e.pfMode==='cap'?Math.min(basic,15000):basic,pf=Math.round(pfW*.12),erPF=pf,esiEl=st.grossA/12<=21000,esi=esiEl?Math.round(earn*.0075):0,erEsi=esiEl?Math.round(earn*.0325):0,pt=st.grossA/12>=25000?(x.m===1?300:200):0;
+ const tds=Math.round(annualTax(e,st).total/12),ded=pf+esi+pt+tds+i.other,net=gross+i.reimb-ded;
+ return{e,x,d,lop,paid:d-lop,basic,hra,sp,bonus:i.bonus,reimb:i.reimb,other:i.other,earn,gross,pf,erPF,esi,erEsi,pt,tds,ded,net,pfW,epsW:Math.min(pfW,15000),grat:Math.round(st.grat/12*f),ins:Math.round(st.ins/12),cost:gross+erPF+erEsi+Math.round(st.grat/12*f)+Math.round(st.ins/12)};
+}
+const run=x=>EMP.map(e=>pay(e,x)).filter(Boolean);
+const sum=(a,k)=>a.reduce((s,r)=>s+r[k],0);
+const S={sel:FEAT,month:5,status:0,ov:{}};
+const cm=()=>MS[S.month];
+
+/* ---------- UI helpers ---------- */
+const toast=(m,b)=>{const t=document.createElement('div');t.className='toast'+(b?' bad':'');t.textContent=m;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3600)};
+const openModal=(h,w)=>{$('#mbox').className='box'+(w?' wide':'');$('#mbox').innerHTML=h;$('#modal').hidden=false},closeModal=()=>{$('#modal').hidden=true};
+const openSide=()=>{$('#side').classList.add('open');$('#scrim').classList.add('on')},closeSide=()=>{$('#side').classList.remove('open');$('#scrim').classList.remove('on')};
+const F={dq:'',dd:'All',rep:'Salary register',tx:null,ss:null};
+const statusOf=i=>i<5?3:S.status,STN=['Attendance & inputs','Payroll computed','Approved','Disbursed'];
+const depts=()=>[...new Set(EMP.map(e=>e.dept))];
+
+/* ---------- Views ---------- */
+function vDash(){
+ const x=cm(),R=run(x),prev=S.month>0?run(MS[S.month-1]):[],st=statusOf(S.month),dd=n=>`${n} ${MN[(x.m+1)%12]}`;
+ const trend=MS.map((m,i)=>{const r=run(m);return[MN[m.m],sum(r,'net'),i===S.month]}),tm=Math.max(...trend.map(t=>t[1]));
+ const dc=depts().map(d=>[d,R.filter(r=>r.e.dept===d).reduce((s,r)=>s+r.cost,0)]),dm=Math.max(...dc.map(d=>d[1]));
+ const chg=prev.length?(sum(R,'net')/sum(prev,'net')-1)*100:0;
+ return `<div class="kpis"><div class="kpi"><small>Headcount</small><b>${R.length}</b><span>${R.filter(r=>r.e.doj.getMonth()===x.m&&r.e.doj.getFullYear()===x.y).length} joined this month</span></div><div class="kpi"><small>Gross earnings</small><b>${inr(sum(R,'gross'))}</b><span>${mlabel(x)}</span></div><div class="kpi"><small>Net payout</small><b>${inr(sum(R,'net'))}</b><span class="${chg>=0?'':''}">${chg>=0?'&#9650;':'&#9660;'} ${Math.abs(chg).toFixed(1)}% vs last month</span></div><div class="kpi"><small>Employer cost</small><b>${inr(sum(R,'cost'))}</b><span>incl. PF, ESI, gratuity</span></div><div class="kpi"><small>Statutory dues</small><b>${inr(sum(R,'pf')+sum(R,'erPF')+sum(R,'esi')+sum(R,'erEsi')+sum(R,'pt')+sum(R,'tds'))}</b><span>PF, ESI, PT, TDS</span></div></div>
+ <div class="card"><h3>${mlabel(x)} payroll status <small>${st===3?'Completed':'In progress'}</small></h3><ul class="flow">${STN.map((s,i)=>`<li class="${i<st||st===3?'d':i===st?'c':''}">${i<st||st===3?'&#10003; ':''}${s}<span>${i<st||st===3?'Done':i===st?'Current step':'Pending'}</span></li>`).join('')}</ul>${S.month===5&&st<3?'<div style="margin-top:10px"><a class="btn pri sm" href="#run">Go to payroll run &rarr;</a></div>':''}</div>
+ <div class="g2"><div class="card"><h3>Net payout trend <small>last 6 months</small></h3><div class="bars">${trend.map(t=>`<div class="${t[2]?'cur':''}"><b>${(t[1]/1e5).toFixed(1)}L</b><i style="height:${t[1]/tm*100}%"></i>${t[0]}</div>`).join('')}</div></div>
+ <div class="card"><h3>Employer cost by department</h3><div class="hbar">${dc.map(d=>`<div><div class="l"><span>${d[0]}</span><b>${inr(d[1])}</b></div><div class="t"><i style="width:${d[1]/dm*100}%"></i></div></div>`).join('')}</div></div></div>
+ <div class="card"><h3>Statutory due dates <small>for ${mlabel(x)} salaries</small></h3><ul class="list">${[['PF (EPFO ECR)',sum(R,'pf')+sum(R,'erPF'),15],['ESI contribution',sum(R,'esi')+sum(R,'erEsi'),15],['TDS on salary (Challan 281)',sum(R,'tds'),7],['Professional tax (Karnataka)',sum(R,'pt'),20]].map(c=>`<li><div class="g"><b>${c[0]}</b><small>Due ${dd(c[2])}</small></div><b>${inr(c[1])}</b><span class="pill ${st===3?'warn':'mute'}">${st===3?'Pay now':'After disbursal'}</span></li>`).join('')}</ul></div>`;
+}
+function vEmp(){
+ return `<div class="card"><div class="tools"><input id="dq" type="search" placeholder="Search name, ID or role" value="${esc(F.dq)}" aria-label="Search employees" style="flex:1;min-width:160px"><select id="dd" aria-label="Department">${['All'].concat(depts()).map(d=>`<option ${F.dd===d?'selected':''}>${d}</option>`).join('')}</select></div><div class="tw" style="margin-top:12px" id="etbl"></div></div>`;
+}
+function fillEmp(){
+ const q=F.dq.toLowerCase(),L=EMP.filter(e=>(F.dd==='All'||e.dept===F.dd)&&(!q||(e.name+e.id+e.role).toLowerCase().includes(q)));
+ $('#etbl').innerHTML=`<table><thead><tr><th>ID</th><th>Employee</th><th>Department</th><th class="r">Annual CTC</th><th class="r">Monthly gross</th><th>Regime</th><th></th></tr></thead><tbody>${L.map(e=>{const st=structure(e);return`<tr class="click" data-act="empopen" data-id="${e.id}"><td>${e.id}</td><td><b>${esc(e.name)}</b><div class="muted" style="font-size:.76rem">${e.role}</div></td><td>${e.dept}</td><td class="r"><b>${inr(e.ctc)}</b></td><td class="r">${inr(st.grossA/12)}</td><td><span class="pill ${e.regime==='new'?'ok':'gold'}">${e.regime==='new'?'New':'Old'}</span></td><td><button class="btn sm" data-act="slip" data-id="${e.id}">Payslip</button></td></tr>`}).join('')}</tbody></table><p class="muted" style="font-size:.8rem;margin-top:8px">${L.length} of ${EMP.length} employees. Click a row to view the salary structure.</p>`;
+}
+function structCalc(e,o){
+ const st=structure(e,o),tx=annualTax(e,st,e.regime),M=v=>v/12;
+ const rows=[['Basic salary',st.basicA],['House rent allowance (HRA)',st.hraA],['Special allowance',st.spA]],erRows=[['Employer PF contribution (12%)',st.erPF],['Gratuity (4.81% of basic)',st.grat],['Group medical insurance',st.ins]];
+ const pfm=st.eePF/12,esi=st.grossA/12<=21000?st.grossA/12*.0075:0,pt=st.grossA/12>=25000?200:0,tds=tx.monthly,take=st.grossA/12-pfm-esi-pt-tds;
+ return{st,tx,rows,erRows,pfm,esi,pt,tds,take};
+}
+const ovOf=e=>S.ov[e.id]||(S.ov[e.id]={ctc:e.ctc,basicPct:e.basicPct,hraPct:e.hraPct,pfMode:e.pfMode});
+function vStruct(){
+ const e=emp(F.ss||S.sel),o=ovOf(e);
+ return `<div class="split"><div class="card"><h3>Design structure</h3><div class="sl"><label>Employee<select id="ssE">${EMP.map(x=>`<option value="${x.id}" ${x.id===e.id?'selected':''}>${esc(x.name)} (${inr(x.ctc)})</option>`).join('')}</select></label>
+ <label><span class="rv"><span>Annual CTC</span><b id="ssCv">${inr(o.ctc)}</b></span><input type="range" id="ssC" min="240000" max="6000000" step="10000" value="${o.ctc}"></label>
+ <label><span class="rv"><span>Basic as % of CTC</span><b id="ssBv">${o.basicPct}%</b></span><input type="range" id="ssB" min="30" max="55" step="1" value="${o.basicPct}"></label>
+ <label><span class="rv"><span>HRA as % of basic</span><b id="ssHv">${o.hraPct}%</b></span><input type="range" id="ssH" min="30" max="60" step="5" value="${o.hraPct}"></label>
+ <label>PF calculated on<select id="ssP"><option value="cap" ${o.pfMode==='cap'?'selected':''}>Wage ceiling \u20B915,000 (max \u20B91,800 / month)</option><option value="actual" ${o.pfMode==='actual'?'selected':''}>Actual basic salary</option></select></label>
+ <label>Tax regime<select id="ssR"><option value="new" ${e.regime==='new'?'selected':''}>New regime (default)</option><option value="old" ${e.regime==='old'?'selected':''}>Old regime</option></select></label>
+ <button class="btn pri" data-act="saveStruct">Save structure to employee</button><div class="muted" style="font-size:.76rem">Changes are a draft until you save. Saved changes apply from the next payroll run.</div></div></div><div id="ssOut"></div></div><div id="ssCmp"></div>`;
+}
+function fillStruct(){
+ const e=emp(F.ss||S.sel),o=ovOf(e),ctc=o.ctc,c=structCalc(e,o),st=c.st,col=['#10b981','#34d399','#f5b942','#60a5fa','#a78bfa','#fb7185'],parts=[['Basic',st.basicA],['HRA',st.hraA],['Special',st.spA],['Employer PF',st.erPF],['Gratuity',st.grat],['Insurance',st.ins]];
+ $('#ssOut').innerHTML=`<div class="card" style="margin-bottom:20px"><div class="tools" style="justify-content:space-between"><div><div class="muted" style="font-size:.8rem">${esc(e.name)} &middot; ${e.role}</div><div class="big">${inr(ctc)} <span style="font-size:1rem;font-weight:600" class="muted">CTC per year</span></div></div><div style="text-align:right"><div class="muted" style="font-size:.8rem">Estimated monthly take-home</div><div class="big" style="color:var(--accent)">${inr(c.take)}</div></div></div>
+ <div class="stack">${parts.map((p,i)=>`<i style="width:${p[1]/ctc*100}%;background:${col[i]}" title="${p[0]}"></i>`).join('')}</div><div class="leg">${parts.map((p,i)=>`<span><i style="background:${col[i]}"></i>${p[0]} ${Math.round(p[1]/ctc*100)}%</span>`).join('')}</div></div>
+ <div class="card"><h3>Salary breakup <small>CTC ${inr(ctc)}</small></h3><div class="tw"><table><thead><tr><th>Component</th><th class="r">Monthly</th><th class="r">Annual</th><th class="r">% of CTC</th></tr></thead><tbody>
+ <tr><td colspan="4" class="muted" style="font-size:.74rem;text-transform:uppercase;letter-spacing:.06em">A. Fixed earnings</td></tr>${c.rows.map(r=>`<tr><td>${r[0]}</td><td class="r">${num(r[1]/12)}</td><td class="r">${num(r[1])}</td><td class="r">${(r[1]/ctc*100).toFixed(1)}%</td></tr>`).join('')}
+ <tr><td><b>Gross salary (A)</b></td><td class="r"><b>${num(st.grossA/12)}</b></td><td class="r"><b>${num(st.grossA)}</b></td><td class="r">${(st.grossA/ctc*100).toFixed(1)}%</td></tr>
+ <tr><td colspan="4" class="muted" style="font-size:.74rem;text-transform:uppercase;letter-spacing:.06em">B. Employer contributions</td></tr>${c.erRows.map(r=>`<tr><td>${r[0]}</td><td class="r">${num(r[1]/12)}</td><td class="r">${num(r[1])}</td><td class="r">${(r[1]/ctc*100).toFixed(1)}%</td></tr>`).join('')}
+ <tr><td colspan="4" class="muted" style="font-size:.74rem;text-transform:uppercase;letter-spacing:.06em">C. Employee deductions</td></tr>
+ <tr><td>Provident fund (employee 12%)</td><td class="r">${num(c.pfm)}</td><td class="r">${num(c.pfm*12)}</td><td></td></tr>${c.esi?`<tr><td>ESI (0.75%)</td><td class="r">${num(c.esi)}</td><td class="r">${num(c.esi*12)}</td><td></td></tr>`:''}
+ <tr><td>Professional tax (Karnataka)</td><td class="r">${num(c.pt)}</td><td class="r">${num(c.pt*12)}</td><td></td></tr><tr><td>Income tax (TDS, ${e.regime} regime)</td><td class="r">${num(c.tds)}</td><td class="r">${num(c.tx.total)}</td><td></td></tr></tbody>
+ <tfoot><tr><td>Net take-home</td><td class="r">${inr(c.take)}</td><td class="r">${inr(c.take*12)}</td><td></td></tr></tfoot></table></div></div>`;
+ $('#ssCmp').innerHTML=`<div class="card"><h3>Compare packages <small>new regime, standard structure</small></h3><div class="tw"><table><thead><tr><th>Annual CTC</th><th class="r">Monthly gross</th><th class="r">PF + PT</th><th class="r">TDS / month</th><th class="r">Take-home / month</th></tr></thead><tbody>${[500000,800000,1200000,2000000,3000000,5000000].map(ct=>{const t={ctc:ct,decl:{rent:0,d80c:0,d80d:0,hli:0,nps:0},regime:'new'},s=structure(t,{basicPct:40,hraPct:50,pfMode:'cap'}),tx=annualTax(t,s,'new'),pf=s.eePF/12,pt=200;return`<tr ${ct===2000000?'style="background:var(--panel2)"':''}><td><b>${inr(ct)}</b>${ct===2000000?' <span class="pill gold">20 LPA</span>':''}</td><td class="r">${num(s.grossA/12)}</td><td class="r">${num(pf+pt)}</td><td class="r">${num(tx.monthly)}</td><td class="r"><b>${num(s.grossA/12-pf-pt-tx.monthly)}</b></td></tr>`}).join('')}</tbody></table></div></div>`;
+}function vTax(){
+ const p=F.tx||(F.tx={ctc:2000000,rent:240000,metro:true,d80c:50000,d80d:25000,hli:0,nps:0});
+ return `<div class="card"><h3>Income tax calculator <small>FY 2025-26 slabs, salaried individual</small></h3><div class="form" style="margin-top:0"><div class="row2"><label>Annual CTC (\u20B9)<input id="tC" type="number" min="0" step="10000" value="${p.ctc}"></label><label>Annual rent paid (\u20B9)<input id="tR" type="number" min="0" step="1000" value="${p.rent}"></label></div>
+ <div class="row2"><label>80C investments (other than PF)<input id="tS" type="number" min="0" value="${p.d80c}"></label><label>80D health insurance<input id="tD" type="number" min="0" value="${p.d80d}"></label></div><div class="row2"><label>Home loan interest<input id="tH" type="number" min="0" value="${p.hli}"></label><label>NPS 80CCD(1B)<input id="tN" type="number" min="0" value="${p.nps}"></label></div>
+ <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="tM" ${p.metro?'checked':''} style="width:auto"> Metro city HRA rule (50% of basic)</label></div><div class="muted" style="font-size:.82rem;margin-top:10px" id="taxNote"></div></div><div class="card" id="taxOut"></div>`;
+}
+function fillTax(){
+ const p=F.tx,t={ctc:p.ctc,decl:{rent:p.rent,d80c:p.d80c,d80d:p.d80d,hli:p.hli,nps:p.nps},regime:'new'},st=structure(t,{basicPct:40,hraPct:50,pfMode:'cap'});
+ const base={gross:st.grossA,basic:st.basicA,hra:st.hraA,rent:p.rent,metro:p.metro,pt:2500,pf:st.eePF,d80c:p.d80c,d80d:p.d80d,hli:p.hli,nps:p.nps},N=calcTax(base,'new'),O=calcTax(base,'old'),best=N.total<=O.total?'new':'old';
+ const box=(n,c,k)=>`<div class="cmpc ${best===k?'best':''}"><h3>${n} ${best===k?'<span class="pill ok">Better for you</span>':''}</h3><table><tbody>${c.lines.map(l=>`<tr><td>${l[0]}</td><td class="r">${num(l[1])}</td></tr>`).join('')}<tr><td><b>Taxable income</b></td><td class="r"><b>${num(c.taxable)}</b></td></tr></tbody></table><div class="muted" style="font-size:.72rem;text-transform:uppercase;margin:10px 0 4px">Slab-wise tax</div><table><tbody>${c.rows.map(r=>`<tr><td>${num(r[0])} to ${r[1]===Infinity?'above':num(r[1])} @ ${Math.round(r[2]*100)}%</td><td class="r">${num(r[4])}</td></tr>`).join('')||'<tr><td class="muted">No tax slab applies</td><td></td></tr>'}${c.rebate?`<tr><td>Less: rebate u/s 87A</td><td class="r">-${num(c.rebate)}</td></tr>`:''}${c.surcharge?`<tr><td>Surcharge</td><td class="r">${num(c.surcharge)}</td></tr>`:''}<tr><td>Health &amp; education cess (4%)</td><td class="r">${num(c.cess)}</td></tr><tr><td><b>Total tax</b></td><td class="r"><b>${inr(c.total)}</b></td></tr><tr><td>Monthly TDS</td><td class="r"><b>${inr(c.monthly)}</b></td></tr></tbody></table></div>`;
+ $('#taxNote').innerHTML=`Gross salary after employer PF, gratuity and insurance: <b>${inr(st.grossA)}</b>. Basic ${inr(st.basicA)}, HRA ${inr(st.hraA)}. Employee PF ${inr(st.eePF)}, professional tax \u20B92,500.`;
+ $('#taxOut').innerHTML=`<div style="padding:6px 0 14px"><span class="pill ok">Recommendation</span> <b style="font-size:1.05rem">Choose the ${best} regime. You save ${inr(Math.abs(N.total-O.total))} a year (${inr(Math.abs(N.total-O.total)/12)} a month).</b></div><div class="cmp">${box('New regime',N,'new')}${box('Old regime',O,'old')}</div><p class="muted" style="font-size:.78rem;margin-top:12px">Indicative calculation using FY 2025-26 slabs (unchanged for FY 2026-27), standard deduction, rebate, surcharge and 4% cess. Marginal relief on surcharge is not modelled. Verify with current rules before filing.</p>`;
+}function vRun(){
+ const x=cm(),cur=S.month===5,st=statusOf(S.month),R=run(x),lock=st>=2||!cur;
+ return `<div class="card"><h3>${mlabel(x)} payroll <small>${STN[st]}${st===3?' (paid)':''}</small></h3><ul class="flow">${STN.map((s,i)=>`<li class="${i<st||st===3?'d':i===st?'c':''}">${i<st||st===3?'&#10003; ':''}${s}</li>`).join('')}</ul>
+ <div class="tools" style="margin-top:10px">${cur&&st===0?'<button class="btn pri" data-act="compute">Compute payroll</button>':''}${cur&&st===1?'<button class="btn pri" data-act="approve">Approve payroll</button>':''}${cur&&st===2?'<button class="btn gold" data-act="disburse">Disburse salaries</button>':''}${st===3?'<button class="btn" data-act="bank">Download bank advice (CSV)</button>':''}<span class="muted" style="font-size:.82rem">${cur?(st===0?'Edit loss-of-pay days, bonus, reimbursements and deductions below, then compute.':st===1?'Review the register, then approve.':st===2?'Approved. Release the bank file.':'Salaries disbursed. Payslips are available.'):'Past month, read only. Switch the month selector to the current month to run payroll.'}</span></div></div>
+ <div class="kpis"><div class="kpi"><small>Employees</small><b>${R.length}</b></div><div class="kpi"><small>Gross</small><b>${inr(sum(R,'gross'))}</b></div><div class="kpi"><small>Deductions</small><b>${inr(sum(R,'ded'))}</b></div><div class="kpi"><small>Net payable</small><b style="color:var(--accent)">${inr(sum(R,'net'))}</b></div></div>
+ <div class="card"><h3>Payroll register <small>${dim(x)} calendar days</small></h3><div class="tw"><table><thead><tr><th>Employee</th><th class="r">LOP days</th><th class="r">Earnings</th><th class="r">Bonus</th><th class="r">Reimb.</th><th class="r">PF</th><th class="r">ESI</th><th class="r">PT</th><th class="r">TDS</th><th class="r">Other ded.</th><th class="r">Net pay</th></tr></thead><tbody>${R.map(r=>`<tr><td><b>${esc(r.e.name)}</b><div class="muted" style="font-size:.74rem">${r.e.id}</div></td><td class="r">${lock?r.lop:`<input data-k="lopAdj" data-id="${r.e.id}" type="number" min="0" max="${r.d}" value="${r.lop}" aria-label="LOP days">`}</td><td class="r">${num(r.earn)}</td><td class="r">${lock?num(r.bonus):`<input data-k="bonus" data-id="${r.e.id}" type="number" min="0" value="${r.bonus}" aria-label="Bonus">`}</td><td class="r">${lock?num(r.reimb):`<input data-k="reimb" data-id="${r.e.id}" type="number" min="0" value="${r.reimb}" aria-label="Reimbursement">`}</td><td class="r">${num(r.pf)}</td><td class="r">${num(r.esi)}</td><td class="r">${num(r.pt)}</td><td class="r">${num(r.tds)}</td><td class="r">${lock?num(r.other):`<input data-k="other" data-id="${r.e.id}" type="number" min="0" value="${r.other}" aria-label="Other deduction">`}</td><td class="r"><b>${num(r.net)}</b></td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${sum(R,'lop')}</td><td class="r">${num(sum(R,'earn'))}</td><td class="r">${num(sum(R,'bonus'))}</td><td class="r">${num(sum(R,'reimb'))}</td><td class="r">${num(sum(R,'pf'))}</td><td class="r">${num(sum(R,'esi'))}</td><td class="r">${num(sum(R,'pt'))}</td><td class="r">${num(sum(R,'tds'))}</td><td class="r">${num(sum(R,'other'))}</td><td class="r">${num(sum(R,'net'))}</td></tr></tfoot></table></div></div>`;
+}
+function payslipHTML(e,x){
+ const r=pay(e,x);if(!r)return'<p>Employee had not joined in this month.</p>';
+ const st=structure(e),fy=x.m>=3?x.y:x.y-1,months=[];for(let y=fy,m=3;(y<x.y)||(y===x.y&&m<=x.m);m++){if(m===12){m=0;y++}if(y>x.y||(y===x.y&&m>x.m))break;months.push({y,m})}
+ const ytd=months.map(mm=>pay(e,mm)).filter(Boolean),Y=k=>ytd.reduce((s,q)=>s+q[k],0),draft=x===MS[5]&&S.status<2;
+ return `<div class="ps"><div class="hd"><div><h2>Nimbus Technologies Pvt Ltd</h2><div>Prestige Tech Park, Outer Ring Road, Bengaluru 560103 (demo address)</div></div><div style="text-align:right"><b>PAYSLIP</b><div>${MF[x.m]} ${x.y}</div>${draft?'<div class="wm">DRAFT</div>':''}</div></div>
+ <div class="meta"><div><span>Employee:</span> <b>${esc(e.name)}</b></div><div><span>Employee ID:</span> ${e.id}</div><div><span>Designation:</span> ${e.role}</div><div><span>Department:</span> ${e.dept}</div><div><span>Date of joining:</span> ${e.doj.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div><div><span>PAN:</span> ${e.pan.slice(0,5)}XXXX${e.pan.slice(-1)}</div><div><span>Bank A/c:</span> ${e.bank}</div><div><span>UAN:</span> ${e.uan}</div><div><span>Days in month:</span> ${r.d}</div><div><span>Paid days / LOP:</span> ${r.paid} / ${r.lop}</div></div>
+ <div class="two"><table><thead><tr><th>Earnings</th><th class="r">Amount (\u20B9)</th></tr></thead><tbody><tr><td>Basic salary</td><td class="r">${num(r.basic)}</td></tr><tr><td>House rent allowance</td><td class="r">${num(r.hra)}</td></tr><tr><td>Special allowance</td><td class="r">${num(r.sp)}</td></tr>${r.bonus?`<tr><td>Bonus / incentive</td><td class="r">${num(r.bonus)}</td></tr>`:''}${r.reimb?`<tr><td>Reimbursements</td><td class="r">${num(r.reimb)}</td></tr>`:''}</tbody><tfoot><tr><td>Gross earnings</td><td class="r">${num(r.gross+r.reimb)}</td></tr></tfoot></table>
+ <table><thead><tr><th>Deductions</th><th class="r">Amount (\u20B9)</th></tr></thead><tbody><tr><td>Provident fund (12%)</td><td class="r">${num(r.pf)}</td></tr>${r.esi?`<tr><td>ESI (0.75%)</td><td class="r">${num(r.esi)}</td></tr>`:''}<tr><td>Professional tax</td><td class="r">${num(r.pt)}</td></tr><tr><td>Income tax (TDS)</td><td class="r">${num(r.tds)}</td></tr>${r.other?`<tr><td>Loan / other recovery</td><td class="r">${num(r.other)}</td></tr>`:''}</tbody><tfoot><tr><td>Total deductions</td><td class="r">${num(r.ded)}</td></tr></tfoot></table></div>
+ <div class="net"><span>Net pay</span><b style="font-size:1.35rem">${inr(r.net)}</b></div><div style="margin-top:6px"><b>In words:</b> Rupees ${words(r.net)} Only</div>
+ <div class="two"><table><thead><tr><th colspan="2">Year to date (FY ${fy}-${String(fy+1).slice(-2)})</th></tr></thead><tbody><tr><td>Gross earnings</td><td class="r">${num(Y('gross'))}</td></tr><tr><td>PF contribution</td><td class="r">${num(Y('pf'))}</td></tr><tr><td>Income tax deducted</td><td class="r">${num(Y('tds'))}</td></tr></tbody></table><table><thead><tr><th colspan="2">Employer contributions (not in net pay)</th></tr></thead><tbody><tr><td>Employer PF</td><td class="r">${num(r.erPF)}</td></tr><tr><td>Employer ESI</td><td class="r">${num(r.erEsi)}</td></tr><tr><td>Gratuity provision</td><td class="r">${num(r.grat)}</td></tr></tbody></table></div>
+ <div class="fine">This is a computer generated payslip from a demo with fictional data. Annual CTC ${inr(e.ctc)}. Tax regime: ${e.regime==='new'?'New':'Old'}.</div></div>`;
+}
+function vSlip(){
+ const e=emp(F.sl||S.sel);
+ return `<div class="card"><div class="tools"><select id="slE" aria-label="Employee">${EMP.map(x=>`<option value="${x.id}" ${x.id===e.id?'selected':''}>${esc(x.name)} (${x.id})</option>`).join('')}</select><button class="btn pri" data-act="slipPrint">Download PDF</button><span class="muted" style="font-size:.82rem">Month: ${mlabel(cm())} (use the selector at the top)</span></div></div><div id="slipBox">${payslipHTML(e,cm())}</div>`;
+}
+const REPS={
+ 'Salary register':x=>{const R=run(x);return{c:['ID','Name','Department','Paid days','Basic','HRA','Special','Bonus','Gross','PF','ESI','PT','TDS','Other','Net pay'],r:R.map(r=>[r.e.id,r.e.name,r.e.dept,r.paid,r.basic,r.hra,r.sp,r.bonus,r.gross,r.pf,r.esi,r.pt,r.tds,r.other,r.net]),t:[3,4,5,6,7,8,9,10,11,12,13,14]}},
+ 'PF (ECR)':x=>{const R=run(x);return{c:['UAN','Name','Gross wages','EPF wages','EPS wages','EDLI wages','EPF EE (12%)','EPS ER (8.33%)','EPF diff ER (3.67%)'],r:R.map(r=>{const eps=Math.round(r.epsW*.0833);return[r.e.uan,r.e.name,r.gross,r.pfW,r.epsW,r.epsW,r.pf,eps,r.erPF-eps]}),t:[2,3,4,5,6,7,8]}},
+ 'ESI':x=>{const R=run(x).filter(r=>r.esi>0);return{c:['ID','Name','Wages','Employee 0.75%','Employer 3.25%','Total'],r:R.map(r=>[r.e.id,r.e.name,r.earn,r.esi,r.erEsi,r.esi+r.erEsi]),t:[2,3,4,5]}},
+ 'Professional tax':x=>{const R=run(x);return{c:['ID','Name','Gross salary','PT slab','PT deducted'],r:R.map(r=>[r.e.id,r.e.name,r.earn,r.pt?'Above \u20B925,000':'Below \u20B925,000',r.pt]),t:[2,4]}},
+ 'TDS (Form 24Q)':x=>{const R=run(x);return{c:['PAN','Name','Regime','Annual taxable income','Annual tax','TDS this month'],r:R.map(r=>{const t=annualTax(r.e);return[r.e.pan,r.e.name,r.e.regime==='new'?'New':'Old',Math.round(t.taxable),Math.round(t.total),r.tds]}),t:[3,4,5]}},
+ 'Bank advice':x=>{const R=run(x);return{c:['ID','Beneficiary','Account','IFSC','Amount','Narration'],r:R.map(r=>[r.e.id,r.e.name,r.e.bank,'HDFC0001234',r.net,'SAL '+MN[x.m].toUpperCase()+' '+x.y]),t:[4]}},
+ 'Department cost':x=>{const R=run(x);return{c:['Department','Headcount','Gross','Employer PF + ESI','Gratuity + insurance','Total cost'],r:depts().map(d=>{const q=R.filter(r=>r.e.dept===d);return[d,q.length,sum(q,'gross'),sum(q,'erPF')+sum(q,'erEsi'),sum(q,'grat')+sum(q,'ins'),sum(q,'cost')]}),t:[1,2,3,4,5]}},
+ 'Month-on-month':x=>{let prev=null;return{c:['Month','Headcount','Gross','Deductions','Net pay','Change in net'],r:MS.map(m=>{const R=run(m),n=sum(R,'net'),row=[mlabel(m),R.length,sum(R,'gross'),sum(R,'ded'),n,prev?((n/prev-1)*100).toFixed(1)+'%':'-'];prev=n;return row}),t:[]}}
+};
+function vReports(){
+ return `<div class="card"><div class="tools"><div class="chips">${Object.keys(REPS).map(k=>`<button class="chip ${F.rep===k?'on':''}" data-act="rep" data-v="${k}">${k}</button>`).join('')}</div></div></div><div class="card"><h3>${F.rep} <small>${F.rep==='Month-on-month'?'last 6 months':mlabel(cm())}</small><button class="btn pri sm" data-act="csv">Download CSV</button></h3><div class="tw" id="rtbl"></div></div>`;
+}
+function fillReps(){
+ const d=REPS[F.rep](cm()),n=v=>typeof v==='number'?num(v):esc(v);
+ $('#rtbl').innerHTML=`<table><thead><tr>${d.c.map((c,i)=>`<th class="${typeof (d.r[0]||[])[i]==='number'?'r':''}">${c}</th>`).join('')}</tr></thead><tbody>${d.r.map(r=>`<tr>${r.map((v,i)=>`<td class="${typeof v==='number'?'r':''}">${n(v)}</td>`).join('')}</tr>`).join('')||'<tr><td class="muted">No data.</td></tr>'}</tbody>${d.t.length?`<tfoot><tr>${d.c.map((c,i)=>`<td class="${d.t.includes(i)?'r':''}">${i===0?'Total':d.t.includes(i)?num(d.r.reduce((s,r)=>s+r[i],0)):''}</td>`).join('')}</tr></tfoot>`:''}</table>`;
+}
+function download(name,rows){const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n'),b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const VIEWS={dashboard:['Dashboard',vDash],employees:['Employees',vEmp,fillEmp],structure:['Salary structure',vStruct,fillStruct],tax:['Tax calculator',vTax,fillTax],run:['Run payroll',vRun],payslip:['Payslips',vSlip],reports:['Reports',vReports,fillReps]};
+let cur='dashboard';
+function render(){const v=VIEWS[cur];$('#pageTitle').textContent=v[0];document.title=v[0]+' | PayDesk (Demo)';$('#view').innerHTML=v[1]();if(v[2])v[2]();$$('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===cur));$('#monthSel').value=S.month}
+function route(){const h=location.hash.slice(1);cur=VIEWS[h]?h:'dashboard';closeSide();render();window.scrollTo(0,0)}
+
+/* ---------- Actions ---------- */
+const acts={
+ closeModal,print:()=>window.print(),reset:()=>location.reload(),
+ empopen:e=>{F.ss=e.dataset.id;S.sel=e.dataset.id;location.hash='structure'},
+ slip:e=>{e.event.stopPropagation();F.sl=e.dataset.id;S.sel=e.dataset.id;openModal(payslipHTML(emp(e.dataset.id),cm())+'<div class="noprint" style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button class="btn" data-act="closeModal">Close</button><button class="btn pri" data-act="print">Download PDF</button></div>',1)},
+ slipPrint:()=>{openModal(payslipHTML(emp(F.sl||S.sel),cm())+'<div class="noprint" style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button class="btn" data-act="closeModal">Close</button><button class="btn pri" data-act="print">Print / Save as PDF</button></div>',1);setTimeout(()=>window.print(),200)},
+ saveStruct:()=>{const e=emp(F.ss||S.sel),o=ovOf(e);e.ctc=o.ctc;e.basicPct=o.basicPct;e.hraPct=o.hraPct;e.pfMode=o.pfMode;toast('Salary structure saved for '+e.name+'. Applies from the next payroll run.')},
+ compute:()=>{S.status=1;render();toast('Payroll computed for '+mlabel(cm())+'.')},approve:()=>{S.status=2;render();toast('Payroll approved. Inputs are now locked.')},disburse:()=>{S.status=3;render();toast('Salaries disbursed: '+inr(sum(run(cm()),'net'))+' to '+run(cm()).length+' employees.')},
+ bank:()=>{const d=REPS['Bank advice'](cm());download('bank-advice-'+MN[cm().m]+cm().y+'.csv',[d.c].concat(d.r))},
+ rep:e=>{F.rep=e.dataset.v;render()},csv:()=>{const d=REPS[F.rep](cm());download(F.rep.toLowerCase().replace(/[^a-z]+/g,'-')+'-'+MN[cm().m]+cm().y+'.csv',[d.c].concat(d.r));toast('CSV downloaded.')}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&acts[b.dataset.act]){b.event=e;acts[b.dataset.act](Object.assign(b,{event:e}));return}if(e.target===$('#modal'))closeModal()});
+document.addEventListener('input',e=>{const t=e.target,id=t.id;
+ if(id==='dq'){F.dq=t.value;fillEmp()}
+ else if(t.dataset&&t.dataset.k){const e2=emp(t.dataset.id),i=inp(e2,cm());i[t.dataset.k]=Math.max(0,+t.value||0);const row=t.closest('tr'),r=pay(e2,cm());row.children[2].textContent=num(r.earn);['pf','esi','pt','tds'].forEach((k,j)=>row.children[5+j].textContent=num(r[k]));row.children[10].innerHTML='<b>'+num(r.net)+'</b>'}
+ else if(['ssC','ssB','ssH'].includes(id)){const e2=emp(F.ss||S.sel),o=ovOf(e2);if(id==='ssC'){o.ctc=+t.value;$('#ssCv').textContent=inr(o.ctc)}else if(id==='ssB'){o.basicPct=+t.value;$('#ssBv').textContent=o.basicPct+'%'}else{o.hraPct=+t.value;$('#ssHv').textContent=o.hraPct+'%'}fillStruct()}
+ else if(['tC','tR','tS','tD','tH','tN'].includes(id)){const m={tC:'ctc',tR:'rent',tS:'d80c',tD:'d80d',tH:'hli',tN:'nps'};F.tx[m[id]]=Math.max(0,+t.value||0);fillTax()}
+});document.addEventListener('change',e=>{const id=e.target.id,v=e.target.value;
+ if(id==='dd'){F.dd=v;fillEmp()}else if(id==='ssE'){F.ss=v;S.sel=v;render()}
+ else if(id==='ssP'){ovOf(emp(F.ss||S.sel)).pfMode=v;fillStruct()}
+ else if(id==='ssR'){emp(F.ss||S.sel).regime=v;fillStruct()}
+ else if(id==='tM'){F.tx.metro=e.target.checked;fillTax()}
+ else if(id==='slE'){F.sl=v;S.sel=v;render()}
+ else if(id==='monthSel'){S.month=+v;render()}else if(e.target.dataset&&e.target.dataset.k){render()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeSide()}});
+$('#menu').addEventListener('click',openSide);$('#scrim').addEventListener('click',closeSide);window.addEventListener('hashchange',route);
+$('#monthSel').innerHTML=MS.map((m,i)=>`<option value="${i}">${MF[m.m].slice(0,3)} ${m.y}${i===5?' (current)':''}</option>`).join('');
+const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme')}catch(e){}
+function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme',t)}catch(e){}}
+setTheme(sv||'dark');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').hidden=false});
+$('#install').addEventListener('click',()=>{if(dp){dp.prompt();dp=null;$('#install').hidden=true}});
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+route();
+})();
+</script>
+</body>
+</html>

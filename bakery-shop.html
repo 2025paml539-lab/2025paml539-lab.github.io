@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Golden Crust Bakery | Fresh Bengaluru Bakes, Cakes &amp; Puffs (Demo)</title>
+<meta name="description" content="Demo: bakery website with Bengaluru favourites, online ordering, custom cake designer and an owner dashboard to upload new items with photos and prices. Built by Kishore Nandhaluru. Fictional shop.">
+<meta name="theme-color" content="#fff7ec">
+<link rel="manifest" href="manifest-bakery.json">
+<link rel="icon" href="icons/bake-192.png">
+<link rel="apple-touch-icon" href="icons/bake-192.png">
+<style>
+:root{--bg:#fff7ec;--bg2:#ffefd6;--card:#ffffff;--ink:#3a2112;--muted:#8a6a52;--accent:#c2410c;--accent2:#f59e0b;--rose:#be123c;--green:#15803d;--line:rgba(120,70,30,.16);--shadow:0 12px 34px rgba(120,70,30,.14);--hero:linear-gradient(135deg,#ffedd5,#fde68a 60%,#fed7aa)}
+[data-theme=dark]{--bg:#170e08;--bg2:#221510;--card:#2a1a12;--ink:#fdf0e0;--muted:#c4a68a;--accent:#fb923c;--accent2:#fbbf24;--rose:#fb7185;--green:#4ade80;--line:rgba(255,220,180,.14);--shadow:0 12px 34px rgba(0,0,0,.45);--hero:linear-gradient(135deg,#3b2112,#5a3414 60%,#3b2112)}
+*{box-sizing:border-box;margin:0;padding:0}[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:16px;overflow-x:hidden;transition:background .3s}
+a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}img{display:block;max-width:100%}
+.serif{font-family:Georgia,"Times New Roman",serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+.tick{background:linear-gradient(90deg,var(--accent),var(--rose));color:#fff;font-size:.82rem;font-weight:600;overflow:hidden;white-space:nowrap;padding:7px 0}
+.tick div{display:inline-block;padding-left:100%;animation:mq 38s linear infinite}.tick span{margin:0 28px}
+@keyframes mq{to{transform:translateX(-100%)}}
+header.hd{position:sticky;top:0;z-index:80;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:14px;height:68px}
+.logo{display:flex;align-items:center;gap:10px}.logo i{font-style:normal;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:grid;place-items:center;font-size:1.4rem;box-shadow:0 6px 16px rgba(194,65,12,.35)}
+.logo b{display:block;font-family:Georgia,serif;font-size:1.2rem;line-height:1.1}.logo small{color:var(--muted);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+.links{display:flex;gap:4px;margin-left:auto;align-items:center}.links a{padding:8px 14px;border-radius:99px;font-weight:600;font-size:.92rem;color:var(--muted);transition:.2s}.links a:hover{background:var(--bg2);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-weight:700;font-size:.92rem;transition:.2s;white-space:nowrap}
+.btn:hover{transform:translateY(-2px);border-color:var(--accent)}.btn.pri{background:linear-gradient(135deg,var(--accent),var(--rose));color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(190,18,60,.28)}
+.btn.gold{background:linear-gradient(135deg,var(--accent2),#f97316);color:#3a1a00;border-color:transparent}.btn.sm{padding:6px 14px;font-size:.8rem}.btn.lg{padding:15px 28px;font-size:1.02rem}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.icon{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);cursor:pointer;display:grid;place-items:center;font-size:1.1rem;position:relative;flex:none}
+.cn{position:absolute;top:-5px;right:-5px;background:var(--rose);color:#fff;border-radius:99px;font-size:.68rem;font-weight:800;min-width:20px;height:20px;display:grid;place-items:center;padding:0 5px}
+#burger{display:none}
+.hero{background:var(--hero);overflow:hidden;position:relative}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding-top:50px;padding-bottom:60px}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:.8rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.hero h1{font-family:Georgia,serif;font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.05;margin:12px 0 16px;letter-spacing:-.02em}.hero h1 em{color:var(--accent);font-style:italic}
+.hero p.lead{font-size:1.1rem;color:var(--muted);max-width:520px;margin-bottom:24px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:26px}
+.facts{display:flex;gap:22px;flex-wrap:wrap}.facts div{font-size:.85rem;color:var(--muted)}.facts b{display:block;font-size:1.3rem;color:var(--ink);font-family:Georgia,serif}
+.plate{position:relative;aspect-ratio:1;max-width:460px;margin:0 auto;width:100%}
+.plate .disc{position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#ffe4bd 60%,#f6c887);box-shadow:inset 0 -14px 30px rgba(180,100,30,.25),0 24px 50px rgba(120,60,10,.3)}
+.plate .ring{position:absolute;inset:0;animation:spin 40s linear infinite}
+.plate .ring span{position:absolute;font-size:clamp(2rem,6vw,3.4rem);filter:drop-shadow(0 8px 10px rgba(0,0,0,.25));animation:counter 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes counter{to{transform:rotate(-360deg)}}
+.plate .mid{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(5rem,16vw,8.5rem);filter:drop-shadow(0 14px 14px rgba(0,0,0,.28));animation:bob 4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px)}}
+.steam{position:absolute;left:50%;top:6%;width:100px;height:90px;transform:translateX(-50%);pointer-events:none}.steam i{position:absolute;bottom:0;width:8px;height:50px;border-radius:99px;background:linear-gradient(transparent,rgba(255,255,255,.85));filter:blur(4px);opacity:0;animation:steam 3s ease-in-out infinite}
+.steam i:nth-child(1){left:25%}.steam i:nth-child(2){left:50%;animation-delay:.8s}.steam i:nth-child(3){left:75%;animation-delay:1.6s}@keyframes steam{0%{transform:translateY(20px) scaleX(1);opacity:0}30%{opacity:.8}100%{transform:translateY(-50px) scaleX(2.2);opacity:0}}
+.sale{position:absolute;right:2%;top:10%;background:var(--rose);color:#fff;border-radius:50%;width:92px;height:92px;display:grid;place-items:center;text-align:center;font-weight:800;font-size:.8rem;line-height:1.15;transform:rotate(12deg);box-shadow:0 10px 24px rgba(190,18,60,.4)}.sale b{font-size:1.4rem;display:block}
+section.sec{padding:64px 0}.sec h2{font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.15;margin:8px 0 8px}.sec .sub{color:var(--muted);max-width:620px;margin-bottom:28px}
+.special{background:linear-gradient(135deg,#7c2d12,#be123c);color:#fff;border-radius:24px;padding:22px 26px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow);margin-top:-30px;position:relative;z-index:2}
+.special .em{font-size:3.4rem}.special h3{font-family:Georgia,serif;font-size:1.4rem}.special p{opacity:.9;font-size:.92rem}
+.pop{display:flex;gap:16px;overflow-x:auto;padding:6px 4px 18px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}.pop::-webkit-scrollbar{height:8px}.pop::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.pc{flex:0 0 220px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);position:relative;transition:.25s;cursor:pointer}.pc:hover{transform:translateY(-6px)}
+.pc .pic{height:150px}.pc .b{padding:12px 14px}.pc b{display:block;font-family:Georgia,serif}.pc .pr{color:var(--accent);font-weight:800}
+.rank{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);color:#7c2d12;font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:99px;z-index:1}
+.pic{display:grid;place-items:center;font-size:4.2rem;position:relative;overflow:hidden}.pic img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.pic.c0{background:linear-gradient(135deg,#fde68a,#f59e0b)}.pic.c1{background:linear-gradient(135deg,#fed7aa,#fb923c)}.pic.c2{background:linear-gradient(135deg,#fbcfe8,#f472b6)}.pic.c3{background:linear-gradient(135deg,#ddd6fe,#a78bfa)}.pic.c4{background:linear-gradient(135deg,#fecaca,#f87171)}.pic.c5{background:linear-gradient(135deg,#bbf7d0,#4ade80)}
+.pic .em{filter:drop-shadow(0 6px 8px rgba(0,0,0,.25))}
+.mtools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.mtools input{flex:1;min-width:200px;background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:11px 18px;outline:none}.mtools input:focus{border-color:var(--accent)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{padding:8px 16px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-weight:700;font-size:.85rem;color:var(--muted);transition:.2s}.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.dots{display:inline-block;width:9px;height:9px;border-radius:50%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px;margin-top:20px}
+.it{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:.25s;position:relative}.it:hover{transform:translateY(-5px)}
+.it .pic{height:170px}.it .b{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}.it h4{font-family:Georgia,serif;font-size:1.08rem;line-height:1.25}.it p{font-size:.83rem;color:var(--muted);flex:1}
+.it .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}.pr{font-weight:800;font-size:1.1rem;color:var(--accent)}.pr small{color:var(--muted);font-weight:500;font-size:.72rem}
+.tg{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:4px;align-items:flex-end;z-index:1}.tag{font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.94);color:#7c2d12}.tag.new{background:var(--green);color:#fff}.tag.best{background:var(--accent2);color:#3a1a00}
+.dt{position:absolute;top:10px;left:10px;width:20px;height:20px;border-radius:5px;border:2px solid;background:#fff;display:grid;place-items:center;z-index:1}.dt::after{content:"";width:9px;height:9px;border-radius:50%}.dt.v{border-color:#15803d}.dt.v::after{background:#15803d}.dt.e{border-color:#b45309}.dt.e::after{background:#b45309}.dt.n{border-color:#b91c1c}.dt.n::after{background:#b91c1c}
+.sold{position:absolute;inset:0;background:rgba(255,255,255,.7);display:grid;place-items:center;font-weight:800;letter-spacing:.1em;color:#7c2d12;z-index:2;text-transform:uppercase}[data-theme=dark] .sold{background:rgba(0,0,0,.6);color:#fdba74}
+.egl{font-size:.74rem;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}.egl input{accent-color:var(--green)}
+.qty{display:inline-flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:99px;padding:3px 6px}.qty button{width:28px;height:28px;border-radius:50%;border:0;background:var(--bg2);cursor:pointer;font-weight:800}.qty b{min-width:18px;text-align:center}
+.cake{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:var(--shadow)}
+.cake .pv{background:var(--hero);border-radius:22px;padding:20px;display:grid;place-items:center;min-height:320px}.cake svg{width:100%;max-width:340px;height:auto;filter:drop-shadow(0 14px 14px rgba(0,0,0,.2))}
+.fm{display:grid;gap:14px}.fm label{display:grid;gap:6px;font-size:.82rem;font-weight:700;color:var(--muted)}.fm input,.fm select,.fm textarea{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:10px 14px;outline:none;min-width:0}.fm input:focus,.fm select:focus,.fm textarea:focus{border-color:var(--accent)}.fm textarea{min-height:70px;resize:vertical}.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cp{font-size:1.7rem;font-weight:800;font-family:Georgia,serif;color:var(--accent)}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}.feat div{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px}.feat i{font-style:normal;font-size:2rem}.feat h4{font-family:Georgia,serif;margin:8px 0 4px}.feat p{font-size:.88rem;color:var(--muted)}
+.rev{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}.rev blockquote{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;font-size:.92rem}.rev b{display:block;margin-top:10px;font-size:.84rem;color:var(--muted)}.st{color:var(--accent2);letter-spacing:2px}
+.visit{display:grid;grid-template-columns:1fr 1fr;gap:20px}.visit .box{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px}.visit h3{font-family:Georgia,serif;margin-bottom:10px}.visit li{list-style:none;margin:6px 0;font-size:.94rem}.map{background:linear-gradient(135deg,#d1fae5,#bfdbfe);border-radius:20px;min-height:200px;display:grid;place-items:center;font-size:3rem;position:relative;overflow:hidden}.map::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent 0 22px,rgba(255,255,255,.4) 22px 24px),repeating-linear-gradient(-45deg,transparent 0 30px,rgba(255,255,255,.35) 30px 32px)}.map span{position:relative}
+.maker{background:linear-gradient(135deg,rgba(194,65,12,.12),rgba(245,158,11,.14));border:1px solid var(--line);border-radius:22px;padding:22px;margin:0 0 30px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}.maker h3{font-family:Georgia,serif;margin-bottom:4px}.maker p{color:var(--muted);font-size:.9rem;max-width:620px}
+footer{background:#2a160a;color:#f5e1c8;padding:34px 0 90px;font-size:.88rem}footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(100%,430px);background:var(--bg);border-left:1px solid var(--line);z-index:120;transform:translateX(105%);transition:transform .3s;display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(0,0,0,.25)}.drawer.open{transform:none}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}.dh h3{font-family:Georgia,serif;font-size:1.3rem}.db{flex:1;overflow-y:auto;padding:16px 20px}.df{padding:16px 20px;border-top:1px solid var(--line);display:grid;gap:10px;background:var(--card)}
+.cl{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);font-size:.9rem}.cl .th{width:48px;height:48px;border-radius:14px;font-size:1.6rem}.cl .th.pic{font-size:1.6rem}.cl small{color:var(--muted);display:block}
+.tot{display:grid;gap:4px;font-size:.9rem}.tot div{display:flex;justify-content:space-between}.tot .g{font-size:1.2rem;font-weight:800;border-top:1px solid var(--line);padding-top:8px}
+.scrim{position:fixed;inset:0;background:rgba(30,12,2,.5);z-index:110;opacity:0;pointer-events:none;transition:.25s}.scrim.on{opacity:1;pointer-events:auto}
+.modal{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:16px;background:rgba(30,12,2,.6)}.modal .box{background:var(--bg);border:1px solid var(--line);border-radius:24px;padding:26px;width:min(100%,520px);max-height:92vh;overflow-y:auto}
+.err{color:var(--rose);font-size:.82rem;min-height:1em}
+.own{position:fixed;inset:0;z-index:140;background:var(--bg);overflow-y:auto}.own .top{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:12px 22px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.own .top h2{font-family:Georgia,serif;font-size:1.25rem}
+.own .in{max-width:1180px;margin:0 auto;padding:22px;display:grid;gap:20px}
+.otabs{display:flex;gap:8px;flex-wrap:wrap}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}.kp div{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}.kp small{color:var(--muted);font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em}.kp b{display:block;font-family:Georgia,serif;font-size:1.7rem}
+.oc{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;min-width:0}.oc h3{font-family:Georgia,serif;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:20px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:620px}th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px;border-bottom:1px solid var(--line)}td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td input[type=number]{width:84px;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:5px 8px}td .th{width:42px;height:42px;border-radius:10px;font-size:1.4rem}
+.hb{display:grid;gap:10px}.hb>div{display:grid;gap:3px;font-size:.86rem}.hb .t{height:9px;border-radius:99px;background:var(--bg2);overflow:hidden}.hb .t i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px}.hb .l{display:flex;justify-content:space-between}
+.bars{display:flex;align-items:flex-end;gap:10px;height:150px}.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;font-size:.72rem;color:var(--muted)}.bars i{display:block;width:100%;max-width:42px;border-radius:8px 8px 3px 3px;background:linear-gradient(var(--accent2),var(--accent))}.bars b{color:var(--ink);font-size:.7rem}
+.up{border:2px dashed var(--line);border-radius:18px;padding:18px;text-align:center;cursor:pointer;display:grid;gap:8px;place-items:center;background:var(--bg);transition:.2s}.up:hover,.up.over{border-color:var(--accent);background:var(--bg2)}.up img{width:150px;height:110px;object-fit:cover;border-radius:14px}
+.emj{display:flex;gap:6px;flex-wrap:wrap}.emj button{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);cursor:pointer;font-size:1.3rem}.emj button.on{border-color:var(--accent);background:var(--bg2)}
+.pl{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.72rem;font-weight:700}.pl.n{background:#fee2e2;color:#991b1b}.pl.b{background:#fef3c7;color:#92400e}.pl.r{background:#dbeafe;color:#1e40af}.pl.d{background:#dcfce7;color:#166534}
+.kb{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}.kc{background:var(--bg2);border-radius:18px;padding:12px;display:grid;gap:10px;align-content:start}.kc h4{font-size:.9rem;display:flex;justify-content:space-between}
+.od{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px;font-size:.84rem;display:grid;gap:4px}
+#toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:300;width:min(92%,420px)}.toast{background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:99px;box-shadow:var(--shadow);font-size:.88rem;font-weight:600;animation:in .3s}.toast.bad{background:var(--rose);color:#fff}@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.cbar{position:fixed;left:14px;right:14px;bottom:14px;z-index:70;display:none;justify-content:space-between;align-items:center;padding:13px 20px;border-radius:99px;background:linear-gradient(135deg,var(--accent),var(--rose));color:#fff;font-weight:800;box-shadow:var(--shadow);border:0;cursor:pointer}
+@media(max-width:900px){.hero .wrap{grid-template-columns:1fr;padding-top:30px}.plate{max-width:340px;order:-1}.cake{grid-template-columns:1fr;padding:20px}.visit{grid-template-columns:1fr}
+ .links{position:fixed;top:105px;left:0;right:0;flex-direction:column;align-items:stretch;background:var(--bg);padding:14px 20px 20px;border-bottom:1px solid var(--line);transform:translateY(-130%);visibility:hidden;transition:.3s;margin:0}.links.open{transform:none;visibility:visible}#burger{display:grid}.nav .sp{flex:1}.cbar.show{display:flex}}
+@media(max-width:560px){.wrap{padding:0 16px}.r2{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.it .pic{height:120px;font-size:3rem}.it .b{padding:10px 12px 12px}.it p{display:none}.sale{width:74px;height:74px;font-size:.66rem}.sale b{font-size:1.1rem}.logo small{display:none}section.sec{padding:44px 0}.special{margin-top:-20px;padding:18px}}
+@media print{body>*:not(.modal){display:none!important}.modal{position:static;background:#fff}.noprint{display:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="tick" aria-hidden="true"><div><span>&#127838; Fresh buns every 2 hours</span><span>&#129370; Eggless cakes available</span><span>&#128757; Delivery across Bengaluru</span><span>&#127874; Custom cakes in 24 hours</span><span>&#127775; Serving Bengaluru since 1989</span><span>&#127838; Fresh buns every 2 hours</span><span>&#129370; Eggless cakes available</span></div></div>
+<header class="hd"><div class="wrap nav">
+ <a class="logo" href="#top"><i>&#129360;</i><div><b>Golden Crust</b><small>Bakery &middot; Bengaluru</small></div></a>
+ <nav class="links" id="links"><a href="#popular">Favourites</a><a href="#menu">Menu</a><a href="#cake">Custom cake</a><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><button class="btn sm" data-act="owner">&#128274; Owner login</button></nav>
+ <div class="sp"></div>
+ <button class="icon" id="theme" aria-label="Toggle theme">&#9790;</button>
+ <button class="icon" data-act="cart" aria-label="Open cart">&#128722;<span class="cn" id="cn" hidden></span></button>
+ <button class="icon" id="burger" aria-label="Menu">&#9776;</button>
+</div></header>
+<main id="top">
+<section class="hero"><div class="wrap">
+ <div><span class="eyebrow">&#10022; Since 1989 &middot; Indiranagar, Bengaluru</span><h1>Fresh from the oven, <em>every morning.</em></h1><p class="lead">Dilpasand, khara buns, egg puffs and cakes baked the way Bengaluru has loved them for generations. Order online for delivery or pick up warm.</p>
+  <div class="cta"><a class="btn pri lg" href="#menu">Order now</a><a class="btn lg" href="#cake">Design a cake</a></div>
+  <div class="facts"><div><b>6:30 AM</b>First batch</div><div><b>45 min</b>Delivery</div><div><b>40+</b>Fresh items</div></div></div>
+ <div class="plate"><div class="disc"></div><div class="ring"><span style="top:2%;left:42%">&#129360;</span><span style="top:22%;left:84%">&#127856;</span><span style="top:70%;left:84%">&#127850;</span><span style="top:88%;left:42%">&#129384;</span><span style="top:70%;left:0%">&#129473;</span><span style="top:22%;left:0%">&#127849;</span></div><div class="mid">&#127874;</div><div class="steam"><i></i><i></i><i></i></div><div class="sale"><div><b>Free</b>delivery over &#8377;499</div></div></div>
+</div></section>
+<div class="wrap" id="specialBox"></div>
+<section class="sec" id="popular"><div class="wrap"><span class="eyebrow">&#128293; Most loved</span><h2>Bengaluru's favourites</h2><p class="sub">The bakes our regulars line up for, from Iyengar-style buns to puffs hot out of the oven.</p><div class="pop" id="pop"></div></div></section>
+<section class="sec" id="menu" style="background:var(--bg2)"><div class="wrap"><span class="eyebrow">&#127860; Our menu</span><h2>Everything we bake</h2><p class="sub">Prices include GST. Cakes need 24 hours notice. Many items are available eggless.</p>
+ <div class="mtools"><input id="q" type="search" placeholder="Search dilpasand, puff, black forest..." aria-label="Search menu"><div class="chips" id="diet"></div></div><div class="chips" id="cats"></div><div class="grid" id="grid"></div><p class="muted" id="cnt" style="margin-top:14px;color:var(--muted);font-size:.86rem"></p></div></section>
+<section class="sec" id="cake"><div class="wrap"><span class="eyebrow">&#127874; Made for you</span><h2>Design your cake</h2><p class="sub">Choose flavour, size and message. See the preview and the price instantly.</p><div class="cake" id="cakeBox"></div></div></section>
+<section class="sec" style="padding-top:10px"><div class="wrap"><div class="feat"><div><i>&#127806;</i><h4>Baked fresh daily</h4><p>No preservatives. Small batches through the day so your bun is always warm.</p></div><div><i>&#129370;</i><h4>Eggless on request</h4><p>Most cakes and pastries come eggless on a separate bench for the same taste.</p></div><div><i>&#128757;</i><h4>Delivery in 45 minutes</h4><p>Across central Bengaluru, with free delivery over &#8377;499.</p></div><div><i>&#127873;</i><h4>Gifting and hampers</h4><p>Festive boxes and corporate gifting with your message.</p></div></div></div></section>
+<section class="sec" id="reviews" style="background:var(--bg2)"><div class="wrap"><span class="eyebrow">&#11088; Reviews</span><h2>Loved by the neighbourhood</h2><div class="rev"><blockquote><div class="st">&#9733;&#9733;&#9733;&#9733;&#9733;</div>"The dilpasand tastes exactly like my childhood. Crisp outside and soft coconut inside. Ordered a Black Forest for my father's birthday and it was perfect."<b>Shreya N., Jayanagar</b></blockquote><blockquote><div class="st">&#9733;&#9733;&#9733;&#9733;&#9733;</div>"Egg puffs are the best in Indiranagar. Delivery came in 35 minutes and still warm. The eggless red velvet was a hit at the office."<b>Karthik R., Indiranagar</b></blockquote><blockquote><div class="st">&#9733;&#9733;&#9733;&#9733;&#9734;</div>"Custom cake builder is so easy. Got the message on the cake exactly as typed. Will order our anniversary cake here again."<b>Meghana P., HSR Layout</b></blockquote></div></div></section>
+<section class="sec" id="visit"><div class="wrap"><span class="eyebrow">&#128205; Find us</span><h2>Visit the bakery</h2><div class="visit" style="margin-top:20px"><div class="box"><h3>Golden Crust, Indiranagar</h3><ul><li>&#128205; 100 Feet Road, Indiranagar, Bengaluru 560038 (demo address)</li><li>&#128337; Open daily 6:30 AM to 10:00 PM</li><li>&#128222; +91 73583 32692 (demo)</li><li>&#128179; UPI, cards and cash accepted</li></ul><div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/917358332692?text=Hi%20Golden%20Crust%2C%20I%20want%20to%20place%20an%20order.">Order on WhatsApp</a></div></div><div class="map" role="img" aria-label="Map placeholder"><span>&#128205;</span></div></div></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap"><div class="maker"><div><h3>Own a bakery or food business? Get a website like this.</h3><p>I build online ordering, owner dashboards where you can add items and photos yourself, delivery tracking and mobile apps. This demo uses a fictional shop.</p></div><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/917358332692?text=Hi%20Kishore%2C%20I%20saw%20your%20bakery%20demo%20and%20want%20a%20website%20for%20my%20business.">WhatsApp Kishore</a><a class="btn" href="mailto:nandhaluruk@gmail.com?subject=Project%20enquiry%20-%20Bakery%20demo">Email</a><a class="btn" href="index.html">Portfolio</a></div></div></div></section>
+</main>
+<footer><div class="wrap"><div><b style="font-family:Georgia,serif;font-size:1.1rem">Golden Crust Bakery</b><div>Fictional bakery for demonstration. Prices and details are samples.</div></div><div>Built by <a href="index.html" style="color:#fbbf24;font-weight:700">Kishore Nandhaluru</a></div></div></footer>
+<button class="cbar" id="cbar" data-act="cart"></button>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Cart"></aside>
+<div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
+<div class="own" id="own" hidden></div>
+<div id="toasts" aria-live="polite"></div>
+<noscript><p style="padding:20px">Please enable JavaScript to use this demo.</p></noscript>
+<script>
+(function(){
+'use strict';
+const $=(s,c)=>(c||document).querySelector(s),$$=(s,c)=>Array.prototype.slice.call((c||document).querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>'\u20B9'+Math.round(n).toLocaleString('en-IN');
+const IMGOK=s=>typeof s==='string'&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(s);
+const CATS=['Breads & Buns','Puffs & Savouries','Cakes','Pastries','Cookies & Biscuits','Festive & Gifting'];
+const EMO={'Breads & Buns':'&#129391;','Puffs & Savouries':'&#129360;','Cakes':'&#127856;','Pastries':'&#129473;','Cookies & Biscuits':'&#127850;','Festive & Gifting':'&#127873;'};
+const EMOJIS=['&#129391;','&#129360;','&#127838;','&#129366;','&#127856;','&#127874;','&#129473;','&#127850;','&#127849;','&#127854;','&#127873;','&#127851;','&#127848;','&#127790;','&#129384;','&#9749;'];
+const AREAS={'Indiranagar':30,'Koramangala':40,'Jayanagar':50,'HSR Layout':50,'MG Road & Shivajinagar':40,'Malleshwaram':60,'Whitefield':80,'Marathahalli':70,'JP Nagar':60,'Hebbal':70};
+const SLOTS=['As soon as possible (45 min)','10:00 AM to 12:00 PM','12:00 PM to 2:00 PM','4:00 PM to 6:00 PM','6:00 PM to 8:00 PM'];
+const D=(name,cat,price,unit,diet,desc,tags,eg,em)=>({name,cat,price,unit,diet,desc,tags:tags||[],eggless:!!eg,emoji:em||EMO[cat],img:'',sold:false});
+const SEED=[
+ D('Dilpasand (Dilkush)','Breads & Buns',35,'each','Veg','Flaky sweet bun stuffed with coconut and tutti frutti. A Bengaluru bakery classic.',['Bestseller'],0,'&#129391;'),
+ D('Khara Bun','Breads & Buns',25,'each','Veg','Soft bun with a spicy onion and masala filling, baked fresh every two hours.',['Bestseller'],0,'&#129391;'),
+ D('Congress Bun','Breads & Buns',25,'each','Veg','The famous Iyengar-style savoury bun with coconut and green chilli.',['Bestseller'],0,'&#129391;'),
+ D('Coconut Bun','Breads & Buns',30,'each','Veg','Sweet bun with a generous coconut and cardamom filling.',[],0,'&#129391;'),
+ D('Milk Bread','Breads & Buns',50,'400 g loaf','Veg','Soft and fluffy sandwich loaf made with fresh milk.',[],0,'&#127838;'),
+ D('Whole Wheat Bread','Breads & Buns',55,'400 g loaf','Veg','Healthy loaf with 100% atta and no maida.',[],0,'&#127838;'),
+ D('Pav','Breads & Buns',40,'pack of 6','Veg','Soft laadi pav, perfect for pav bhaji and vada pav.',[],0,'&#129366;'),
+ D('Garlic Bread','Breads & Buns',90,'each','Veg','Toasted baguette with garlic butter and herbs.',['New'],0,'&#129366;'),
+ D('Butter Bun with Jam','Breads & Buns',30,'each','Veg','Soft bun with butter and mixed fruit jam. Best with chai.',[],0,'&#129391;'),
+ D('Veg Puff','Puffs & Savouries',25,'each','Veg','Flaky puff pastry with spiced vegetable filling, served hot.',['Bestseller'],0,'&#129360;'),
+ D('Egg Puff','Puffs & Savouries',30,'each','Egg','Crisp layers wrapped around masala egg. Bengaluru\'s favourite snack.',['Bestseller'],0,'&#129360;'),
+ D('Paneer Puff','Puffs & Savouries',40,'each','Veg','Puff pastry stuffed with spiced paneer and onions.',[],0,'&#129360;'),
+ D('Mushroom Puff','Puffs & Savouries',40,'each','Veg','Creamy pepper mushroom filling in golden pastry.',[],0,'&#129360;'),
+ D('Chicken Puff','Puffs & Savouries',45,'each','Non-veg','Juicy masala chicken in flaky pastry.',[],0,'&#129360;'),
+ D('Khara Biscuit','Puffs & Savouries',110,'250 g','Veg','Crunchy savoury biscuits with cumin and curry leaf.',[],0,'&#129384;'),
+ D('Cheese Straws','Puffs & Savouries',120,'250 g','Veg','Crispy twisted pastry sticks with cheddar.',['New'],0,'&#129384;'),
+ D('Black Forest Cake','Cakes',480,'500 g','Egg','Chocolate sponge, whipped cream, cherries and chocolate shavings.',['Bestseller'],1,'&#127856;'),
+ D('Chocolate Truffle Cake','Cakes',550,'500 g','Egg','Rich ganache over moist cocoa sponge.',[],1,'&#127874;'),
+ D('Pineapple Cake','Cakes',450,'500 g','Egg','Light vanilla sponge with pineapple chunks and cream.',[],1,'&#127856;'),
+ D('Butterscotch Cake','Cakes',480,'500 g','Egg','Caramel cream, crunchy praline and vanilla sponge.',[],1,'&#127856;'),
+ D('Red Velvet Cake','Cakes',650,'500 g','Egg','Velvety red sponge with cream cheese frosting.',['New'],1,'&#127874;'),
+ D('Rasmalai Cake','Cakes',700,'500 g','Veg','Cardamom sponge soaked in rasmalai milk with saffron cream.',['New'],0,'&#127874;'),
+ D('Honey Cake','Cakes',60,'slice','Egg','Traditional Bengaluru bakery honey cake, soft and moist.',[],0,'&#127856;'),
+ D('Banana Walnut Loaf','Cakes',180,'each','Veg','Eggless loaf with ripe bananas and crunchy walnuts.',[],0,'&#127856;'),
+ D('Dates and Walnut Cake','Cakes',280,'each','Veg','No refined sugar. Sweetened with dates.',[],0,'&#127856;'),
+ D('Pineapple Pastry','Pastries',70,'each','Egg','Soft sponge layered with pineapple cream.',[],1,'&#129473;'),
+ D('Black Forest Pastry','Pastries',80,'each','Egg','Individual slice of our best-selling cake.',[],1,'&#129473;'),
+ D('Chocolate Truffle Pastry','Pastries',90,'each','Egg','Dense chocolate ganache on a cocoa base.',[],1,'&#129473;'),
+ D('Red Velvet Pastry','Pastries',110,'each','Egg','Red velvet with cream cheese frosting.',[],1,'&#129473;'),
+ D('Walnut Brownie','Pastries',90,'each','Egg','Fudgy brownie with roasted walnuts.',[],1,'&#127851;'),
+ D('Chocolate Eclair','Pastries',70,'each','Egg','Choux pastry with custard and chocolate glaze.',[],0,'&#127849;'),
+ D('Butter Biscuit','Cookies & Biscuits',110,'250 g','Veg','Melt-in-the-mouth butter biscuits. The classic Bangalore tea-time pack.',['Bestseller'],0,'&#127850;'),
+ D('Nankhatai','Cookies & Biscuits',130,'250 g','Veg','Crumbly cardamom shortbread cookies.',[],0,'&#127850;'),
+ D('Coconut Macaroons','Cookies & Biscuits',180,'box of 6','Egg','Chewy coconut cookies with a crisp edge.',[],0,'&#127850;'),
+ D('Tea Rusk','Cookies & Biscuits',120,'400 g','Veg','Twice-baked crunchy rusk for dunking in chai.',[],0,'&#127838;'),
+ D('Choco Chip Cookies Jar','Cookies & Biscuits',250,'jar','Veg','Buttery cookies loaded with chocolate chips.',['New'],0,'&#127850;'),
+ D('Diwali Gift Box','Festive & Gifting',799,'box','Veg','Assorted cookies, dry fruit cake and nankhatai in a festive box.',['Festive'],0,'&#127873;'),
+ D('Christmas Plum Cake Hamper','Festive & Gifting',999,'hamper','Egg','Rich plum cake soaked in fruit juice with cookies and a card.',['Festive'],0,'&#127873;')];
+SEED.forEach((x,i)=>x.id='i'+i);
+const LS='gc-menu-v2',SS={};
+function load(){try{const j=localStorage.getItem(LS);if(j){const a=JSON.parse(j);if(Array.isArray(a)&&a.length){return a.filter(x=>x&&typeof x.name==='string').map(x=>({id:String(x.id),name:String(x.name).slice(0,60),cat:CATS.includes(x.cat)?x.cat:CATS[0],price:Math.max(1,+x.price||1),unit:String(x.unit||'each').slice(0,20),diet:['Veg','Egg','Non-veg'].includes(x.diet)?x.diet:'Veg',desc:String(x.desc||'').slice(0,200),tags:Array.isArray(x.tags)?x.tags.filter(t=>['Bestseller','New','Festive'].includes(t)):[],eggless:!!x.eggless,emoji:EMOJIS.includes(x.emoji)?x.emoji:EMO[CATS[0]],img:IMGOK(x.img)?x.img:'',sold:!!x.sold}))}}}catch(e){}return JSON.parse(JSON.stringify(SEED))}
+const S={items:load(),cart:[],special:'i0',diet:'All',cat:'All',q:'',cake:{flavour:'Black Forest',kg:1,shape:'Round',eggless:false,msg:'Happy Birthday',date:''},orders:[],oseq:5201,own:false,tab:'Overview',draft:{emoji:EMOJIS[0],img:''},mode:'Delivery'};
+try{const sp=localStorage.getItem('gc-special');if(sp&&S.items.some(i=>i.id===sp))S.special=sp}catch(e){}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S.items));return true}catch(e){toast('Browser storage is full. Photo kept for this session only.',1);return false}}
+const it=id=>S.items.find(i=>i.id===id);
+/* seeded orders */
+(function(){const names=['Ananya S.','Rohan K.','Priya M.','Vikram N.','Divya R.','Arjun P.','Sneha B.','Imran A.'],st=[3,3,2,2,1,1,0,0];names.forEach((n,i)=>{const a=SEED[(i*5)%SEED.length],b=SEED[(i*7+3)%SEED.length];S.orders.push({id:'GC-'+(5190+i),ts:Date.now()-(i+1)*17*6e4,name:n,phone:'98450'+(10000+i*911),mode:i%3?'Delivery':'Pickup',area:'Indiranagar',slot:SLOTS[0],items:[{n:a.name,q:2,p:a.price},{n:b.name,q:1,p:b.price}],total:a.price*2+b.price+(i%3?30:0),status:st[i]})})})();
+const SALES={};SEED.forEach((x,i)=>SALES[x.id]=x.tags.includes('Bestseller')?60+(i*7)%40:8+(i*13)%30);
+
+/* ---------- helpers ---------- */
+const toast=(m,b)=>{const t=document.createElement('div');t.className='toast'+(b?' bad':'');t.textContent=m;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3400)};
+const openModal=h=>{$('#mbox').innerHTML=h;$('#modal').hidden=false},closeModal=()=>{$('#modal').hidden=true};
+const ci=cat=>CATS.indexOf(cat)%6;
+const pic=(x,cls)=>`<div class="pic c${ci(x.cat)} ${cls||''}">${IMGOK(x.img)?`<img src="${x.img}" alt="${esc(x.name)}" loading="lazy">`:`<span class="em">${x.emoji}</span>`}</div>`;
+const dt=d=>`<span class="dt ${d==='Veg'?'v':d==='Egg'?'e':'n'}" title="${d==='Veg'?'Vegetarian':d==='Egg'?'Contains egg':'Non-vegetarian'}"></span>`;
+const EGL=50;
+const key=(id,eg)=>id+(eg?'|e':'');
+function cartLines(){return S.cart.map(l=>{if(l.custom)return{...l,name:l.title,sub:l.sub,price:l.price,emoji:'&#127874;',cls:'c2'};const x=it(l.id);return x?{...l,name:x.name,sub:(l.eg?'Eggless, ':'')+x.unit,price:x.price+(l.eg?EGL:0),emoji:x.emoji,img:x.img,cls:'c'+ci(x.cat),item:x}:null}).filter(Boolean)}
+function calc(){const L=cartLines(),sub=L.reduce((s,l)=>s+l.price*l.q,0),del=S.mode==='Delivery'&&sub>0?(sub>=499?0:(AREAS[S.area||'Indiranagar']||40)):0;return{L,sub,del,total:sub+del,n:L.reduce((s,l)=>s+l.q,0),hasCake:L.some(l=>l.custom||(l.item&&l.item.cat==='Cakes'))}}
+
+/* ---------- Storefront rendering ---------- */
+function renderSpecial(){
+ const x=it(S.special);if(!x||x.sold){$('#specialBox').innerHTML='';return}
+ $('#specialBox').innerHTML=`<div class="special"><div class="em">${IMGOK(x.img)?`<img src="${x.img}" alt="" style="width:90px;height:90px;border-radius:20px;object-fit:cover">`:x.emoji}</div><div style="flex:1;min-width:200px"><div class="eyebrow" style="color:#fde68a">&#10024; Today's special</div><h3>${esc(x.name)} for ${inr(x.price)}</h3><p>${esc(x.desc)}</p></div><button class="btn gold" data-act="add" data-id="${x.id}">Add to cart</button></div>`;
+}
+function renderPop(){
+ const L=S.items.filter(i=>i.tags.includes('Bestseller')&&!i.sold).sort((a,b)=>(SALES[b.id]||50)-(SALES[a.id]||50)).slice(0,10);
+ $('#pop').innerHTML=L.map((x,i)=>`<div class="pc" data-act="add" data-id="${x.id}" role="button" tabindex="0"><span class="rank">#${i+1} in Bengaluru</span>${pic(x)}<div class="b"><b>${esc(x.name)}</b><div class="pr">${inr(x.price)} <small>${esc(x.unit)}</small></div></div></div>`).join('')||'<div class="muted">Mark items as Bestseller from the owner dashboard.</div>';
+}
+function renderFilters(){
+ $('#cats').innerHTML=['All'].concat(CATS).map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat" data-v="${esc(c)}">${c.replace('&amp;','&')}</button>`).join('');
+ $('#diet').innerHTML=['All','Veg','Eggless'].map(d=>`<button class="chip ${S.diet===d?'on':''}" data-act="diet" data-v="${d}">${d==='Veg'?'<span class="dots" style="background:#15803d"></span> Veg':d==='Eggless'?'Eggless':'All'}</button>`).join('');
+}
+function renderGrid(){
+ const q=S.q.toLowerCase(),L=S.items.filter(x=>(S.cat==='All'||x.cat===S.cat)&&(!q||(x.name+x.desc+x.cat).toLowerCase().includes(q))&&(S.diet==='All'||(S.diet==='Veg'?x.diet==='Veg':(x.diet==='Veg'||x.eggless))));
+ $('#grid').innerHTML=L.map(x=>`<div class="it">${x.sold?'<div class="sold">Sold out today</div>':''}${dt(x.diet)}<div class="tg">${x.tags.map(t=>`<span class="tag ${t==='New'?'new':t==='Bestseller'?'best':''}">${t==='Bestseller'?'&#128293; ':''}${t}</span>`).join('')}</div>${pic(x)}<div class="b"><h4>${esc(x.name)}</h4><p>${esc(x.desc)}</p>${x.eggless&&x.diet!=='Veg'?`<label class="egl"><input type="checkbox" data-eg="${x.id}"> Make it eggless (+${inr(EGL)})</label>`:''}<div class="row"><div class="pr">${inr(x.price)}<br><small>${esc(x.unit)}</small></div><button class="btn pri sm" data-act="add" data-id="${x.id}" ${x.sold?'disabled':''}>Add +</button></div></div></div>`).join('')||'<div style="grid-column:1/-1;padding:30px;text-align:center;color:var(--muted)">No items found. Try another search.</div>';
+ $('#cnt').textContent='Showing '+L.length+' of '+S.items.length+' items';
+}
+/* ---------- Custom cake ---------- */
+const FLV={'Black Forest':[900,'#4a2511','#fff5e6','#dc2626'],'Chocolate Truffle':[1100,'#3b1d0e','#7a4a2b','#fbbf24'],'Pineapple':[800,'#fde68a','#fffbeb','#f59e0b'],'Butterscotch':[850,'#d9a15b','#fff1d6','#b45309'],'Red Velvet':[1200,'#b91c1c','#fff7f7','#7f1d1d'],'Rasmalai':[1300,'#fde7c3','#fffaf0','#d97706'],'Mango':[1000,'#fbbf24','#fff7d6','#f97316'],'Vanilla':[700,'#f5deb3','#fffdf6','#e11d48']};
+function cakePrice(){const c=S.cake,f=FLV[c.flavour];return Math.round(f[0]*c.kg+(c.eggless?100*c.kg:0)+(c.shape==='Round'?0:150))}
+function cakeSVG(){
+ const c=S.cake,f=FLV[c.flavour],sp=c.kg>=1.5,msg=esc((c.msg||'').slice(0,28)),w=c.shape==='Round'?220:200,h=sp?150:120,y0=230-h;
+ const top=c.shape==='Heart'?`<path d="M170 ${y0+4} C170 ${y0-36} 120 ${y0-30} 120 ${y0+2} C120 ${y0-30} 70 ${y0-36} 70 ${y0+4} C70 ${y0+36} 120 ${y0+56} 120 ${y0+56} C120 ${y0+56} 170 ${y0+36} 170 ${y0+4}Z" fill="${f[2]}"/>`:c.shape==='Square'?`<rect x="${170-w/2-30}" y="${y0-14}" width="${w}" height="30" rx="6" fill="${f[2]}"/>`:`<ellipse cx="170" cy="${y0}" rx="${w/2}" ry="26" fill="${f[2]}"/>`;
+ const body=c.shape==='Heart'?`<path d="M60 ${y0+20} C60 ${y0-50} 170 ${y0-50} 170 ${y0+10} C170 ${y0-50} 280 ${y0-50} 280 ${y0+20} C280 ${y0+110} 170 ${y0+150} 170 ${y0+150} C170 ${y0+150} 60 ${y0+110} 60 ${y0+20}Z" fill="${f[1]}"/>`:`<rect x="${170-w/2}" y="${y0}" width="${w}" height="${h}" rx="${c.shape==='Round'?14:8}" fill="${f[1]}"/>`;
+ const lay=[1,2].map(i=>`<rect x="${170-w/2}" y="${y0+h*i/3-3}" width="${w}" height="7" fill="${f[2]}" opacity=".85"/>`).join('');
+ const cherry=[0,1,2].map(i=>`<circle cx="${130+i*40}" cy="${y0-8+(i%2)*6}" r="9" fill="${f[3]}"/><circle cx="${127+i*40}" cy="${y0-12+(i%2)*6}" r="2.5" fill="#fff" opacity=".7"/>`).join('');
+ return `<svg viewBox="0 0 340 300" role="img" aria-label="Cake preview"><ellipse cx="170" cy="266" rx="150" ry="18" fill="#e5e7eb"/><ellipse cx="170" cy="260" rx="150" ry="18" fill="#f3f4f6"/>${c.shape==='Heart'?'':body+lay}${c.shape==='Heart'?body:''}${c.shape==='Heart'?'':top}${cherry}<text x="170" y="${y0+h/2+8}" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="${msg.length>18?15:19}" fill="${f[1]==='#fde68a'||f[1]==='#f5deb3'||f[1]==='#fbbf24'||f[1]==='#fde7c3'?'#7c2d12':'#fff'}">${msg}</text></svg>`;
+}
+function renderCake(){
+ const c=S.cake,min=new Date(Date.now()+864e5).toISOString().slice(0,10);if(!c.date)c.date=min;
+ $('#cakeBox').innerHTML=`<div class="pv" id="cakePv">${cakeSVG()}</div><div class="fm"><div class="r2"><label>Flavour<select id="cF">${Object.keys(FLV).map(k=>`<option ${c.flavour===k?'selected':''}>${k}</option>`).join('')}</select></label><label>Weight<select id="cK">${[.5,1,1.5,2,3].map(k=>`<option value="${k}" ${c.kg===k?'selected':''}>${k} kg</option>`).join('')}</select></label></div>
+ <div class="r2"><label>Shape<select id="cS">${['Round','Square','Heart'].map(k=>`<option ${c.shape===k?'selected':''}>${k}</option>`).join('')}</select></label><label>Needed on<input type="date" id="cD" min="${min}" value="${c.date}"></label></div>
+ <label>Message on cake (max 28 characters)<input id="cM" maxlength="28" value="${esc(c.msg)}"></label><label class="egl" style="font-size:.9rem"><input type="checkbox" id="cE" ${c.eggless?'checked':''}> Eggless (+${inr(100)} per kg)</label>
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><div style="font-size:.8rem;color:var(--muted)">Estimated price</div><div class="cp" id="cPr">${inr(cakePrice())}</div></div><button class="btn pri lg" data-act="addcake">Add cake to cart</button></div><div style="font-size:.78rem;color:var(--muted)">Custom cakes are baked to order. Final design confirmed on call.</div></div>`;
+}
+/* ---------- Cart ---------- */
+function renderCart(){
+ const c=calc();$('#cn').textContent=c.n;$('#cn').hidden=!c.n;
+ const bar=$('#cbar');bar.classList.toggle('show',c.n>0);bar.innerHTML=`<span>&#128722; ${c.n} item(s)</span><span>${inr(c.sub)} &rarr;</span>`;
+ const aSel=S.area||'Indiranagar';
+ $('#drawer').innerHTML=`<div class="dh"><h3>Your order</h3><button class="icon" data-act="closecart" aria-label="Close">&#10005;</button></div><div class="db">${c.L.map((l,i)=>`<div class="cl"><div class="th pic ${l.cls}">${l.img&&IMGOK(l.img)?`<img src="${l.img}" alt="">`:l.emoji}</div><div><b>${esc(l.name)}</b><small>${esc(l.sub||'')}</small><small>${inr(l.price)} each</small></div><div class="qty"><button data-act="dec" data-i="${i}" aria-label="Decrease">&minus;</button><b>${l.q}</b><button data-act="inc" data-i="${i}" aria-label="Increase">+</button></div></div>`).join('')||'<div style="text-align:center;padding:40px 10px;color:var(--muted)"><div style="font-size:3rem">&#129360;</div>Your cart is empty.<br>Add something warm and fresh.</div>'}
+ ${c.n?`<div class="chips" style="margin:16px 0 10px">${['Delivery','Pickup'].map(m=>`<button class="chip ${S.mode===m?'on':''}" data-act="mode" data-v="${m}">${m==='Delivery'?'&#128757; Delivery':'&#127978; Pickup (free)'}</button>`).join('')}</div>
+ <div class="fm"><div class="r2"><label>Your name<input id="oN" maxlength="50" autocomplete="name"></label><label>Mobile<input id="oP" inputmode="numeric" maxlength="10" placeholder="10 digits"></label></div>${S.mode==='Delivery'?`<label>Area<select id="oA">${Object.keys(AREAS).map(a=>`<option ${a===aSel?'selected':''}>${a}</option>`).join('')}</select></label><label>Address<input id="oAd" maxlength="140" placeholder="Flat, street, landmark"></label>`:''}<label>${c.hasCake?'Preferred slot (cakes ready next day)':'Time slot'}<select id="oS">${SLOTS.map(s=>`<option>${s}</option>`).join('')}</select></label><div class="err" id="oE"></div></div>`:''}</div>
+ ${c.n?`<div class="df"><div class="tot"><div><span>Subtotal</span><span>${inr(c.sub)}</span></div><div><span>${S.mode==='Delivery'?'Delivery'+(c.sub>=499?' (free over '+inr(499)+')':''):'Pickup'}</span><span>${c.del?inr(c.del):'Free'}</span></div><div class="g"><span>Total</span><span>${inr(c.total)}</span></div></div><button class="btn pri lg" data-act="place">Place order &middot; ${inr(c.total)}</button>${c.sub<199&&S.mode==='Delivery'?'<div class="err">Minimum order for delivery is '+inr(199)+'.</div>':''}</div>`:''}`;
+}
+function openCart(){renderCart();$('#drawer').classList.add('open');$('#scrim').classList.add('on')}
+function closeCart(){$('#drawer').classList.remove('open');$('#scrim').classList.remove('on')}
+function addItem(id,eg){const x=it(id);if(!x||x.sold)return;const k=key(id,eg),l=S.cart.find(c=>!c.custom&&key(c.id,c.eg)===k);if(l)l.q++;else S.cart.push({id,q:1,eg:!!eg});renderCart();toast(x.name+' added to cart')}
+function place(){
+ const c=calc(),n=($('#oN')||{}).value.trim(),p=($('#oP')||{}).value.trim(),err=$('#oE');
+ if(!n){err.textContent='Please enter your name.';return}if(!/^\d{10}$/.test(p)){err.textContent='Enter a valid 10 digit mobile number.';return}
+ let addr='';if(S.mode==='Delivery'){addr=$('#oAd').value.trim();if(!addr){err.textContent='Please enter your delivery address.';return}if(c.sub<199){err.textContent='Minimum order for delivery is '+inr(199)+'.';return}}
+ const o={id:'GC-'+(S.oseq++),ts:Date.now(),name:n,phone:p,mode:S.mode,area:S.mode==='Delivery'?$('#oA').value:'',addr,slot:$('#oS').value,items:c.L.map(l=>({n:l.name+(l.eg?' (eggless)':''),q:l.q,p:l.price})),total:c.total,status:0};
+ S.orders.unshift(o);S.cart=[];renderCart();closeCart();
+ const msg='Hi Golden Crust, new order '+o.id+'\n'+o.items.map(i=>i.q+' x '+i.n+' = '+inr(i.p*i.q)).join('\n')+'\nTotal: '+inr(o.total)+'\n'+(o.mode==='Delivery'?'Delivery to '+o.area+': '+o.addr:'Pickup')+'\nSlot: '+o.slot+'\nName: '+o.name;
+ openModal(`<div style="text-align:center"><div style="font-size:3.4rem">&#127881;</div><h2 class="serif">Order placed!</h2><p style="color:var(--muted)">Thank you, ${esc(n)}. Order <b>${o.id}</b> is with our bakers.</p></div><div style="background:var(--bg2);border-radius:16px;padding:14px;margin:16px 0;font-size:.9rem">${o.items.map(i=>`<div style="display:flex;justify-content:space-between;gap:10px"><span>${i.q} x ${esc(i.n)}</span><b>${inr(i.p*i.q)}</b></div>`).join('')}<div style="display:flex;justify-content:space-between;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;font-weight:800"><span>Total</span><span>${inr(o.total)}</span></div></div><p style="font-size:.86rem;color:var(--muted)">${o.mode==='Delivery'?'Delivering to '+esc(o.area)+'. ':'Pickup from Indiranagar. '}${esc(o.slot)}. Track it from the Owner dashboard in this demo.</p><div class="noprint" style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px"><a class="btn" target="_blank" rel="noopener" href="https://wa.me/917358332692?text=${encodeURIComponent(msg)}">Send on WhatsApp</a><button class="btn" data-act="print">Print bill</button><button class="btn pri" data-act="closeModal">Done</button></div>`);
+}
+/* ---------- Owner dashboard ---------- */
+const OS=['New','Baking','Ready','Delivered'],OC=['n','b','r','d'];
+function ownerOpen(){S.own=true;$('#own').hidden=false;document.body.style.overflow='hidden';renderOwner()}
+function ownerClose(){S.own=false;$('#own').hidden=true;document.body.style.overflow='';renderAll()}
+function renderOwner(){
+ const tabs=['Overview','Menu manager','Add new item','Orders'],today=S.orders,rev=today.reduce((s,o)=>s+o.total,0);
+ let body='';
+ if(S.tab==='Overview'){
+  const cnt={};S.orders.forEach(o=>o.items.forEach(i=>cnt[i.n]=(cnt[i.n]||0)+i.q));SEED.forEach(x=>cnt[x.name]=(cnt[x.name]||0)+(SALES[x.id]||0)/4);
+  const top=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]).slice(0,6),tm=cnt[top[0]]||1,days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],vals=[18,21,19,24,28,41,36].map((v,i)=>v*1000+(i===6?rev%1000:0)),vm=Math.max(...vals,rev);
+  body=`<div class="kp"><div><small>Orders today</small><b>${today.length}</b></div><div><small>Revenue today</small><b>${inr(rev)}</b></div><div><small>To prepare</small><b>${S.orders.filter(o=>o.status<2).length}</b></div><div><small>Menu items</small><b>${S.items.length}</b></div></div>
+  <div class="g2"><div class="oc"><h3>Best sellers</h3><div class="hb">${top.map(n=>`<div><div class="l"><span>${esc(n)}</span><b>${Math.round(cnt[n])}</b></div><div class="t"><i style="width:${cnt[n]/tm*100}%"></i></div></div>`).join('')}</div></div>
+  <div class="oc"><h3>This week's sales</h3><div class="bars">${days.map((d,i)=>`<div><b>${(vals[i]/1000).toFixed(0)}k</b><i style="height:${vals[i]/vm*100}%"></i>${d}</div>`).join('')}</div></div></div>
+  <div class="oc"><h3>Today's special <small style="font-weight:400;color:var(--muted);font-size:.8rem">shown on the homepage banner</small></h3><div class="fm"><select id="spSel" aria-label="Today's special">${S.items.map(x=>`<option value="${x.id}" ${x.id===S.special?'selected':''}>${esc(x.name)} (${inr(x.price)})</option>`).join('')}</select></div></div>`;
+ }else if(S.tab==='Menu manager'){
+  body=`<div class="oc"><h3>Menu manager <span><button class="btn sm" data-act="resetmenu">Reset to sample menu</button></span></h3><p style="color:var(--muted);font-size:.86rem;margin-bottom:10px">Change prices, mark items sold out or remove them. Changes appear on the website instantly.</p><div class="tw"><table><thead><tr><th>Item</th><th>Category</th><th>Price (&#8377;)</th><th>Sold out</th><th>Bestseller</th><th></th></tr></thead><tbody>${S.items.map(x=>`<tr><td><div style="display:flex;gap:10px;align-items:center"><div class="th pic c${ci(x.cat)}">${IMGOK(x.img)?`<img src="${x.img}" alt="">`:x.emoji}</div><div><b>${esc(x.name)}</b><div style="font-size:.74rem;color:var(--muted)">${esc(x.unit)}</div></div></div></td><td>${x.cat.replace('&amp;','&')}</td><td><input type="number" min="1" data-pr="${x.id}" value="${x.price}" aria-label="Price of ${esc(x.name)}"></td><td><input type="checkbox" data-sd="${x.id}" ${x.sold?'checked':''} aria-label="Sold out"></td><td><input type="checkbox" data-bs="${x.id}" ${x.tags.includes('Bestseller')?'checked':''} aria-label="Bestseller"></td><td><button class="btn sm" data-act="del" data-id="${x.id}">Remove</button></td></tr>`).join('')}</tbody></table></div></div>`;
+ }else if(S.tab==='Add new item'){
+  const d=S.draft;
+  body=`<div class="oc"><h3>Add a new item</h3><form class="fm" id="addF" autocomplete="off"><div class="r2"><label>Item name<input id="nN" maxlength="60" placeholder="e.g. Ragi Cookies"></label><label>Category<select id="nC">${CATS.map(c=>`<option>${c.replace('&amp;','&')}</option>`).join('')}</select></label></div>
+  <div class="r2"><label>Price (&#8377;)<input id="nP" type="number" min="1" max="99999" placeholder="e.g. 120"></label><label>Sold per<input id="nU" maxlength="20" value="each" placeholder="each, 250 g, box"></label></div>
+  <div class="r2"><label>Type<select id="nD"><option>Veg</option><option>Egg</option><option>Non-veg</option></select></label><label>Label<select id="nT"><option value="">None</option><option>New</option><option>Bestseller</option><option>Festive</option></select></label></div>
+  <label>Description<textarea id="nDs" maxlength="200" placeholder="What makes it special?"></textarea></label><label class="egl" style="font-size:.9rem"><input type="checkbox" id="nE"> Eggless version available (+${inr(EGL)})</label>
+  <label>Photo (optional)</label><label class="up" id="upZ"><input type="file" id="nF" accept="image/*" hidden>${IMGOK(d.img)?`<img src="${d.img}" alt="Preview">`:'<span style="font-size:2.4rem">&#128247;</span>'}<b>${IMGOK(d.img)?'Tap to change photo':'Tap to upload or drop a photo'}</b><span style="font-size:.76rem;color:var(--muted)">JPG, PNG or WebP. Resized automatically.</span></label>
+  <label>Or pick an icon</label><div class="emj">${EMOJIS.map(e=>`<button type="button" class="${d.emoji===e?'on':''}" data-act="emo" data-v="${e}">${e}</button>`).join('')}</div><div class="err" id="nErr"></div>
+  <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn pri lg" type="submit" style="width:auto">Add to menu</button></div></form></div>`;
+ }else{
+  body=`<div class="oc"><h3>Orders <small style="font-weight:400;color:var(--muted);font-size:.8rem">Move orders along as you bake</small></h3><div class="kb">${OS.map((s,k)=>{const L=S.orders.filter(o=>o.status===k);return`<div class="kc"><h4>${s} <span class="pl ${OC[k]}">${L.length}</span></h4>${L.map(o=>`<div class="od"><div style="display:flex;justify-content:space-between;gap:6px"><b>${o.id}</b><span style="color:var(--muted)">${new Date(o.ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</span></div><div>${esc(o.name)} &middot; ${o.mode}${o.area?', '+esc(o.area):''}</div><div style="color:var(--muted)">${o.items.map(i=>i.q+'x '+esc(i.n)).join(', ')}</div><div style="display:flex;justify-content:space-between;align-items:center"><b>${inr(o.total)}</b>${k<3?`<button class="btn sm pri" data-act="oadv" data-id="${o.id}">${['Start baking','Mark ready','Delivered'][k]}</button>`:''}</div></div>`).join('')||'<div style="color:var(--muted);font-size:.84rem">None</div>'}</div>`}).join('')}</div></div>`;
+ }
+ $('#own').innerHTML=`<div class="top"><h2>&#129360; Owner dashboard</h2><div class="otabs">${tabs.map(t=>`<button class="chip ${S.tab===t?'on':''}" data-act="otab" data-v="${t}">${t}</button>`).join('')}</div><div style="flex:1"></div><span class="pl b">Demo mode</span><button class="btn sm" data-act="ownerexit">View website</button></div><div class="in">${body}</div>`;
+}
+function resizeImage(file,cb){
+ if(!/^image\//.test(file.type)){cb(null,'Please choose an image file.');return}if(file.size>10*1048576){cb(null,'Image is larger than 10 MB.');return}
+ const fr=new FileReader();fr.onerror=()=>cb(null,'Could not read that file.');fr.onload=()=>{const im=new Image();im.onerror=()=>cb(null,'That image could not be opened.');im.onload=()=>{const M=640,r=Math.min(1,M/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*r);cv.height=Math.round(im.height*r);const g=cv.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height);g.drawImage(im,0,0,cv.width,cv.height);cb(cv.toDataURL('image/jpeg',.82))};im.src=fr.result};fr.readAsDataURL(file);
+}
+function addItemForm(e){
+ e.preventDefault();const n=$('#nN').value.trim(),p=Math.round(+$('#nP').value),err=$('#nErr');
+ if(n.length<2){err.textContent='Please enter the item name.';return}if(!(p>=1&&p<=99999)){err.textContent='Enter a valid price between 1 and 99,999.';return}
+ if(S.items.some(x=>x.name.toLowerCase()===n.toLowerCase())){err.textContent='An item with this name already exists.';return}
+ const cat=CATS.find(c=>c.replace('&amp;','&')===$('#nC').value)||CATS[0],tag=$('#nT').value;
+ const x={id:'u'+Date.now().toString(36),name:n.slice(0,60),cat,price:p,unit:($('#nU').value.trim()||'each').slice(0,20),diet:$('#nD').value,desc:$('#nDs').value.trim().slice(0,200)||'Freshly baked at Golden Crust.',tags:tag?[tag]:[],eggless:$('#nE').checked,emoji:S.draft.emoji,img:IMGOK(S.draft.img)?S.draft.img:'',sold:false};
+ S.items.unshift(x);S.draft={emoji:EMOJIS[0],img:''};save();S.tab='Menu manager';renderOwner();toast('"'+x.name+'" added to the menu at '+inr(x.price)+'.');
+}
+const acts={
+ closeModal,print:()=>window.print(),
+ cart:openCart,closecart:closeCart,
+ add:e=>{const eg=$('[data-eg="'+e.dataset.id+'"]');addItem(e.dataset.id,eg&&eg.checked)},
+ inc:e=>{const l=S.cart[+e.dataset.i];l.q++;renderCart()},dec:e=>{const i=+e.dataset.i,l=S.cart[i];l.q--;if(l.q<=0)S.cart.splice(i,1);renderCart()},
+ mode:e=>{S.mode=e.dataset.v;renderCart()},place,
+ cat:e=>{S.cat=e.dataset.v;renderFilters();renderGrid()},diet:e=>{S.diet=e.dataset.v;renderFilters();renderGrid()},
+ addcake:()=>{const c=S.cake;S.cart.push({custom:1,q:1,key:'cake'+Date.now(),title:c.flavour+' cake, '+c.kg+' kg',sub:c.shape+(c.eggless?', eggless':'')+', "'+(c.msg||'No message')+'", needed '+c.date,price:cakePrice()});renderCart();toast('Custom cake added to cart');openCart()},
+ owner:()=>{if(S.own)return;openModal(`<h2 class="serif">Owner login</h2><p style="color:var(--muted);font-size:.9rem">Demo PIN: <b>1234</b></p><form class="fm" id="pinF" style="margin-top:12px"><label>Enter PIN<input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></label><div class="err" id="pinE"></div><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn" data-act="closeModal">Cancel</button><button class="btn pri" type="submit">Sign in</button></div></form>`);setTimeout(()=>{const p=$('#pin');p&&p.focus()},60)},
+ ownerexit:ownerClose,otab:e=>{S.tab=e.dataset.v;renderOwner()},
+ emo:e=>{S.draft.emoji=e.dataset.v;S.draft.img='';renderOwner()},
+ del:e=>{const x=it(e.dataset.id);if(!x)return;S.items=S.items.filter(i=>i.id!==x.id);S.cart=S.cart.filter(c=>c.custom||c.id!==x.id);save();renderOwner();toast('"'+x.name+'" removed from the menu.')},
+ resetmenu:()=>{if(!confirm('Reset the menu to the sample items? Your added items will be removed.'))return;try{localStorage.removeItem(LS)}catch(e){}S.items=JSON.parse(JSON.stringify(SEED));S.cart=[];renderOwner();toast('Menu reset to sample items.')},
+ oadv:e=>{const o=S.orders.find(x=>x.id===e.dataset.id);o.status++;renderOwner();toast(o.id+': '+OS[o.status])}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&acts[b.dataset.act]){if(b.dataset.act==='add'&&e.target.closest('label'))return;acts[b.dataset.act](b);return}if(e.target===$('#modal'))closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else closeCart()}if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('pc')){e.preventDefault();acts.add(e.target)}});
+document.addEventListener('input',e=>{const t=e.target,id=t.id;
+ if(id==='q'){S.q=t.value;renderGrid()}
+ else if(id==='cM'){S.cake.msg=t.value;$('#cakePv').innerHTML=cakeSVG()}
+ else if(t.dataset&&t.dataset.pr){const x=it(t.dataset.pr),v=Math.round(+t.value);if(x&&v>=1&&v<=99999){x.price=v;save()}}
+});
+document.addEventListener('change',e=>{const t=e.target,id=t.id;
+ if(['cF','cK','cS','cD','cE'].includes(id)){const c=S.cake;if(id==='cF')c.flavour=t.value;else if(id==='cK')c.kg=+t.value;else if(id==='cS')c.shape=t.value;else if(id==='cD')c.date=t.value;else c.eggless=t.checked;$('#cakePv').innerHTML=cakeSVG();$('#cPr').textContent=inr(cakePrice())}
+ else if(id==='oA'){S.area=t.value;const k=$('#oN').value,p=$('#oP').value,a=$('#oAd').value;renderCart();$('#oN').value=k;$('#oP').value=p;$('#oAd').value=a}
+ else if(id==='spSel'){S.special=t.value;try{localStorage.setItem('gc-special',S.special)}catch(x){}toast('Today\'s special updated.')}
+ else if(t.dataset&&t.dataset.sd){const x=it(t.dataset.sd);x.sold=t.checked;save();toast(x.name+(x.sold?' marked sold out.':' is available again.'))}
+ else if(t.dataset&&t.dataset.bs){const x=it(t.dataset.bs);x.tags=x.tags.filter(g=>g!=='Bestseller');if(t.checked)x.tags.push('Bestseller');save()}
+ else if(id==='nF'&&t.files&&t.files[0]){resizeImage(t.files[0],(d,er)=>{if(er){const x=$('#nErr');if(x)x.textContent=er;return}S.draft.img=d;renderOwner();toast('Photo ready. Fill the details and add to menu.')})}
+});
+document.addEventListener('submit',e=>{
+ if(e.target.id==='pinF'){e.preventDefault();if($('#pin').value==='1234'){closeModal();ownerOpen();toast('Welcome back, owner.')}else $('#pinE').textContent='Wrong PIN. Hint: 1234'}
+ else if(e.target.id==='addF')addItemForm(e);
+});
+document.addEventListener('dragover',e=>{const z=e.target.closest&&e.target.closest('#upZ');if(z){e.preventDefault();z.classList.add('over')}});
+document.addEventListener('dragleave',e=>{const z=e.target.closest&&e.target.closest('#upZ');if(z)z.classList.remove('over')});
+document.addEventListener('drop',e=>{const z=e.target.closest&&e.target.closest('#upZ');if(z){e.preventDefault();z.classList.remove('over');const f=e.dataTransfer.files[0];if(f)resizeImage(f,(d,er)=>{if(er){$('#nErr').textContent=er;return}S.draft.img=d;renderOwner()})}});
+$('#scrim').addEventListener('click',()=>{closeCart();$('#links').classList.remove('open')});
+$('#burger').addEventListener('click',()=>$('#links').classList.toggle('open'));$$('#links a').forEach(a=>a.addEventListener('click',()=>$('#links').classList.remove('open')));
+function renderAll(){renderSpecial();renderPop();renderFilters();renderGrid();renderCart()}
+const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('gc-theme')}catch(e){}
+function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9728;':'&#9790;';try{localStorage.setItem('gc-theme',t)}catch(e){}}
+setTheme(sv||'light');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+renderAll();renderCake();
+})();
+</script>
+</body>
+</html>

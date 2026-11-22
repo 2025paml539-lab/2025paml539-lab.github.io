@@ -1,0 +1,23 @@
+{
+  "name": "PayDesk Payroll (Demo)",
+  "short_name": "PayDesk",
+  "start_url": "payroll-system.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1511",
+  "theme_color": "#0b1511",
+  "description": "Demo app by Kishore Nandhaluru (fictional data)",
+  "icons": [
+    {
+      "sizes": "192x192",
+      "src": "icons/pay-192.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any maskable",
+      "sizes": "512x512",
+      "src": "icons/pay-512.png",
+      "type": "image/png"
+    }
+  ]
+}
