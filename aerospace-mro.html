@@ -142,7 +142,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--panel2)}
 @media(max-width:520px){.badge-demo{display:none}.kpi b{font-size:1.6rem}.card{padding:14px}.clock{text-align:left}}
 @media print{.side,.top,.cta{display:none}.app{display:block}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-</style>
+[data-theme=light]{--bg:#eef1f5;--panel:#fff;--panel2:#f3f5f8;--line:rgba(15,31,58,.12);--text:#12203a;--muted:#5b6880;--accent:#0b5cad;--accent2:#f2a900}.btn.pri{background:var(--accent)!important;color:#fff!important;border-color:transparent}.brand i,.brand svg{background:var(--accent)!important;box-shadow:none}#nav a.on{background:rgba(127,127,127,.12)!important;box-shadow:inset 3px 0 0 var(--accent2)!important;color:var(--text)!important}.cta{background:var(--panel)!important}@media(max-width:900px){.side{z-index:95!important}}[data-theme=light] .side{background:#0f1f3a;--text:#eef2f7;--muted:#a7b3c4;--panel2:rgba(255,255,255,.07);--line:rgba(255,255,255,.12);color:var(--text)}</style>
 </head>
 <body>
 <div class="app">
@@ -420,9 +420,9 @@ function tick(){
  $$('[data-etr]').forEach(el=>{const d=+el.dataset.etr-Date.now();el.textContent=d>=0?'ETR in '+hm(d):'ETR overdue by '+hm(d);el.style.color=d>=0?'':'var(--bad)'});
 }
 setInterval(tick,1000);
-const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme')}catch(e){}
-function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme',t)}catch(e){}}
-setTheme(sv||'dark');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme-v2')}catch(e){}
+function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme-v2',t)}catch(e){}}
+setTheme(sv||'light');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
 let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').hidden=false});
 $('#install').addEventListener('click',()=>{if(dp){dp.prompt();dp=null;$('#install').hidden=true}});
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});

@@ -87,7 +87,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--panel2)}tfoot td{font
 @media(max-width:560px){.badge-demo{display:none}.kpi b{font-size:1.3rem}.card{padding:14px}.row2,.ps .meta,.ps .two{grid-template-columns:1fr}}
 @media print{body>*:not(.modal){display:none!important}.modal{position:static;background:#fff;padding:0;display:block!important}.modal .box{border:0;background:#fff;max-height:none;width:100%;padding:0;overflow:visible}.noprint{display:none!important}.ps{padding:0}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-</style>
+[data-theme=light]{--bg:#f6f5ef;--panel:#fff;--panel2:#f1efe6;--line:rgba(29,42,34,.12);--text:#1d2a22;--muted:#66705f;--accent:#1f6f4a;--accent2:#c08a1e}.btn.pri{background:var(--accent)!important;color:#fff!important;border-color:transparent}.brand i,.brand svg{background:var(--accent)!important;box-shadow:none}#nav a.on{background:rgba(127,127,127,.12)!important;box-shadow:inset 3px 0 0 var(--accent2)!important;color:var(--text)!important}.cta{background:var(--panel)!important}@media(max-width:900px){.side{z-index:95!important}}[data-theme=light] .side{background:#17251d;--text:#eef2f7;--muted:#a7b3c4;--panel2:rgba(255,255,255,.07);--line:rgba(255,255,255,.12);color:var(--text)}</style>
 </head>
 <body>
 <div class="app">
@@ -335,9 +335,9 @@ document.addEventListener('input',e=>{const t=e.target,id=t.id;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeSide()}});
 $('#menu').addEventListener('click',openSide);$('#scrim').addEventListener('click',closeSide);window.addEventListener('hashchange',route);
 $('#monthSel').innerHTML=MS.map((m,i)=>`<option value="${i}">${MF[m.m].slice(0,3)} ${m.y}${i===5?' (current)':''}</option>`).join('');
-const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme')}catch(e){}
-function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme',t)}catch(e){}}
-setTheme(sv||'dark');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme-v2')}catch(e){}
+function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme-v2',t)}catch(e){}}
+setTheme(sv||'light');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
 let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').hidden=false});
 $('#install').addEventListener('click',()=>{if(dp){dp.prompt();dp=null;$('#install').hidden=true}});
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});

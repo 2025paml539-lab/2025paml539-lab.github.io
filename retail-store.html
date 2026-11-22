@@ -105,7 +105,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--panel2)}
 @media(max-width:520px){.badge-demo{display:none}.kpi b{font-size:1.4rem}.card{padding:14px}.grid{grid-template-columns:repeat(2,1fr)}}
 @media print{body>*:not(.modal){display:none!important}.modal{position:static;background:#fff;color:#000;padding:0}.modal .box{border:0;background:#fff;color:#000}.noprint{display:none!important}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-</style>
+[data-theme=light]{--bg:#faf7f2;--panel:#fff;--panel2:#f4efe7;--line:rgba(43,36,32,.12);--text:#2b2420;--muted:#7a6e63;--accent:#e4572e;--accent2:#2a9d8f}.btn.pri{background:var(--accent)!important;color:#fff!important;border-color:transparent}.brand i,.brand svg{background:var(--accent)!important;box-shadow:none}#nav a.on{background:rgba(127,127,127,.12)!important;box-shadow:inset 3px 0 0 var(--accent2)!important;color:var(--text)!important}.cta{background:var(--panel)!important}@media(max-width:900px){.side{z-index:95!important}}[data-theme=light] .side{background:#2b2420;--text:#eef2f7;--muted:#a7b3c4;--panel2:rgba(255,255,255,.07);--line:rgba(255,255,255,.12);color:var(--text)}</style>
 </head>
 <body>
 <div class="app">
@@ -326,9 +326,9 @@ document.addEventListener('submit',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeSide()}});
 $('#menu').addEventListener('click',openSide);$('#scrim').addEventListener('click',closeSide);window.addEventListener('hashchange',route);
-const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme')}catch(e){}
-function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme',t)}catch(e){}}
-setTheme(sv||'dark');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+const root=document.documentElement;let sv=null;try{sv=localStorage.getItem('demo-theme-v2')}catch(e){}
+function setTheme(t){root.setAttribute('data-theme',t);$('#theme').innerHTML=t==='dark'?'&#9790;':'&#9728;';try{localStorage.setItem('demo-theme-v2',t)}catch(e){}}
+setTheme(sv||'light');$('#theme').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
 let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').hidden=false});
 $('#install').addEventListener('click',()=>{if(dp){dp.prompt();dp=null;$('#install').hidden=true}});
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
